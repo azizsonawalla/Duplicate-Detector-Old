@@ -1,4 +1,4 @@
-package model.SearchStrategies;
+package model.util;
 
 public class Progress {
 
