@@ -1,6 +1,8 @@
 package model.SearchStrategies;
 
-import model.AsyncFileSystem.AsyncDirectoryGlob;
+import config.Config;
+import model.async.asyncFileSystem.AsyncDirectoryCrawler;
+import model.async.workerPool.WorkerPool;
 import model.util.Progress;
 import model.util.SearchException;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -9,21 +11,37 @@ import java.io.File;
 import java.util.*;
 import java.util.concurrent.*;
 
+/**
+ * An abstract strategy class for finding duplicate files. Contains common methods for running file comparison search.
+ */
 public abstract class DuplicateFinder {
 
-    private final String rootDirectory;                          // Root directory with duplicates
-    private Future<List<File>> allFilesFuture;                   // Future object for allFiles
-    private ConcurrentLinkedQueue<File> allFiles;                // All files in Root directory
-    private long startTime;                                      // epoch time for when last search was started
-    private ConcurrentHashMap<String, List<File>> duplicates;    // Thread-safe map to store duplicate files
+    private AsyncDirectoryCrawler crawler;                                                                              // Async crawler for allFiles
+    private Future<List<File>> allFilesFuture;                                                                          // Future object for allFiles
+    private ConcurrentLinkedQueue<File> allFiles;                                                                       // All files in Root directory
 
-    public DuplicateFinder(String rootDirectory) {
+    private final String rootDirectory;                                                                                 // Root directory with duplicates
+    private long startTime;                                                                                             // epoch time for when last search was started
+    private ConcurrentHashMap<String, List<File>> duplicates;                                                           // Thread-safe map to store duplicate files
+    private WorkerPool threadPool = WorkerPool.getInstance();                                                           // Background worker thread pool for application
+
+    public DuplicateFinder(String rootDirectory) {                                                                      // TODO: Add the ability to pass multiple roots
         this.allFiles = new ConcurrentLinkedQueue<>();
         this.rootDirectory = rootDirectory;
-        AsyncDirectoryGlob asyncGlob = new AsyncDirectoryGlob(this.rootDirectory);  // TODO: pass valid extensions
-        ExecutorService bgThread = Executors.newSingleThreadExecutor();
-        this.allFilesFuture = bgThread.submit(asyncGlob);
-        bgThread.shutdown();
+        crawler = new AsyncDirectoryCrawler(this.rootDirectory, Config.SUPPORTED_FILE_TYPES);
+        this.allFilesFuture = threadPool.submit(crawler);
+    }
+
+    /**
+     * Get the progress on pre-search tasks
+     * @return Progress object with current pre-search stats
+     * @throws SearchException if search has already started or completed
+     */
+    public Progress getPreSearchProgress() throws SearchException {
+        if (searchInProgress() || searchDone()) {
+            throw new SearchException("Search has already started.");
+        }
+        return crawler.getProgress();
     }
 
     /**
@@ -32,7 +50,18 @@ public abstract class DuplicateFinder {
      * to interrupt the search call ``stopSearch()``
      * @throws SearchException if there's an error starting the search
      */
-    public abstract void startSearch() throws SearchException;
+    public void startSearch() throws SearchException {
+        if (searchInProgress()) {
+            throw new SearchException("A search is already in progress");
+        }
+        try {
+            this.allFiles = new ConcurrentLinkedQueue<>(allFilesFuture.get());  // blocks until Future is ready
+        } catch (Exception e) {
+            throw new SearchException("Failed to read all files from Future", e);
+        }
+        this.startTime = System.currentTimeMillis();
+        this.findDuplicates();
+    }
 
     /**
      * Stops an ongoing search and halts all asynchronous tasks. Does nothing if no search is in progress.
@@ -45,7 +74,7 @@ public abstract class DuplicateFinder {
      * @return Progress of the current search.
      * @throws SearchException if no search is in progress
      */
-    public abstract Progress getProgress() throws SearchException;
+    public abstract Progress getSearchProgress() throws SearchException;
 
     /**
      * Get results from the search.
@@ -66,18 +95,6 @@ public abstract class DuplicateFinder {
     }
 
     /**
-     * Returns the extension associated with the file without the dot. Returns null if file has no extension
-     */
-    private static String getFileExtension(File file) {
-        String name = file.getName();
-        String[] parts = name.split(".");
-        if (parts.length > 1) {
-            return parts[parts.length-1];
-        }
-        return null;
-    }
-
-    /**
      * Asynchronously reads files from this.remainingFiles and stores duplicate files in this.duplicates
      */
     protected abstract void findDuplicates();
@@ -85,33 +102,14 @@ public abstract class DuplicateFinder {
     /**
      * @return true if search is complete, else false
      */
-    private boolean searchDone() {
-        // TODO
+    private boolean searchDone() {                                                                                      // TODO: Implement this
         throw new NotImplementedException();
     }
 
-    public static void main(String args[]) {
-        DuplicateFinder d = new DuplicateFinder("D:\\") {
-            @Override
-            public void startSearch() throws SearchException {
-
-            }
-
-            @Override
-            public void stopSearch() throws SearchException {
-
-            }
-
-            @Override
-            public Progress getProgress() throws SearchException {
-                return null;
-            }
-
-            @Override
-            protected void findDuplicates() {
-
-            }
-        };
-
+    /**
+     * @return true if search is in progress
+     */
+    private boolean searchInProgress() {                                                                                // TODO: Implement this
+        throw new NotImplementedException();
     }
 }

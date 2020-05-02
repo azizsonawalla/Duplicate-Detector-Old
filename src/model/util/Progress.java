@@ -7,6 +7,9 @@ public class Progress {
     public int remaining;   // number of files yet to check
     public long eta;        // estimated time remaining
 
+    // TODO: Add errors
+    // TODO: Add current task name
+
     public Progress(int checked, int current, int remaining, long eta) {
         this.checked = checked;
         this.current = current;
