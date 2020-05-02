@@ -1,25 +1,29 @@
 package model.SearchStrategies;
 
+import model.AsyncFileSystem.AsyncDirectoryGlob;
 import model.util.Progress;
 import model.util.SearchException;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.File;
-import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.*;
+import java.util.concurrent.*;
 
 public abstract class DuplicateFinder {
 
     private final String rootDirectory;                          // Root directory with duplicates
-    private List<File> allFiles;                                 // All files in Root directory
+    private Future<List<File>> allFilesFuture;                   // Future object for allFiles
+    private ConcurrentLinkedQueue<File> allFiles;                // All files in Root directory
     private long startTime;                                      // epoch time for when last search was started
     private ConcurrentHashMap<String, List<File>> duplicates;    // Thread-safe map to store duplicate files
 
     public DuplicateFinder(String rootDirectory) {
+        this.allFiles = new ConcurrentLinkedQueue<>();
         this.rootDirectory = rootDirectory;
+        AsyncDirectoryGlob asyncGlob = new AsyncDirectoryGlob(this.rootDirectory);  // TODO: pass valid extensions
+        ExecutorService bgThread = Executors.newSingleThreadExecutor();
+        this.allFilesFuture = bgThread.submit(asyncGlob);
+        bgThread.shutdown();
     }
 
     /**
@@ -62,47 +66,6 @@ public abstract class DuplicateFinder {
     }
 
     /**
-     * Expands all file paths under rootDirectory to File objects and returns them in a list. Also filters out files
-     * that don't match extensions under validExtensions
-     * @param rootDirectory directory to expand
-     * @param validExtensions files with these extensions will be returned. Pass empty list to keep all files.
-     * @return list of all files (including files under subfolders) that match validExtensions
-     * @throws InvalidParameterException if rootDirectory is invalid
-     */
-    private static List<File> expandPaths(String rootDirectory, List<String> validExtensions) throws InvalidParameterException {
-        ArrayList<File> allFiles = new ArrayList<>();
-        LinkedList<File> toVisit = new LinkedList<>();
-
-        try {
-            File root = new File(rootDirectory);
-            if (!root.isDirectory()) {
-                throw new InvalidParameterException("Root directory parameter is not a directory");
-            }
-            toVisit.add(root);
-        } catch (Exception e) {
-            throw new InvalidParameterException("Cannot read root directory: " + e.getMessage());
-        }
-
-        while(!toVisit.isEmpty()) {
-            File thisDirectory = toVisit.poll();
-            File[] subFiles = thisDirectory.listFiles();
-            if (subFiles == null) {
-                continue;   // TODO: Add logging here
-            }
-            for (File file: subFiles) {
-                if (file.isFile()) {
-                    if (validExtensions.size() == 0 || validExtensions.contains(getFileExtension(file))) {
-                        allFiles.add(file);
-                    }
-                } else if (file.isDirectory()) {
-                    toVisit.add(file);
-                }
-            }
-        }
-        return allFiles;
-    }
-
-    /**
      * Returns the extension associated with the file without the dot. Returns null if file has no extension
      */
     private static String getFileExtension(File file) {
@@ -125,5 +88,30 @@ public abstract class DuplicateFinder {
     private boolean searchDone() {
         // TODO
         throw new NotImplementedException();
+    }
+
+    public static void main(String args[]) {
+        DuplicateFinder d = new DuplicateFinder("D:\\") {
+            @Override
+            public void startSearch() throws SearchException {
+
+            }
+
+            @Override
+            public void stopSearch() throws SearchException {
+
+            }
+
+            @Override
+            public Progress getProgress() throws SearchException {
+                return null;
+            }
+
+            @Override
+            protected void findDuplicates() {
+
+            }
+        };
+
     }
 }

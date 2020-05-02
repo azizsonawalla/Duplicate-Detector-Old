@@ -1,10 +1,14 @@
 package model.SearchStrategies;
 
+import model.util.Progress;
+import model.util.SearchException;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import java.util.concurrent.LinkedBlockingQueue;
-
 public class HashedDuplicateFinder extends DuplicateFinder {
+
+    public HashedDuplicateFinder() {
+        super("");
+    }
 
     /**
      * Asynchronously reads files listed in this.allFiles into this.remainingFiles, and removes paths that have
@@ -13,5 +17,25 @@ public class HashedDuplicateFinder extends DuplicateFinder {
     private void readFiles() {
         // TODO
         throw new NotImplementedException();
+    }
+
+    @Override
+    public void startSearch() throws SearchException {
+
+    }
+
+    @Override
+    public void stopSearch() throws SearchException {
+
+    }
+
+    @Override
+    public Progress getProgress() throws SearchException {
+        return null;
+    }
+
+    @Override
+    protected void findDuplicates() {
+
     }
 }
