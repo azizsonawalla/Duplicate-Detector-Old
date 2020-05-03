@@ -1,6 +1,6 @@
 package model.async.asyncFileSystem;
 
-import model.async.workerPool.WorkerPool;
+import model.async.threadPool.AppThreadPool;
 import model.util.Progress;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -43,7 +43,7 @@ public class AsyncDirectoryCrawler implements Callable<List<File>> {
             throw new IOException("Cannot read rootDirectory directory: " + e.getMessage());
         }
 
-        WorkerPool threadPool = WorkerPool.getInstance();
+        AppThreadPool threadPool = AppThreadPool.getInstance();
         while(!toVisit.isEmpty() || !futures.isEmpty()) {
             if (!toVisit.isEmpty()) {
                 File thisDirectory = toVisit.poll();
@@ -78,12 +78,20 @@ public class AsyncDirectoryCrawler implements Callable<List<File>> {
     }
 
     private boolean isValidFile(File file) {
-        return file.isFile() && (this.validExtensions.isEmpty()
-                || this.validExtensions.contains(getFileExtension(file)));
+        if (file.isFile()) {
+            if (this.validExtensions.isEmpty()) {
+                return true;
+            }
+            String ext = getFileExtension(file).toUpperCase();
+            if (this.validExtensions.contains(ext)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
-     * Returns the extension associated with the file without the dot. Returns null if file has no extension
+     * Returns the extension associated with the file without the dot. Returns empty string if file has no extension
      */
     private static String getFileExtension(File file) {
         String name = file.getName();
@@ -91,6 +99,6 @@ public class AsyncDirectoryCrawler implements Callable<List<File>> {
         if (parts.length > 1) {
             return parts[parts.length-1];
         }
-        return null;
+        return "";
     }
 }

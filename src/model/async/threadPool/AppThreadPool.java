@@ -1,18 +1,21 @@
-package model.async.workerPool;
+package model.async.threadPool;
 
 import config.Config;
 
 import java.util.concurrent.*;
 
-public class WorkerPool extends ThreadPoolExecutor {
+public class AppThreadPool extends ThreadPoolExecutor {
 
-    private static WorkerPool instance = new WorkerPool();
+    private static AppThreadPool instance = null;
 
-    public static WorkerPool getInstance() {
+    public static AppThreadPool getInstance() {
+        if (instance == null) {
+            instance = new AppThreadPool();
+        }
         return instance;
     }
 
-    private WorkerPool() {
+    private AppThreadPool() {
         super(
                 Config.POOL_SIZE,
                 Config.POOL_SIZE,
