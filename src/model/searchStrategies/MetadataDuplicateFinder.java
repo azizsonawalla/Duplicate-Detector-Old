@@ -1,17 +1,14 @@
 package model.searchStrategies;
 
+import model.async.FutureUtil.FutureCollection;
 import model.async.threadPool.AppThreadPool;
 import model.util.Progress;
 import model.util.SearchException;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Future;
+import java.util.*;
+import java.util.concurrent.*;
 
 /**
  * Finds duplicate files based on file metadata
@@ -33,36 +30,44 @@ public class MetadataDuplicateFinder extends DuplicateFinder {
     }
 
     @Override
-    protected Future<Map<String, List<File>>> findDuplicates(List<File> allFiles) {                                     // TODO: implement this
+    protected Future<List<List<File>>> findDuplicates(List<File> allFiles) {                                            // TODO: implement this
         ConcurrentHashMap<String, List<File>> duplicates = new ConcurrentHashMap<>();
+        List<Future> taskFutures = new LinkedList<>();
+
         for (File file: allFiles) {
-            String key = getNameSizeHash(file);
-            if (duplicates.containsKey(key)) {
-                duplicates.get(key).add(file);
-            } else {
-                List<File> newFileSet = Arrays.asList(file);
-                duplicates.put(key, newFileSet);
-            }
+            MetadataHasher task = new MetadataHasher(file, duplicates);
+            Future taskFuture = AppThreadPool.getInstance().submit(task);
+            taskFutures.add(taskFuture);
         }
-        setSearchDone();
-        throw new NotImplementedException();                                                                            // TODO: filter values of size 1
+
+        return new FutureCollection<List<List<File>>>(taskFutures) {
+            @Override
+            public List<List<File>> get(long timeout, TimeUnit unit)
+                    throws InterruptedException, ExecutionException, TimeoutException {
+
+                for (Future future: this.futures) {
+                    future.get();
+                }
+
+                List<List<File>> filtered = new LinkedList<>();
+                for (List<File> duplicateSet: duplicates.values()) {
+                    if (duplicateSet.size() > 1) {
+                        filtered.add(duplicateSet);
+                    }
+                }
+
+                setSearchDone();
+                return filtered;
+            }
+        };
     }
 
-    /**
-     * Creates a hashcode for the file using its name and size
-     */
-    private static String getNameSizeHash(File file) {
-        String name = file.getName();
-        long size = file.length();
-        return String.format("%s%s", name, Long.toString(size));
-    }
-
-    class HashAndStore implements Runnable {                                                                            // TODO: Javadoc
+    static class MetadataHasher implements Runnable {                                                                   // TODO: Javadoc
 
         private final File file;
         private final ConcurrentHashMap<String, List<File>> duplicates;
 
-        public HashAndStore(File file, ConcurrentHashMap<String, List<File>> duplicates) {
+        MetadataHasher(File file, ConcurrentHashMap<String, List<File>> duplicates) {
             this.file = file;
             this.duplicates = duplicates;
         }
@@ -76,6 +81,15 @@ public class MetadataDuplicateFinder extends DuplicateFinder {
                 List<File> newFileSet = Arrays.asList(this.file);
                 this.duplicates.put(key, newFileSet);
             }
+        }
+
+        /**
+         * Creates a hashcode for the file using its name and size
+         */
+        private static String getNameSizeHash(File file) {
+            String name = file.getName();
+            long size = file.length();
+            return String.format("%s%s", name, Long.toString(size));
         }
     }
 }

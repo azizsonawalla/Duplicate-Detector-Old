@@ -25,7 +25,7 @@ public abstract class DuplicateFinder {
     private Future<List<File>> allFilesFuture;                                                                          // Future object for allFiles
 
     /* Search objects */
-    private Future<Map<String, List<File>>> duplicatesFuture;                                                           // Future object for sets of duplicate files
+    private Future<List<List<File>>> duplicatesFuture;                                                                  // Future object for sets of duplicate files
 
 
     public DuplicateFinder(String rootDirectory) {                                                                      // TODO: Add the ability to pass multiple roots
@@ -84,17 +84,11 @@ public abstract class DuplicateFinder {
         if (!isSearchDone()) {
             throw new SearchException("Search is still in progress. Cannot return results.");
         }
-        ArrayList<List<File>> results = new ArrayList<>();
-        Map<String, List<File>> duplicates;
+        List<List<File>> results;
         try {
-            duplicates = duplicatesFuture.get();
+            results = duplicatesFuture.get();
         } catch (Exception e) {
             throw new SearchException("Error reading duplicates future object", e);
-        }
-        for (List<File> duplicateSet: duplicates.values()) {
-            if (duplicateSet.size() > 1) {
-                results.add(duplicateSet);
-            }
         }
         return results;
     }
@@ -102,7 +96,7 @@ public abstract class DuplicateFinder {
     /**
      * Asynchronously finds and returns duplicate files. Calls ``setSearchDone()`` when completed.
      */
-    protected abstract Future<Map<String, List<File>>> findDuplicates(List<File> allFiles);
+    protected abstract Future<List<List<File>>> findDuplicates(List<File> allFiles);
 
     /**
      * @return true if search is complete, else false
