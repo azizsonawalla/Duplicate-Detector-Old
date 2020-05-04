@@ -78,6 +78,7 @@ public class MetadataDuplicateFinder extends DuplicateFinder {
             if (this.duplicates.containsKey(key)) {                                                                     // TODO: potential issue if key is added b/w check and next line, need some kind of lock?
                 this.duplicates.get(key).add(this.file);
             } else {
+                System.out.println(duplicates.toString());                                                              // TODO: Remove this
                 List<File> newFileSet = Arrays.asList(this.file);
                 this.duplicates.put(key, newFileSet);
             }
