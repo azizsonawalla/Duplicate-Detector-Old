@@ -7,8 +7,8 @@ import model.util.Progress;
 import model.util.SearchException;
 
 import java.io.File;
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.List;
+import java.util.concurrent.Future;
 
 /**
  * An abstract strategy class for finding duplicate files. Contains common methods for running file comparison search.
@@ -101,7 +101,12 @@ public abstract class DuplicateFinder {
     /**
      * @return true if search is complete, else false
      */
-    private boolean isSearchDone() {
+    public boolean isSearchDone() {
+        if (!searchDone) {
+            if (duplicatesFuture != null) {
+                searchDone = duplicatesFuture.isDone();
+            }
+        }
         return searchDone;
     }
 

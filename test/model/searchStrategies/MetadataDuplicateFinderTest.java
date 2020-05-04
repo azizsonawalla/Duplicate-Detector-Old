@@ -1,14 +1,13 @@
 package model.searchStrategies;
 
-import model.util.Progress;
-import model.util.SearchException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import testFiles.TestFiles;
+import testUtils.SearchResultComparator;
 
 import java.io.File;
 import java.util.List;
-import java.util.concurrent.Future;
 
 import static org.junit.Assert.assertTrue;
 
@@ -24,9 +23,13 @@ public class MetadataDuplicateFinderTest {
 
     @Test
     public void sampleTest() throws InterruptedException {
-        MetadataDuplicateFinder mdf = new MetadataDuplicateFinder("test/testFiles/allDuplicates");
+        MetadataDuplicateFinder mdf = new MetadataDuplicateFinder(TestFiles.EXACT_DUPS_DIR.getPath());
         mdf.startSearch();
-        Thread.sleep(10000);
-        System.out.println(mdf.getResults().toString());
+
+        List<List<File>> expected = TestFiles.EXACT_DUPS_DIR_DUPLICATE_SETS;
+        while(!mdf.isSearchDone());                                                                                     // TODO: add timeout
+
+        assertTrue(SearchResultComparator.fileResultsAreEqual(mdf.getResults(), expected));
+        System.out.println(mdf.getResults().toString());                                                                // TODO: remove
     }
 }

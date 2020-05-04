@@ -1,14 +1,19 @@
 package model.searchStrategies;
 
 import model.async.FutureUtil.FutureCollection;
+import model.async.lockableDataStructures.LockableConcurrentHashMap;
 import model.async.threadPool.AppThreadPool;
 import model.util.Progress;
 import model.util.SearchException;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.File;
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Finds duplicate files based on file metadata
@@ -30,9 +35,9 @@ public class MetadataDuplicateFinder extends DuplicateFinder {
     }
 
     @Override
-    protected Future<List<List<File>>> findDuplicates(List<File> allFiles) {                                            // TODO: implement this
-        ConcurrentHashMap<String, List<File>> duplicates = new ConcurrentHashMap<>();
-        List<Future> taskFutures = new LinkedList<>();
+    protected Future<List<List<File>>> findDuplicates(List<File> allFiles) {                                            // TODO: javadoc
+        LockableConcurrentHashMap<String, LinkedList<File>> duplicates = new LockableConcurrentHashMap<>();
+        LinkedList<Future> taskFutures = new LinkedList<>();
 
         for (File file: allFiles) {
             MetadataHasher task = new MetadataHasher(file, duplicates);
@@ -49,14 +54,12 @@ public class MetadataDuplicateFinder extends DuplicateFinder {
                     future.get();
                 }
 
-                List<List<File>> filtered = new LinkedList<>();
+                LinkedList<List<File>> filtered = new LinkedList<>();
                 for (List<File> duplicateSet: duplicates.values()) {
                     if (duplicateSet.size() > 1) {
                         filtered.add(duplicateSet);
                     }
                 }
-
-                setSearchDone();
                 return filtered;
             }
         };
@@ -65,9 +68,9 @@ public class MetadataDuplicateFinder extends DuplicateFinder {
     static class MetadataHasher implements Runnable {                                                                   // TODO: Javadoc
 
         private final File file;
-        private final ConcurrentHashMap<String, List<File>> duplicates;
+        private final LockableConcurrentHashMap<String, LinkedList<File>> duplicates;
 
-        MetadataHasher(File file, ConcurrentHashMap<String, List<File>> duplicates) {
+        MetadataHasher(File file, LockableConcurrentHashMap<String, LinkedList<File>> duplicates) {
             this.file = file;
             this.duplicates = duplicates;
         }
@@ -75,12 +78,19 @@ public class MetadataDuplicateFinder extends DuplicateFinder {
         @Override
         public void run() {
             String key = getNameSizeHash(this.file);
-            if (this.duplicates.containsKey(key)) {                                                                     // TODO: potential issue if key is added b/w check and next line, need some kind of lock?
-                this.duplicates.get(key).add(this.file);
-            } else {
-                System.out.println(duplicates.toString());                                                              // TODO: Remove this
-                List<File> newFileSet = Arrays.asList(this.file);
-                this.duplicates.put(key, newFileSet);
+            try {
+                this.duplicates.lock();
+                if (this.duplicates.containsKey(key)) {
+                    LinkedList<File> existingSet = this.duplicates.get(key);
+                    existingSet.add(this.file);
+                    this.duplicates.put(key, existingSet);
+                } else {
+                    LinkedList<File> newFileSet = new LinkedList<>();
+                    newFileSet.add(this.file);
+                    this.duplicates.put(key, newFileSet);
+                }
+            } finally {
+                this.duplicates.unlock();
             }
         }
 
@@ -88,9 +98,9 @@ public class MetadataDuplicateFinder extends DuplicateFinder {
          * Creates a hashcode for the file using its name and size
          */
         private static String getNameSizeHash(File file) {
-            String name = file.getName();
+            long nameHash = file.getName().hashCode();
             long size = file.length();
-            return String.format("%s%s", name, Long.toString(size));
+            return String.format("%s_%s", nameHash, Long.toString(size));
         }
     }
 }
