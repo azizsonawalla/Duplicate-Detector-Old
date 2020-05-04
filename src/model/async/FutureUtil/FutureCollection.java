@@ -6,16 +6,29 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public abstract class FutureCollection<T> implements Future<T> {                                                        // TODO: javadoc
+/**
+ * A class to manage a collection of Future objects as one Future object
+ * @param <T>
+ */
+public abstract class FutureCollection<T> implements Future<T> {
 
     protected List<Future> futures;
 
-    public FutureCollection(List<Future> futures) {                                                                     // TODO: javadoc
+    /**
+     * Create a single Future object from a collection
+     * @param futures a collection of future objects
+     */
+    public FutureCollection(List<Future> futures) {
         this.futures = futures;
     }
 
+    /**
+     * Calls Future.cancel() on all internal Future objects
+     * @param mayInterruptIfRunning (see Future.cancel())
+     * @return false if any one of the internal Future objects returns false, else true.
+     */
     @Override
-    public boolean cancel(boolean mayInterruptIfRunning) {                                                              // TODO: javadoc
+    public boolean cancel(boolean mayInterruptIfRunning) {
         for (Future future: this.futures) {
             if (!future.cancel(mayInterruptIfRunning)) {
                 return false;
@@ -24,8 +37,11 @@ public abstract class FutureCollection<T> implements Future<T> {                
         return true;
     }
 
+    /**
+     * @return true if all internal Future objects are cancelled, else false
+     */
     @Override
-    public boolean isCancelled() {                                                                                      // TODO: javadoc
+    public boolean isCancelled() {
         for (Future future: this.futures) {
             if (!future.isCancelled()) {
                 return false;
@@ -34,8 +50,11 @@ public abstract class FutureCollection<T> implements Future<T> {                
         return true;
     }
 
+    /**
+     * @return true if all internal Future objects are done, else false
+     */
     @Override
-    public boolean isDone() {                                                                                           // TODO: javadoc
+    public boolean isDone() {
         for (Future future: this.futures) {
             if (!future.isDone()) {
                 return false;
@@ -44,8 +63,11 @@ public abstract class FutureCollection<T> implements Future<T> {                
         return true;
     }
 
+    /**
+     * Calls FutureCollection.get(timeout, unit) with no timeout
+     */
     @Override
-    public T get() throws InterruptedException, ExecutionException                   {                                  // TODO: javadoc
+    public T get() throws InterruptedException, ExecutionException {
         try {
             return get(-1, null);
         } catch (TimeoutException e) {
