@@ -1,12 +1,37 @@
 package model.async.asyncFileSystem;
 
-import junit.framework.TestCase;
+import model.async.threadPool.AppThreadPool;
+import org.junit.Test;
+import testFiles.TestFiles;
 
-public class AsyncDirectoryCrawlerTest extends TestCase {
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
-    public void testGetProgress() {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+public class AsyncDirectoryCrawlerTest {
+
+    @Test
+    public void testCall_Depth2_noExtensionFilter() throws ExecutionException, InterruptedException {
+        String testFile = TestFiles.DEPTH_2_DIR.getPath();
+        List<String> extensions = new ArrayList<>();
+        AsyncDirectoryCrawler adc = new AsyncDirectoryCrawler(testFile, extensions);
+        Future<List<File>> listFuture = AppThreadPool.getInstance().submit(adc);
+        List<File> list = listFuture.get();
+        List<File> expectedList = TestFiles.DEPTH_2_DIR_LIST_FILES;
+
+        assertEquals(list.size(), expectedList.size());
+        for (File returnedFile: list) {
+            assertTrue(expectedList.contains(returnedFile));
+        }
     }
 
-    public void testCall() {
+    // @Test
+    public void testGetProgress() {
+        // TODO
     }
 }

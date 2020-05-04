@@ -16,17 +16,27 @@ import static org.junit.Assert.assertTrue;
 public class AsyncFileListTest {
 
     @Test
-    public void testCall() throws ExecutionException, InterruptedException {
-        File testFile = new File(TestFiles.DIR_WITH_RANDOM_FILES);
+    public void testCall_SubFilesAndFolders() throws ExecutionException, InterruptedException {
+        File testFile = TestFiles.DEPTH_1_DIR;
         AsyncFileList afl = new AsyncFileList(testFile);
 
         Future<File[]> listFuture = AppThreadPool.getInstance().submit(afl);
-        List<File> expectedList = TestFiles.DIR_WITH_RANDOM_FILES_LIST;
+        List<File> expectedList = TestFiles.DEPTH_1_DIR_LIST;
         File[] list = listFuture.get();
 
         assertEquals(list.length, expectedList.size());
         for (File returnedFile: list) {
             assertTrue(expectedList.contains(returnedFile));
         }
+    }
+
+    @Test
+    public void testCall_EmptyFolder() throws ExecutionException, InterruptedException {
+        // TODO
+    }
+
+    @Test
+    public void testCall_NotAFolder() throws ExecutionException, InterruptedException {
+        // TODO
     }
 }

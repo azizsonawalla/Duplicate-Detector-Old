@@ -10,7 +10,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.*;
 
-// TODO: javadoc
+/**
+ * An asynchronous directory crawler. Recursively lists all files in directory.
+ */
 public class AsyncDirectoryCrawler implements Callable<List<File>> {
 
     private final String rootDirectory;
@@ -21,7 +23,10 @@ public class AsyncDirectoryCrawler implements Callable<List<File>> {
         this.validExtensions = validExtensions;
     }
 
-    // TODO: javadoc
+    /**
+     * Get stats on the number of files processed so far
+     * @return Progress object with crawl progress
+     */
     public Progress getProgress() {
         throw new NotImplementedException();                                                                            // TODO: Implement this
     }
@@ -61,7 +66,7 @@ public class AsyncDirectoryCrawler implements Callable<List<File>> {
                                     toVisit.add(file);
                                 } else if (isValidFile(file)) {
                                     allFiles.add(file);
-                                    System.out.println(file.getName());                                                 // TODO: Remove this (used for debugging)
+                                    // System.out.println(file.getName());                                                 // TODO: Remove this (used for debugging)
                                 }
                             }
                         } catch (Exception e) {
