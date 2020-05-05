@@ -17,9 +17,8 @@ public class AsyncDirectoryCrawlerTest {
 
     @Test
     public void testCall_Depth2_noExtensionFilter() throws ExecutionException, InterruptedException {
-        String testFile = TestFiles.DEPTH_2_DIR.getPath();
         List<String> extensions = new ArrayList<>();
-        AsyncDirectoryCrawler adc = new AsyncDirectoryCrawler(testFile, extensions);
+        AsyncDirectoryCrawler adc = new AsyncDirectoryCrawler(TestFiles.DEPTH_2_DIR, extensions);
         Future<List<File>> listFuture = AppThreadPool.getInstance().submit(adc);
         List<File> list = listFuture.get();
         List<File> expectedList = TestFiles.DEPTH_2_DIR_LIST_FILES;

@@ -1,11 +1,10 @@
-package model.searchStrategies;
+package model.searchModel.searchStrategies;
 
 import model.async.FutureUtil.FutureCollection;
 import model.async.lockableDataStructures.LockableConcurrentHashMap;
 import model.async.threadPool.AppThreadPool;
 import model.util.Progress;
 import model.util.SearchException;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.File;
 import java.util.LinkedList;
@@ -15,19 +14,15 @@ import java.util.concurrent.*;
 /**
  * Finds duplicate files based on file metadata
  */
-public class MetadataDuplicateFinder extends DuplicateFinder {
+public class MetadataMatchStrategy implements SearchStrategy {
 
     private LinkedList<Future> taskFutures;                                                                             // TODO: maybe use thread safe Queue?
     private int totalFileCount;
     private long startTime;                                                                                             // epoch time for when last search was started
 
-    public MetadataDuplicateFinder(String rootDirectory) {
-        super(rootDirectory);
-    }
-
     @Override
-    public Progress getSearchProgress() throws SearchException {
-        int done = 0;
+    public Progress getProgress() throws SearchException {
+        int done = 0;                                                                                                   // TODO: add check for if search has started
         for (Future future: this.taskFutures) {
             if (future.isDone()) {
                 done++;
@@ -44,7 +39,7 @@ public class MetadataDuplicateFinder extends DuplicateFinder {
     }
 
     @Override
-    protected Future<List<List<File>>> findDuplicates(List<File> allFiles) {                                            // TODO: javadoc
+    public Future<List<List<File>>> findDuplicates(List<File> allFiles) {                                               // TODO: javadoc
         LockableConcurrentHashMap<String, LinkedList<File>> duplicates = new LockableConcurrentHashMap<>();
         this.taskFutures = new LinkedList<>();
         this.totalFileCount = allFiles.size();
