@@ -71,13 +71,6 @@ public abstract class DuplicateFinder {
     }
 
     /**
-     * Get the status of the current search.
-     * @return Progress of the current search.
-     * @throws SearchException if no search is in progress
-     */
-    public abstract Progress getSearchProgress() throws SearchException;
-
-    /**
      * Get results from the search.
      * @return a 2-D list where each inner list is a collection of File objects that are suspected duplicatesFuture
      * @throws SearchException if search is still ongoing or hasn't started
@@ -127,6 +120,13 @@ public abstract class DuplicateFinder {
         this.searchInProgress = false;
         this.searchDone = true;
     }
+
+    /**
+     * Get the status of the current search.
+     * @return Progress of the current search.
+     * @throws SearchException if no search is in progress
+     */
+    public abstract Progress getSearchProgress() throws SearchException;
 
     /**
      * Asynchronously finds and returns duplicate files. Calls ``setSearchDone()`` when completed.
