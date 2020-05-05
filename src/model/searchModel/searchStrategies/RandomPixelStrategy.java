@@ -5,6 +5,6 @@ package model.searchModel.searchStrategies;
  * Note: This implementation will mark images with identical content but different formats as clones (i.e. jpeg and raw
  * versions of the same image will be marked as duplicates).
  */
-public class RandomPixelDuplicateFinder  {
+public class RandomPixelStrategy {
 
 }

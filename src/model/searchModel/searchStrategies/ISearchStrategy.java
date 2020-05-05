@@ -7,7 +7,7 @@ import java.io.File;
 import java.util.List;
 import java.util.concurrent.Future;
 
-public interface SearchStrategy {
+public interface ISearchStrategy {
 
     /**
      * Get the status of the current search.

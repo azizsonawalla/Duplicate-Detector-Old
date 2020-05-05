@@ -6,5 +6,5 @@ package model.searchModel.searchStrategies;
  * (in addition to exact clones). This implementation will find modified versions of the same image (including scaled
  * up/down, cropped, colour corrected, etc.)
  */
-public class SimilarityBasedDuplicateFinder {
+public class SimilarityStrategy {
 }

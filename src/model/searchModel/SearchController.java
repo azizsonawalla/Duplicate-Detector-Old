@@ -3,7 +3,7 @@ package model.searchModel;
 import config.Config;
 import model.async.asyncFileSystem.AsyncDirectoryCrawler;
 import model.async.threadPool.AppThreadPool;
-import model.searchModel.searchStrategies.SearchStrategy;
+import model.searchModel.searchStrategies.ISearchStrategy;
 import model.util.Progress;
 import model.util.SearchException;
 
@@ -26,10 +26,10 @@ public class SearchController {
 
     /* Search objects */
     private Future<List<List<File>>> duplicatesFuture;                                                                  // Future object for sets of duplicate files
-    private SearchStrategy strategy;
+    private ISearchStrategy strategy;
 
 
-    public SearchController(File rootDirectory, SearchStrategy strategy) {                                              // TODO: Add the ability to pass multiple roots
+    public SearchController(File rootDirectory, ISearchStrategy strategy) {                                              // TODO: Add the ability to pass multiple roots
         this.crawler = new AsyncDirectoryCrawler(rootDirectory, Config.SUPPORTED_FILE_TYPES);
         this.allFilesFuture = AppThreadPool.getInstance().submit(crawler);                                              // TODO: move to new method startPreSearch()
         this.strategy = strategy;

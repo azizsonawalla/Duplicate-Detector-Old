@@ -14,7 +14,7 @@ import java.util.concurrent.*;
 /**
  * Finds duplicate files based on file metadata
  */
-public class MetadataMatchStrategy implements SearchStrategy {
+public class MetadataStrategy implements ISearchStrategy {
 
     private LinkedList<Future> taskFutures;                                                                             // TODO: maybe use thread safe Queue?
     private int totalFileCount;

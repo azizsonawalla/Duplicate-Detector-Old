@@ -10,11 +10,11 @@ import java.util.List;
 
 import static org.junit.Assert.assertTrue;
 
-public class MetadataMatchStrategyTest {
+public class MetadataStrategyTest {
 
     @Test
     public void sampleTest() throws InterruptedException {
-        MetadataMatchStrategy mdf = new MetadataMatchStrategy();
+        MetadataStrategy mdf = new MetadataStrategy();
         SearchController controller = new SearchController(TestFiles.EXACT_DUPS_DIR, mdf);
         controller.startSearch();
 
