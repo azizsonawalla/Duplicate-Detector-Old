@@ -30,6 +30,5 @@ public class MetadataDuplicateFinderTest {
         while(!mdf.isSearchDone());                                                                                     // TODO: add timeout
 
         assertTrue(SearchResultComparator.fileResultsAreEqual(mdf.getResults(), expected));
-        System.out.println(mdf.getResults().toString());                                                                // TODO: remove
     }
 }

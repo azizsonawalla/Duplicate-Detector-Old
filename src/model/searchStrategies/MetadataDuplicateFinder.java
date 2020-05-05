@@ -10,34 +10,45 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.*;
 
 /**
  * Finds duplicate files based on file metadata
  */
 public class MetadataDuplicateFinder extends DuplicateFinder {
 
+    private LinkedList<Future> taskFutures;                                                                             // TODO: maybe use thread safe Queue?
+    private int totalFileCount;
+    private long startTime;                                                                                             // epoch time for when last search was started
+
     public MetadataDuplicateFinder(String rootDirectory) {
         super(rootDirectory);
     }
 
     @Override
-    public void stopSearch() throws SearchException {                                                                   // TODO: implement this
-        throw new NotImplementedException();
-    }
+    public Progress getSearchProgress() throws SearchException {
+        int done = 0;
+        for (Future future: this.taskFutures) {
+            if (future.isDone()) {
+                done++;
+            }
+        }
+        int remaining = this.totalFileCount - done;
 
-    @Override
-    public Progress getSearchProgress() throws SearchException {                                                        // TODO: implement this
-        throw new NotImplementedException();
+        long currentTime = System.currentTimeMillis();
+        long elapsedTime = currentTime - this.startTime;
+        long rate = elapsedTime / done;                                                                                 // We lose decimal accuracy here but for our purposes it doesn't matter
+        long eta = remaining*rate;
+
+        return new Progress(done,-1,remaining, eta, -1, null, null);                // TODO: add support for remaining stats
     }
 
     @Override
     protected Future<List<List<File>>> findDuplicates(List<File> allFiles) {                                            // TODO: javadoc
         LockableConcurrentHashMap<String, LinkedList<File>> duplicates = new LockableConcurrentHashMap<>();
-        LinkedList<Future> taskFutures = new LinkedList<>();
+        this.taskFutures = new LinkedList<>();
+        this.totalFileCount = allFiles.size();
+        this.startTime = System.currentTimeMillis();
 
         for (File file: allFiles) {
             MetadataHasher task = new MetadataHasher(file, duplicates);
@@ -77,6 +88,9 @@ public class MetadataDuplicateFinder extends DuplicateFinder {
 
         @Override
         public void run() {
+            if (Thread.interrupted()) {
+                return;
+            }
             String key = getNameSizeHash(this.file);
             try {
                 this.duplicates.lock();
@@ -89,7 +103,7 @@ public class MetadataDuplicateFinder extends DuplicateFinder {
                     newFileSet.add(this.file);
                     this.duplicates.put(key, newFileSet);
                 }
-            } finally {
+            } finally {                                                                                                 // TODO: exception handling
                 this.duplicates.unlock();
             }
         }

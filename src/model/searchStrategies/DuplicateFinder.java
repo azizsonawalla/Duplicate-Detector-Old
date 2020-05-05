@@ -18,7 +18,6 @@ public abstract class DuplicateFinder {
     /* Flags and timestamps */
     private boolean searchInProgress = false;
     private boolean searchDone = false;
-    private long startTime;                                                                                             // epoch time for when last search was started
 
     /* Pre-search objects */
     private AsyncDirectoryCrawler crawler;                                                                              // Async crawler for allFiles
@@ -66,7 +65,10 @@ public abstract class DuplicateFinder {
      * Stops an ongoing search and halts all asynchronous tasks.
      * @throws SearchException if there's an error stopping the search, or no search is in progress
      */
-    public abstract void stopSearch() throws SearchException;                                                           // TODO: Set appropriate flags
+    public void stopSearch() throws SearchException {
+        this.duplicatesFuture.cancel(true);
+        setSearchDone();                                                                                                // TODO: search done != search interrupted. Add different flag
+    }
 
     /**
      * Get the status of the current search.
@@ -94,17 +96,12 @@ public abstract class DuplicateFinder {
     }
 
     /**
-     * Asynchronously finds and returns duplicate files. Calls ``setSearchDone()`` when completed.
-     */
-    protected abstract Future<List<List<File>>> findDuplicates(List<File> allFiles);
-
-    /**
      * @return true if search is complete, else false
      */
     public boolean isSearchDone() {
         if (!searchDone) {
-            if (duplicatesFuture != null) {
-                searchDone = duplicatesFuture.isDone();
+            if (duplicatesFuture != null && duplicatesFuture.isDone()) {
+                setSearchDone();
             }
         }
         return searchDone;
@@ -113,12 +110,16 @@ public abstract class DuplicateFinder {
     /**
      * @return true if search is in progress
      */
-    private boolean isSearchInProgress() {
+    public boolean isSearchInProgress() {
+        if (searchInProgress) {
+            if (duplicatesFuture != null && duplicatesFuture.isDone()) {
+                setSearchDone();
+            }
+        }
         return searchInProgress;
     }
 
     private void setSearchInProgress() {
-        this.startTime = System.currentTimeMillis();
         this.searchInProgress = true;
     }
 
@@ -126,4 +127,9 @@ public abstract class DuplicateFinder {
         this.searchInProgress = false;
         this.searchDone = true;
     }
+
+    /**
+     * Asynchronously finds and returns duplicate files. Calls ``setSearchDone()`` when completed.
+     */
+    protected abstract Future<List<List<File>>> findDuplicates(List<File> allFiles);
 }

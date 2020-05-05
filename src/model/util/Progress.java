@@ -7,14 +7,24 @@ import java.util.List;
  */
 public class Progress {
 
-    private int done;              // number of files already done
-    private int inProgress;        // number of files being done right now
-    private int remaining;         // number of files yet to check
+    private int done;              // number of tasks already done
+    private int inProgress;        // number of tasks being done right now
+    private int remaining;         // number of tasks yet to check
     private long eta;              // estimated time remaining
     private int errors;            // number of errors so far
     private List<String> errMsgs;  // error messages encountered
     private String currentTask;    // name of current task
 
+    /**
+     * Create an instance of task progress
+     * @param done number of tasks done
+     * @param inProgress number of tasks currently being processed
+     * @param remaining number of tasks remaining to be processed
+     * @param eta time in milliseconds that remains for all tasks to be completed
+     * @param errors number of tasks that resulted in errors
+     * @param errMsgs error messages encountered so far
+     * @param currentTask current task that is being worked on
+     */
     public Progress(int done, int inProgress, int remaining, long eta,
                     int errors, List<String> errMsgs, String currentTask) {
         this.done = done;
