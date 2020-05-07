@@ -33,8 +33,16 @@ public class AsyncDirectoryCrawler implements Callable<List<File>> {
         throw new NotImplementedException();                                                                            // TODO: Implement this
     }
 
+    /**
+     * Cancel the directory crawl
+     * @throws IOException if cannot cancel
+     */
+    public void cancel() throws IOException {
+        throw new NotImplementedException();                                                                            // TODO: Implement this
+    }
+
     @Override
-    public List<File> call() throws Exception {
+    public List<File> call() throws IOException {
 
         ConcurrentLinkedQueue<File> toVisit = new ConcurrentLinkedQueue<>();
         LinkedList<Future<File[]>> futures = new LinkedList<>();

@@ -1,6 +1,6 @@
 package model.searchModel.searchStrategies;
 
-import model.searchModel.SearchController;
+import model.searchModel.ScanController;
 import org.junit.Test;
 import testFiles.TestFiles;
 import testUtils.SearchResultComparator;
@@ -15,8 +15,8 @@ public class MetadataStrategyTest {
     @Test
     public void sampleTest() throws InterruptedException {
         MetadataStrategy mdf = new MetadataStrategy();
-        SearchController controller = new SearchController(TestFiles.EXACT_DUPS_DIR, mdf);
-        controller.startSearch();
+        ScanController controller = new ScanController(TestFiles.EXACT_DUPS_DIR, mdf);
+        controller.start();
 
         List<List<File>> expected = TestFiles.EXACT_DUPS_DIR_DUPLICATE_SETS;
         while(!controller.isSearchDone());                                                                                     // TODO: add timeout

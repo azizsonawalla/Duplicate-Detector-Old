@@ -1,7 +1,7 @@
 package model.searchModel.searchStrategies;
 
 import model.util.Progress;
-import model.util.SearchException;
+import model.util.ScanException;
 
 import java.io.File;
 import java.util.List;
@@ -12,9 +12,9 @@ public interface ISearchStrategy {
     /**
      * Get the status of the current search.
      * @return Progress of the current search.
-     * @throws SearchException if no search is in progress
+     * @throws ScanException if no search is in progress
      */
-    public Progress getProgress() throws SearchException;
+    public Progress getProgress() throws ScanException;
 
     public Future<List<List<File>>> findDuplicates(List<File> allFiles);                                                // TODO: javadoc
 }
