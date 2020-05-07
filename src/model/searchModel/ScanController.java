@@ -14,10 +14,9 @@ import java.util.List;
 import java.util.concurrent.Future;
 
 /**
- * A controller to manage file scan related tasks. This is a 'use-and-throw' object - once it has been used to perform
- * a scan, or if any of the stages are stopped/error-out midway, the scan cannot be restarted. Create a new instance
- * of the controller instead to restart a scan. Some search strategies may use caching mechanisms and so all progress
- * may not be lost.
+ * A controller to manage file scan related tasks. This is a single-use object - once a scan is complete, or if any of
+ * the stages are stopped/error-out midway, the scan cannot be restarted. Create a new instance of the controller
+ * instead to restart a scan. Some search strategies may use caching mechanisms and so all progress may not be lost.
  */
 public class ScanController {
 
