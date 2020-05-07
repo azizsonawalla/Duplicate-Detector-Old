@@ -6,6 +6,7 @@ import testFiles.TestFiles;
 import testUtils.SearchResultComparator;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertTrue;
@@ -15,7 +16,7 @@ public class MetadataStrategyTest {
     @Test
     public void sampleTest() {
         MetadataStrategy mdf = new MetadataStrategy();
-        ScanController controller = new ScanController(TestFiles.EXACT_DUPS_DIR, mdf);
+        ScanController controller = new ScanController(Arrays.asList(TestFiles.EXACT_DUPS_DIR), mdf);
         controller.startPreSearch();
         while(!controller.isPreSearchDone());                                                                           // TODO: add timeout
 

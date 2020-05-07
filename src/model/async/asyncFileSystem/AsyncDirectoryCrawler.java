@@ -17,11 +17,11 @@ import java.util.concurrent.Future;
  */
 public class AsyncDirectoryCrawler implements Callable<List<File>> {
 
-    private final File rootDirectory;
+    private final List<File> rootDirectories;
     private final List<String> validExtensions;
 
-    public AsyncDirectoryCrawler(File rootDirectory, List<String> validExtensions) {                                  // TODO: Accept multiple roots
-        this.rootDirectory = rootDirectory;
+    public AsyncDirectoryCrawler(List<File> rootDirectories, List<String> validExtensions) {
+        this.rootDirectories = rootDirectories;
         this.validExtensions = validExtensions;
     }
 
@@ -48,13 +48,15 @@ public class AsyncDirectoryCrawler implements Callable<List<File>> {
         LinkedList<Future<File[]>> futures = new LinkedList<>();
         List<File> allFiles = new LinkedList<>();
 
-        try {
-            if (!this.rootDirectory.isDirectory()) {
-                throw new IOException("Root directory is not a directory");
+        for (File rootDirectory: this.rootDirectories) {
+            try {
+                if (!rootDirectory.isDirectory()) {
+                    throw new IOException("Root directory is not a directory");                                         // TODO: log errors
+                }
+                toVisit.add(rootDirectory);
+            } catch (Exception e) {
+                throw new IOException("Cannot read rootDirectories directory: " + e.getMessage());                        // TODO: log errors
             }
-            toVisit.add(this.rootDirectory);
-        } catch (Exception e) {
-            throw new IOException("Cannot read rootDirectory directory: " + e.getMessage());
         }
 
         AppThreadPool threadPool = AppThreadPool.getInstance();

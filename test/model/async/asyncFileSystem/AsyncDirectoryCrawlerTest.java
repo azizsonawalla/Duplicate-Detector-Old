@@ -6,6 +6,7 @@ import testFiles.TestFiles;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -18,7 +19,7 @@ public class AsyncDirectoryCrawlerTest {
     @Test
     public void testCall_Depth2_noExtensionFilter() throws ExecutionException, InterruptedException {
         List<String> extensions = new ArrayList<>();
-        AsyncDirectoryCrawler adc = new AsyncDirectoryCrawler(TestFiles.DEPTH_2_DIR, extensions);
+        AsyncDirectoryCrawler adc = new AsyncDirectoryCrawler(Arrays.asList(TestFiles.DEPTH_2_DIR), extensions);
         Future<List<File>> listFuture = AppThreadPool.getInstance().submit(adc);
         List<File> list = listFuture.get();
         List<File> expectedList = TestFiles.DEPTH_2_DIR_LIST_FILES;

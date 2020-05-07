@@ -30,7 +30,7 @@ public class ScanController {
     private ScanStage currentStage = ScanStage.NOT_STARTED;
 
     /* Pre-search objects */
-    private File rootDirectory;
+    private List<File> rootDirectories;
     private AsyncDirectoryCrawler crawler;                                                                              // Async crawler for allFiles
     private Future<List<File>> allFilesFuture;                                                                          // Future object for allFiles
 
@@ -41,11 +41,11 @@ public class ScanController {
 
     /**
      * A controller to manage scan related tasks.
-     * @param rootDirectory the directory to scan
+     * @param rootDirectories the list of directories to scan
      * @param strategy strategy for finding duplicates
      */
-    public ScanController(File rootDirectory, ISearchStrategy strategy) {                                               // TODO: Add the ability to pass multiple roots
-        this.rootDirectory = rootDirectory;
+    public ScanController(List<File> rootDirectories, ISearchStrategy strategy) {
+        this.rootDirectories = rootDirectories;
         this.strategy = strategy;
     }
 
@@ -80,7 +80,7 @@ public class ScanController {
         if (currentStage != ScanStage.NOT_STARTED) {
             throw new ScanException("A scan has already started. Cannot start pre-search stage");
         }
-        this.crawler = new AsyncDirectoryCrawler(this.rootDirectory, Config.SUPPORTED_FILE_TYPES);
+        this.crawler = new AsyncDirectoryCrawler(this.rootDirectories, Config.SUPPORTED_FILE_TYPES);
         this.allFilesFuture = AppThreadPool.getInstance().submit(this.crawler);
         setCurrentStage(ScanStage.PRE_SEARCH_IN_PROGRESS);
     }
