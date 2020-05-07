@@ -54,14 +54,13 @@ public class ScanController {
      * @throws ScanException if no task is being performed
      */
     public Progress getProgress() throws ScanException {
-        switch (currentStage) {
-            case PRE_SEARCH_IN_PROGRESS:
-                return this.getPreSearchProgress();
-            case SEARCH_IN_PROGRESS:
-                return this.getSearchProgress();
-            default:
-                throw new ScanException("No stage is currently being executed");
+        if (isPreSearchInProgress() || isPreSearchDone()) {
+            return this.getPreSearchProgress();
         }
+        if (isSearchInProgress() || isSearchDone()) {
+            return this.getSearchProgress();
+        }
+        throw new ScanException("No stage is currently being executed");
     }
 
     /**
@@ -112,15 +111,13 @@ public class ScanController {
      * @throws ScanException if there's an error while stopping, or no stage is in progress
      */
     public void stop() throws ScanException {
-        refreshCurrentStage();
-        switch (currentStage) {
-            case PRE_SEARCH_IN_PROGRESS:
-                this.stopPreSearch();
-            case SEARCH_IN_PROGRESS:
-                this.stopSearch();
-            default:
-                throw new ScanException("No stage is currently being executed");
+        if (isPreSearchInProgress()) {
+            this.stopPreSearch();
         }
+        if (isSearchInProgress()) {
+            this.stopSearch();
+        }
+        throw new ScanException("No stage is currently being executed");
     }
 
     /**
@@ -242,10 +239,21 @@ public class ScanController {
     }
 
     /**
-     * Refreshes the current stage flag
+     * Refreshes the current stage flag. Only updates to PRE_SEARCH_DONE and SEARCH_DONE stages (i.e. stages that run
+     * asynchronously). Other stages are set synchronously by other methods.
      */
-    private void refreshCurrentStage() {
-        // TODO: implemented
-        throw new NotImplementedException();
+    private void refreshCurrentStage() {                                                                                // TODO: replace with a more elegant solution. This may break if start method impl. changes.
+        switch (currentStage) {
+            case PRE_SEARCH_IN_PROGRESS:
+                if (this.allFilesFuture != null && allFilesFuture.isDone()) {
+                    this.currentStage = ScanStage.PRE_SEARCH_DONE;
+                }
+                break;
+            case SEARCH_IN_PROGRESS:
+                if (this.duplicatesFuture != null && duplicatesFuture.isDone()) {
+                    this.currentStage = ScanStage.SEARCH_DONE;
+                }
+                break;
+        }
     }
 }
