@@ -1,25 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<GridPane minHeight="350" minWidth="400" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
+<GridPane minHeight="350" minWidth="400" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.controllers.ParentFrame">
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" minWidth="400" percentWidth="100" />
   </columnConstraints>
   <rowConstraints>
-    <RowConstraints minHeight="22" prefHeight="22" vgrow="NEVER" />
-    <RowConstraints minHeight="50.0" prefHeight="108" vgrow="SOMETIMES" />
+    <RowConstraints minHeight="50.0" prefHeight="130" vgrow="SOMETIMES" />
     <RowConstraints minHeight="50.0" prefHeight="140" vgrow="SOMETIMES" />
     <RowConstraints minHeight="200.0" prefHeight="680" vgrow="SOMETIMES" />
-    <RowConstraints minHeight="50.0" prefHeight="108" vgrow="SOMETIMES" />
-    <RowConstraints minHeight="22" prefHeight="22" vgrow="NEVER" />
+    <RowConstraints minHeight="50.0" prefHeight="130" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
-     <Pane GridPane.rowIndex="0" id="navBarBG" />
-     <GridPane GridPane.rowIndex="0"  >
+
+     <Pane id="navBarBG" GridPane.rowIndex="0" />
+     <GridPane id="navBar" GridPane.rowIndex="0">
        <columnConstraints>
          <ColumnConstraints hgrow="SOMETIMES" minWidth="50" prefWidth="35" />
          <ColumnConstraints hgrow="SOMETIMES" minWidth="50" prefWidth="50" />
@@ -30,10 +31,15 @@
        <rowConstraints>
          <RowConstraints minHeight="0" percentHeight="100" vgrow="SOMETIMES" />
        </rowConstraints>
+         <children>
+            <Button id="backIcon" mnemonicParsing="false" prefHeight="45" prefWidth="45" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+            <Label id="navBarTitle" text="Placeholder navigation bar title" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+            <Button id="settingsIcon" mnemonicParsing="false" prefHeight="45" prefWidth="45" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+         </children>
      </GridPane>
 
-     <Pane GridPane.rowIndex="1" id="navBarBG" />
-     <GridPane GridPane.rowIndex="1"  >
+     <Pane id="summaryBarBG" GridPane.rowIndex="1" />
+     <GridPane id="summaryBar" GridPane.rowIndex="1">
        <columnConstraints>
          <ColumnConstraints hgrow="SOMETIMES" minWidth="50" prefWidth="35" />
          <ColumnConstraints hgrow="SOMETIMES" minWidth="50" prefWidth="50" />
@@ -44,9 +50,11 @@
        <rowConstraints>
          <RowConstraints minHeight="0" percentHeight="100" vgrow="SOMETIMES" />
        </rowConstraints>
+       <children>
+       </children>
      </GridPane>
 
-     <GridPane GridPane.rowIndex="2"  >
+     <GridPane GridPane.rowIndex="2">
        <columnConstraints>
          <ColumnConstraints hgrow="SOMETIMES" minWidth="50" prefWidth="35" />
          <ColumnConstraints hgrow="SOMETIMES" minWidth="50" prefWidth="50" />
@@ -58,14 +66,14 @@
          <RowConstraints minHeight="0" percentHeight="100" vgrow="SOMETIMES" />
        </rowConstraints>
        <children>
-         <Pane style="-fx-border-color: black;" GridPane.columnIndex="4" />
-         <Pane style="-fx-border-color: black;" />
-         <Pane style="-fx-border-color: black;" GridPane.columnIndex="2" />
-         <Pane style="-fx-border-color: black;" GridPane.columnIndex="1" />
-         <Pane style="-fx-border-color: black;" GridPane.columnIndex="3" />
+         <Pane id="tempPane" GridPane.columnIndex="4" />
+         <Pane id="tempPane" />
+         <Pane id="tempPane" GridPane.columnIndex="2" />
+         <Pane id="tempPane" GridPane.columnIndex="1" />
+         <Pane id="tempPane" GridPane.columnIndex="3" />
        </children>
      </GridPane>
-     <GridPane GridPane.rowIndex="3"  >
+     <GridPane GridPane.rowIndex="3">
        <columnConstraints>
          <ColumnConstraints hgrow="SOMETIMES" minWidth="50" prefWidth="35" />
          <ColumnConstraints hgrow="SOMETIMES" minWidth="50" prefWidth="50" />
@@ -77,49 +85,11 @@
          <RowConstraints minHeight="0" percentHeight="100" vgrow="SOMETIMES" />
        </rowConstraints>
        <children>
-         <Pane style="-fx-border-color: black;" GridPane.columnIndex="4" />
-         <Pane style="-fx-border-color: black;" />
-         <Pane style="-fx-border-color: black;" GridPane.columnIndex="2" />
-         <Pane style="-fx-border-color: black;" GridPane.columnIndex="1" />
-         <Pane style="-fx-border-color: black;" GridPane.columnIndex="3" />
-       </children>
-     </GridPane>
-     <GridPane GridPane.rowIndex="4"  >
-       <columnConstraints>
-         <ColumnConstraints hgrow="SOMETIMES" minWidth="50" prefWidth="35" />
-         <ColumnConstraints hgrow="SOMETIMES" minWidth="50" prefWidth="50" />
-         <ColumnConstraints hgrow="SOMETIMES" minWidth="200" prefWidth="1750" />
-         <ColumnConstraints hgrow="SOMETIMES" minWidth="50" prefWidth="50" />
-         <ColumnConstraints hgrow="SOMETIMES" minWidth="50" prefWidth="35" />
-       </columnConstraints>
-       <rowConstraints>
-         <RowConstraints minHeight="0" percentHeight="100" vgrow="SOMETIMES" />
-       </rowConstraints>
-       <children>
-         <Pane style="-fx-border-color: black;" GridPane.columnIndex="4" />
-         <Pane style="-fx-border-color: black;" />
-         <Pane style="-fx-border-color: black;" GridPane.columnIndex="2" />
-         <Pane style="-fx-border-color: black;" GridPane.columnIndex="1" />
-         <Pane style="-fx-border-color: black;" GridPane.columnIndex="3" />
-       </children>
-     </GridPane>
-     <GridPane GridPane.rowIndex="5"  >
-       <columnConstraints>
-         <ColumnConstraints hgrow="SOMETIMES" minWidth="50" prefWidth="35" />
-         <ColumnConstraints hgrow="SOMETIMES" minWidth="50" prefWidth="50" />
-         <ColumnConstraints hgrow="SOMETIMES" minWidth="200" prefWidth="1750" />
-         <ColumnConstraints hgrow="SOMETIMES" minWidth="50" prefWidth="50" />
-         <ColumnConstraints hgrow="SOMETIMES" minWidth="50" prefWidth="35" />
-       </columnConstraints>
-       <rowConstraints>
-         <RowConstraints minHeight="0" percentHeight="100" vgrow="SOMETIMES" />
-       </rowConstraints>
-       <children>
-         <Pane style="-fx-border-color: black;" GridPane.columnIndex="4" />
-         <Pane style="-fx-border-color: black;" />
-         <Pane style="-fx-border-color: black;" GridPane.columnIndex="2" />
-         <Pane style="-fx-border-color: black;" GridPane.columnIndex="1" />
-         <Pane style="-fx-border-color: black;" GridPane.columnIndex="3" />
+         <Pane id="tempPane" GridPane.columnIndex="4" />
+         <Pane id="tempPane" />
+         <Pane id="tempPane" GridPane.columnIndex="2" />
+         <Pane id="tempPane" GridPane.columnIndex="1" />
+         <Pane id="tempPane" GridPane.columnIndex="3" />
        </children>
      </GridPane>
    </children>

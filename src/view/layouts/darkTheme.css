@@ -1,3 +1,43 @@
+#navBar Button {
+    -fx-background-size: 33px 33px;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+    -fx-background-color: rgba(0,0,0,0);
+}
+
+#navBar Button:hover {
+    -fx-background-color: rgba(255,255,255,0.2);
+    -fx-cursor: hand;
+}
+
+#navBar Button:pressed {
+     -fx-background-color: rgba(0,0,0,0.2);
+     -fx-cursor: hand;
+}
+
 #navBarBG {
     -fx-background-color: #4d4d4d;
+}
+
+#settingsIcon {
+    -fx-background-image: url("../assets/Settings_icon.png");
+}
+
+#backIcon {
+    -fx-background-image: url("../assets/Back_icon.png");
+}
+
+#navBarTitle {
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 18pt;
+    -fx-font-family: 'Helvetica Neue LT Com 45 Light';
+    -fx-font-smoothing-type: gray;
+}
+
+#summaryBarBG {
+    -fx-background-color: #3d3d3d;
+}
+
+#tempPane {
+    -fx-border-color: #808080
 }
