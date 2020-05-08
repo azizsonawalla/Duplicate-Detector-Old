@@ -18,6 +18,7 @@
     <RowConstraints minHeight="22" prefHeight="22" vgrow="NEVER" />
   </rowConstraints>
    <children>
+     <Pane GridPane.rowIndex="0" id="navBarBG" />
      <GridPane GridPane.rowIndex="0"  >
        <columnConstraints>
          <ColumnConstraints hgrow="SOMETIMES" minWidth="50" prefWidth="35" />
@@ -29,14 +30,9 @@
        <rowConstraints>
          <RowConstraints minHeight="0" percentHeight="100" vgrow="SOMETIMES" />
        </rowConstraints>
-       <children>
-         <Pane layoutX="10.0" layoutY="10.0" style="-fx-background-color: gray; -fx-border-color: black;" GridPane.columnIndex="4" />
-         <Pane style="-fx-background-color: gray; -fx-border-color: black;" />
-         <Pane style="-fx-background-color: gray; -fx-border-color: black;" GridPane.columnIndex="2" />
-         <Pane style="-fx-background-color: gray; -fx-border-color: black;" GridPane.columnIndex="1" />
-         <Pane style="-fx-background-color: gray; -fx-border-color: black;" GridPane.columnIndex="3" />
-       </children>
      </GridPane>
+
+     <Pane GridPane.rowIndex="1" id="navBarBG" />
      <GridPane GridPane.rowIndex="1"  >
        <columnConstraints>
          <ColumnConstraints hgrow="SOMETIMES" minWidth="50" prefWidth="35" />
@@ -48,14 +44,8 @@
        <rowConstraints>
          <RowConstraints minHeight="0" percentHeight="100" vgrow="SOMETIMES" />
        </rowConstraints>
-       <children>
-         <Pane layoutX="10.0" layoutY="10.0" style="-fx-background-color: gray; -fx-border-color: black;" GridPane.columnIndex="4" />
-         <Pane style="-fx-background-color: gray; -fx-border-color: black;" />
-         <Pane style="-fx-background-color: gray; -fx-border-color: black;" GridPane.columnIndex="2" />
-         <Pane style="-fx-background-color: gray; -fx-border-color: black;" GridPane.columnIndex="1" />
-         <Pane style="-fx-background-color: gray; -fx-border-color: black;" GridPane.columnIndex="3" />
-       </children>
      </GridPane>
+
      <GridPane GridPane.rowIndex="2"  >
        <columnConstraints>
          <ColumnConstraints hgrow="SOMETIMES" minWidth="50" prefWidth="35" />
@@ -68,11 +58,11 @@
          <RowConstraints minHeight="0" percentHeight="100" vgrow="SOMETIMES" />
        </rowConstraints>
        <children>
-         <Pane layoutX="10.0" layoutY="10.0" style="-fx-background-color: gray; -fx-border-color: black;" GridPane.columnIndex="4" />
-         <Pane style="-fx-background-color: gray; -fx-border-color: black;" />
-         <Pane style="-fx-background-color: gray; -fx-border-color: black;" GridPane.columnIndex="2" />
-         <Pane style="-fx-background-color: gray; -fx-border-color: black;" GridPane.columnIndex="1" />
-         <Pane style="-fx-background-color: gray; -fx-border-color: black;" GridPane.columnIndex="3" />
+         <Pane style="-fx-border-color: black;" GridPane.columnIndex="4" />
+         <Pane style="-fx-border-color: black;" />
+         <Pane style="-fx-border-color: black;" GridPane.columnIndex="2" />
+         <Pane style="-fx-border-color: black;" GridPane.columnIndex="1" />
+         <Pane style="-fx-border-color: black;" GridPane.columnIndex="3" />
        </children>
      </GridPane>
      <GridPane GridPane.rowIndex="3"  >
@@ -87,11 +77,11 @@
          <RowConstraints minHeight="0" percentHeight="100" vgrow="SOMETIMES" />
        </rowConstraints>
        <children>
-         <Pane layoutX="10.0" layoutY="10.0" style="-fx-background-color: gray; -fx-border-color: black;" GridPane.columnIndex="4" />
-         <Pane style="-fx-background-color: gray; -fx-border-color: black;" />
-         <Pane style="-fx-background-color: gray; -fx-border-color: black;" GridPane.columnIndex="2" />
-         <Pane style="-fx-background-color: gray; -fx-border-color: black;" GridPane.columnIndex="1" />
-         <Pane style="-fx-background-color: gray; -fx-border-color: black;" GridPane.columnIndex="3" />
+         <Pane style="-fx-border-color: black;" GridPane.columnIndex="4" />
+         <Pane style="-fx-border-color: black;" />
+         <Pane style="-fx-border-color: black;" GridPane.columnIndex="2" />
+         <Pane style="-fx-border-color: black;" GridPane.columnIndex="1" />
+         <Pane style="-fx-border-color: black;" GridPane.columnIndex="3" />
        </children>
      </GridPane>
      <GridPane GridPane.rowIndex="4"  >
@@ -106,11 +96,11 @@
          <RowConstraints minHeight="0" percentHeight="100" vgrow="SOMETIMES" />
        </rowConstraints>
        <children>
-         <Pane layoutX="10.0" layoutY="10.0" style="-fx-background-color: gray; -fx-border-color: black;" GridPane.columnIndex="4" />
-         <Pane style="-fx-background-color: gray; -fx-border-color: black;" />
-         <Pane style="-fx-background-color: gray; -fx-border-color: black;" GridPane.columnIndex="2" />
-         <Pane style="-fx-background-color: gray; -fx-border-color: black;" GridPane.columnIndex="1" />
-         <Pane style="-fx-background-color: gray; -fx-border-color: black;" GridPane.columnIndex="3" />
+         <Pane style="-fx-border-color: black;" GridPane.columnIndex="4" />
+         <Pane style="-fx-border-color: black;" />
+         <Pane style="-fx-border-color: black;" GridPane.columnIndex="2" />
+         <Pane style="-fx-border-color: black;" GridPane.columnIndex="1" />
+         <Pane style="-fx-border-color: black;" GridPane.columnIndex="3" />
        </children>
      </GridPane>
      <GridPane GridPane.rowIndex="5"  >
@@ -125,11 +115,11 @@
          <RowConstraints minHeight="0" percentHeight="100" vgrow="SOMETIMES" />
        </rowConstraints>
        <children>
-         <Pane layoutX="10.0" layoutY="10.0" style="-fx-background-color: gray; -fx-border-color: black;" GridPane.columnIndex="4" />
-         <Pane style="-fx-background-color: gray; -fx-border-color: black;" />
-         <Pane style="-fx-background-color: gray; -fx-border-color: black;" GridPane.columnIndex="2" />
-         <Pane style="-fx-background-color: gray; -fx-border-color: black;" GridPane.columnIndex="1" />
-         <Pane style="-fx-background-color: gray; -fx-border-color: black;" GridPane.columnIndex="3" />
+         <Pane style="-fx-border-color: black;" GridPane.columnIndex="4" />
+         <Pane style="-fx-border-color: black;" />
+         <Pane style="-fx-border-color: black;" GridPane.columnIndex="2" />
+         <Pane style="-fx-border-color: black;" GridPane.columnIndex="1" />
+         <Pane style="-fx-border-color: black;" GridPane.columnIndex="3" />
        </children>
      </GridPane>
    </children>

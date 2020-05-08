@@ -20,7 +20,7 @@ public class DuplicateDetectorGUIApp extends Application {
     public void start(Stage stage) {
         Parent root = null;
         try {
-            root = FXMLLoader.load(getClass().getResource("layouts/CommonFrame.fxml"));                           // TODO: replace with static config reference
+            root = FXMLLoader.load(getClass().getResource("layouts/ParentFrame.fxml"));                           // TODO: replace with static config reference
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -29,6 +29,7 @@ public class DuplicateDetectorGUIApp extends Application {
         Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
         int minDim = Math.min(screen.width, screen.height);
         Scene scene = new Scene(root, 1536, 864);
+        scene.getStylesheets().add(getClass().getResource("layouts/darkTheme.css").toExternalForm());
 
         stage.setMinWidth(400);
         stage.setMinHeight(400);

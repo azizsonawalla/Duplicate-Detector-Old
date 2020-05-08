@@ -8,7 +8,7 @@ import javafx.scene.image.ImageView;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class FileChooser implements Initializable {
+public class ParentFrame implements Initializable {
 
     @FXML
     ImageView logo;
