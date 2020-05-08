@@ -10,9 +10,12 @@ import java.util.ResourceBundle;
 
 public class FileChooser implements Initializable {
 
+    @FXML
+    ImageView logo;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-//        Image logoImage = new Image("view/assets/logo.png");                                                        // TODO: make all paths OS agnostic
-//        logo.setImage(logoImage);
+        Image logoImage = new Image("view/assets/logo.png");                                                        // TODO: make all paths OS agnostic
+        logo.setImage(logoImage);
     }
 }
