@@ -1,7 +1,18 @@
 /** Text Styles **/
 
 .h4 {
+    -fx-font-smoothing-type: lcd;
     -fx-text-fill: #FFFFFF;
+    -fx-fill: #FFFFFF;
+    -fx-font-size: 14pt;
+    -fx-font-family: 'Helvetica Neue LT Com 45 Light';
+    -fx-font-smoothing-type: gray;
+}
+
+.userInputPrev {
+    -fx-font-smoothing-type: lcd;
+    -fx-text-fill: #009ad5;
+    -fx-fill: #009ad5;
     -fx-font-size: 14pt;
     -fx-font-family: 'Helvetica Neue LT Com 45 Light';
     -fx-font-smoothing-type: gray;

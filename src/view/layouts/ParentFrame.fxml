@@ -7,6 +7,8 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 
+<?import javafx.scene.text.TextFlow?>
+<?import javafx.scene.text.Text?>
 <GridPane minHeight="350" minWidth="400" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.controllers.ParentFrame">
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" minWidth="400" percentWidth="100" />
@@ -32,9 +34,9 @@
          <RowConstraints minHeight="0" percentHeight="100" vgrow="SOMETIMES" />
        </rowConstraints>
          <children>
-            <Button id="backIcon" mnemonicParsing="false" prefHeight="45" prefWidth="45" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-            <Label styleClass="h4" text="[Placeholder]" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-            <Button id="settingsIcon" mnemonicParsing="false" prefHeight="45" prefWidth="45" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+           <Button id="backIcon" mnemonicParsing="false" prefHeight="45" prefWidth="45" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+           <Label styleClass="h4" text="[Placeholder]" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+           <Button id="settingsIcon" mnemonicParsing="false" prefHeight="45" prefWidth="45" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
          </children>
      </GridPane>
 
@@ -60,12 +62,15 @@
              <ColumnConstraints hgrow="SOMETIMES" percentWidth="100" />
            </columnConstraints>
            <rowConstraints>
-             <RowConstraints vgrow="SOMETIMES" prefHeight="35" />
-             <RowConstraints vgrow="SOMETIMES" prefHeight="35" />
+             <RowConstraints prefHeight="35" vgrow="SOMETIMES" />
+             <RowConstraints prefHeight="35" vgrow="SOMETIMES" />
            </rowConstraints>
            <children>
-             <Label styleClass="h4" text="[Placeholder]" GridPane.valignment="BOTTOM" GridPane.rowIndex="0"/>
-             <Label  styleClass="body" text="[Placeholder]" GridPane.valignment="TOP" GridPane.rowIndex="1"/>
+             <TextFlow maxHeight="20" GridPane.rowIndex="0" GridPane.valignment="BOTTOM" >
+               <Text styleClass="h4" text="[Placeholder]: " />
+               <Text styleClass="userInputPrev" text="[Placeholder]" />
+             </TextFlow>
+             <Label styleClass="body" text="[Placeholder]" GridPane.rowIndex="1" GridPane.valignment="TOP" />
            </children>
          </GridPane>
          <Pane id="tempPane" GridPane.columnIndex="4" />
