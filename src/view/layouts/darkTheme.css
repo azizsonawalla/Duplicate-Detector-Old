@@ -1,3 +1,21 @@
+/** Text Styles **/
+
+.h4 {
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 14pt;
+    -fx-font-family: 'Helvetica Neue LT Com 45 Light';
+    -fx-font-smoothing-type: gray;
+}
+
+.body {
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 10pt;
+    -fx-font-family: 'Helvetica Neue LT Com 45 Light';
+    -fx-font-smoothing-type: gray;
+}
+
+/** Navigation Bar **/
+
 #navBar Button {
     -fx-background-size: 33px 33px;
     -fx-background-repeat: no-repeat;
@@ -27,16 +45,19 @@
     -fx-background-image: url("../assets/Back_icon.png");
 }
 
-#navBarTitle {
-    -fx-text-fill: #FFFFFF;
-    -fx-font-size: 18pt;
-    -fx-font-family: 'Helvetica Neue LT Com 45 Light';
-    -fx-font-smoothing-type: gray;
-}
-
 #summaryBarBG {
     -fx-background-color: #3d3d3d;
 }
+
+#summaryBarLogo {
+    -fx-background-image: url("../assets/logo_100px.png");
+    -fx-background-size: 70px;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: left;
+    -fx-background-color: rgba(0,0,0,0);
+}
+
+#
 
 #tempPane {
     -fx-border-color: #808080

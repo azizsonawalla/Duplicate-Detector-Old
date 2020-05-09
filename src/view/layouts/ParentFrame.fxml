@@ -13,8 +13,8 @@
   </columnConstraints>
   <rowConstraints>
     <RowConstraints minHeight="50.0" prefHeight="130" vgrow="SOMETIMES" />
-    <RowConstraints minHeight="50.0" prefHeight="140" vgrow="SOMETIMES" />
-    <RowConstraints minHeight="200.0" prefHeight="680" vgrow="SOMETIMES" />
+    <RowConstraints minHeight="50.0" prefHeight="160" vgrow="SOMETIMES" />
+    <RowConstraints minHeight="200.0" prefHeight="660" vgrow="SOMETIMES" />
     <RowConstraints minHeight="50.0" prefHeight="130" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
@@ -33,7 +33,7 @@
        </rowConstraints>
          <children>
             <Button id="backIcon" mnemonicParsing="false" prefHeight="45" prefWidth="45" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-            <Label id="navBarTitle" text="Placeholder navigation bar title" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+            <Label styleClass="h4" text="[Placeholder]" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
             <Button id="settingsIcon" mnemonicParsing="false" prefHeight="45" prefWidth="45" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
          </children>
      </GridPane>
@@ -41,16 +41,35 @@
      <Pane id="summaryBarBG" GridPane.rowIndex="1" />
      <GridPane id="summaryBar" GridPane.rowIndex="1">
        <columnConstraints>
-         <ColumnConstraints hgrow="SOMETIMES" minWidth="50" prefWidth="35" />
          <ColumnConstraints hgrow="SOMETIMES" minWidth="50" prefWidth="50" />
-         <ColumnConstraints hgrow="SOMETIMES" minWidth="200" prefWidth="1750" />
          <ColumnConstraints hgrow="SOMETIMES" minWidth="50" prefWidth="50" />
-         <ColumnConstraints hgrow="SOMETIMES" minWidth="50" prefWidth="35" />
+         <ColumnConstraints hgrow="SOMETIMES" minWidth="80" prefWidth="80" />
+         <ColumnConstraints hgrow="SOMETIMES" minWidth="200" prefWidth="1680" />
+         <ColumnConstraints hgrow="SOMETIMES" minWidth="50" prefWidth="50" />
+         <ColumnConstraints hgrow="SOMETIMES" minWidth="50" prefWidth="50" />
        </columnConstraints>
        <rowConstraints>
          <RowConstraints minHeight="0" percentHeight="100" vgrow="SOMETIMES" />
        </rowConstraints>
        <children>
+         <Pane id="tempPane" GridPane.columnIndex="0" />
+         <Pane id="tempPane" GridPane.columnIndex="1" />
+         <Pane id="summaryBarLogo" GridPane.columnIndex="2" />
+         <GridPane id="summaryBarTextBox" GridPane.columnIndex="3" GridPane.valignment="CENTER">
+           <columnConstraints>
+             <ColumnConstraints hgrow="SOMETIMES" percentWidth="100" />
+           </columnConstraints>
+           <rowConstraints>
+             <RowConstraints vgrow="SOMETIMES" prefHeight="35" />
+             <RowConstraints vgrow="SOMETIMES" prefHeight="35" />
+           </rowConstraints>
+           <children>
+             <Label styleClass="h4" text="[Placeholder]" GridPane.valignment="BOTTOM" GridPane.rowIndex="0"/>
+             <Label  styleClass="body" text="[Placeholder]" GridPane.valignment="TOP" GridPane.rowIndex="1"/>
+           </children>
+         </GridPane>
+         <Pane id="tempPane" GridPane.columnIndex="4" />
+         <Pane id="tempPane" GridPane.columnIndex="5" />
        </children>
      </GridPane>
 
