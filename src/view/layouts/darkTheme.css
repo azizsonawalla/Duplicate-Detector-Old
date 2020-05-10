@@ -1,4 +1,13 @@
-/** Text Styles **/
+/* Text Styles */
+
+.h2 {
+    -fx-font-smoothing-type: lcd;
+    -fx-text-fill: #FFFFFF;
+    -fx-fill: #FFFFFF;
+    -fx-font-size: 28pt;
+    -fx-font-family: 'Helvetica Neue LT Com 45 Light';
+    -fx-font-smoothing-type: gray;
+}
 
 .h4 {
     -fx-font-smoothing-type: lcd;
@@ -22,10 +31,41 @@
     -fx-text-fill: #FFFFFF;
     -fx-font-size: 10pt;
     -fx-font-family: 'Helvetica Neue LT Com 45 Light';
-    -fx-font-smoothing-type: gray;
+    -fx-font-smoothing-type: lcd;
 }
 
-/** Navigation Bar **/
+/* Button Styles */
+
+
+#mainContent Button, #statusBar Button {
+    -fx-background-color: rgba(0,0,0,0);
+    -fx-border-radius: 50px;
+    -fx-background-radius: 50px;
+    -fx-border-width: 2px;
+    -fx-min-width: 100px;
+    -fx-font-size: 14pt;
+    -fx-font-weight: bold;
+    -fx-font-family: 'Helvetica Neue LT Com 45 Light';
+    -fx-font-smoothing-type: lcd;
+    -fx-border-color: rgba(255, 255, 255, 1);
+    -fx-text-fill: #FFFFFF;
+}
+
+#mainContent Button:disabled, #statusBar Button:disabled {
+    -fx-border-color: rgba(255, 255, 255, 0.5);
+    -fx-text-fill: rgba(255, 255, 255, 0.5);
+}
+
+#mainContent Button:hover, #statusBar Button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-cursor: hand;
+}
+
+#mainContent Button:pressed, #statusBar Button:pressed {
+    -fx-background-color: rgba(0, 0, 0, 0.2);
+    -fx-border-color: rgba(0, 0, 0, 0.2);
+    -fx-cursor: hand;
+}
 
 #navBar Button {
     -fx-background-size: 33px 33px;
@@ -43,6 +83,7 @@
      -fx-background-color: rgba(0,0,0,0.2);
      -fx-cursor: hand;
 }
+/* Navigation Bar */
 
 #navBarBG {
     -fx-background-color: #4d4d4d;
@@ -62,7 +103,7 @@
 
 #summaryBarLogo {
     -fx-background-image: url("../assets/logo_100px.png");
-    -fx-background-size: 70px;
+    -fx-background-size: 60px;
     -fx-background-repeat: no-repeat;
     -fx-background-position: left;
     -fx-background-color: rgba(0,0,0,0);
@@ -76,6 +117,17 @@
      -fx-background-color: #777676;
 }
 
-#tempPane {
-    -fx-border-color: #808080
+#mainContentLogo {
+    -fx-background-image: url("../assets/logo_150px.png");
+    -fx-background-size: 120px;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+    -fx-background-color: rgba(0,0,0,0);
+    -fx-font-smoothing-type: lcd;
+}
+
+
+/* Debug */
+GridPane {
+    -fx-grid-lines-visible: true;
 }
