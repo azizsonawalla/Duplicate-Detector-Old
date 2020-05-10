@@ -68,7 +68,13 @@
     -fx-background-color: rgba(0,0,0,0);
 }
 
-#
+#mainWindowBG {
+     -fx-background-color: #333333;
+}
+
+#statusBarBG {
+     -fx-background-color: #777676;
+}
 
 #tempPane {
     -fx-border-color: #808080
