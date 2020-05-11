@@ -1,9 +1,13 @@
 package view.controllers;
 
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 
 import java.io.IOException;
 import java.net.URL;
@@ -17,6 +21,8 @@ public class ChooseFolderToScan extends ParentController {
     private String SUMMARY_BAR_SUBTITLE = "0 files found";
     private String MAIN_CONTENT_TITLE = "Choose a folder to scan:";
 
+    private Label filePathLabel;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         super.initialize(location, resources);
@@ -25,15 +31,21 @@ public class ChooseFolderToScan extends ParentController {
         setSummaryBarSubtitle(SUMMARY_BAR_SUBTITLE);
         setContentTitle(MAIN_CONTENT_TITLE);
         setContent(getMainContent());
+        filePathLabel.setText("hello");
     }
 
     private Node getMainContent() {
-        Node root = new Label("Error loading content");
         try {
-            root = FXMLLoader.load(getClass().getResource("../layouts/ChooseFolderToScanContent.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("../layouts/ChooseFolderToScanContent.fxml"));               // TODO: replace with static config reference
+            GridPane root = loader.load();
+            ObservableList<Node> rootChildren = root.getChildren();
+            AnchorPane filePathBox = (AnchorPane) rootChildren.get(0);
+            ObservableList<Node> filePathBoxChildren = filePathBox.getChildren();
+            this.filePathLabel = (Label) filePathBoxChildren.get(0);
+            return root;
         } catch (IOException e) {
             e.printStackTrace(); // TODO: error handling
         }
-        return root;
+        return new Label("Error loading content");
     }
 }

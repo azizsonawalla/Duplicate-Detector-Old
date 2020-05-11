@@ -2,7 +2,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<GridPane GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.halignment="CENTER">
+<GridPane GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.halignment="CENTER" xmlns:fx="http://javafx.com/fxml/1">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" percentWidth="100.0" />
     </columnConstraints>
@@ -13,7 +13,7 @@
     <children>
         <AnchorPane id="filePathBox" GridPane.halignment="CENTER" GridPane.valignment="CENTER" GridPane.rowIndex="0" maxHeight="30.0" maxWidth="400.0" prefHeight="30.0" prefWidth="400.0">
             <children>
-                <Label id="filePathLabel" styleClass="userInputPrevDefault" text="Label" />
+                <Label fx:id="filePathLabel" id="filePathLabel" styleClass="userInputPrevDefault" text="Label" />
                 <Button id="browseButton" AnchorPane.rightAnchor="2.5" AnchorPane.topAnchor="2.5" text="test"/>
             </children>
         </AnchorPane>
