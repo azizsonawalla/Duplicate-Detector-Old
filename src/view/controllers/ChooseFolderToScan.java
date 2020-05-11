@@ -1,8 +1,11 @@
 package view.controllers;
 
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -21,10 +24,16 @@ public class ChooseFolderToScan extends ParentController {
         setSummaryBarTitle(SUMMARY_BAR_TITLE_HEADER, SUMMARY_BAR_TITLE_PREVIEW, false, false);
         setSummaryBarSubtitle(SUMMARY_BAR_SUBTITLE);
         setContentTitle(MAIN_CONTENT_TITLE);
-//        setContent(getMainContent());
+        setContent(getMainContent());
     }
 
     private Node getMainContent() {
-        return new Button("hello world");
+        Node root = new Label("Error loading content");
+        try {
+            root = FXMLLoader.load(getClass().getResource("../layouts/ChooseFolderToScanContent.fxml"));
+        } catch (IOException e) {
+            e.printStackTrace(); // TODO: error handling
+        }
+        return root;
     }
 }

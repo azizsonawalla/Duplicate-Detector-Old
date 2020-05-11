@@ -160,13 +160,8 @@
     -fx-text-fill: #FFFFFF;
 }
 
-#browseButton:disabled {
-    -fx-border-color: rgba(255, 255, 255, 0.5);
-    -fx-text-fill: rgba(255, 255, 255, 0.5);
-}
-
 #browseButton:hover {
-    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-background-color: #666666;
     -fx-cursor: hand;
 }
 

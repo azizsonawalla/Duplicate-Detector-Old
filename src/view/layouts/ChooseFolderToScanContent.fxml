@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<GridPane GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.halignment="CENTER">
+    <columnConstraints>
+        <ColumnConstraints hgrow="SOMETIMES" percentWidth="100.0" />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints minHeight="10.0" percentHeight="30.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" percentHeight="30.0" vgrow="SOMETIMES" />
+    </rowConstraints>
+    <children>
+        <AnchorPane id="filePathBox" GridPane.halignment="CENTER" GridPane.valignment="CENTER" GridPane.rowIndex="0" maxHeight="30.0" maxWidth="400.0" prefHeight="30.0" prefWidth="400.0">
+            <children>
+                <Label id="filePathLabel" styleClass="userInputPrevDefault" text="Label" />
+                <Button id="browseButton" AnchorPane.rightAnchor="2.5" AnchorPane.topAnchor="2.5" text="test"/>
+            </children>
+        </AnchorPane>
+    </children>
+</GridPane>

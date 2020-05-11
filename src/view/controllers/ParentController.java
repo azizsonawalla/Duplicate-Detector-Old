@@ -5,6 +5,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -18,6 +19,7 @@ public class ParentController implements Initializable {
     @FXML private Button settingsButton, backButton;
     @FXML private Label navBarTitle, summaryBarSubtitle, mainContentTitle;
     @FXML private Text summaryBarTitleHead, summaryBarTitlePrev;
+    @FXML private GridPane mainContent;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -59,8 +61,7 @@ public class ParentController implements Initializable {
     }
 
     void setContent(Node content) {
-        // TODO: implement this.
-        throw new NotImplementedException();
+        mainContent.add(content,0, 3);
     }
 
     private void loadFonts() {
