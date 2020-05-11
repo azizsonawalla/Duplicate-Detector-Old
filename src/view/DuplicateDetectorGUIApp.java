@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import view.controllers.ChooseFolderToScan;
 import view.controllers.ParentController;
 
 import java.awt.*;
@@ -22,7 +23,7 @@ public class DuplicateDetectorGUIApp extends Application {
         Parent root = null;
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("layouts/ParentFrame.fxml"));               // TODO: replace with static config reference
-            loader.setController(new ParentController());
+            loader.setController(new ChooseFolderToScan());
             root = loader.load();
         } catch (IOException e) {
             e.printStackTrace();

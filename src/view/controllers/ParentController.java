@@ -15,7 +15,7 @@ public class ParentController implements Initializable {
 
     @FXML private Button settingsButton, backButton;
     @FXML private Label navBarTitle, summaryBarSubtitle, mainContentTitle;
-    @FXML private Text summaryBarTitleBefore, summaryBarTitleAfter;
+    @FXML private Text summaryBarTitleHead, summaryBarTitlePrev;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -46,12 +46,12 @@ public class ParentController implements Initializable {
 
     /**
      * Sets the title for the summary bar
-     * @param beforeColon part of the title to put before the colon
-     * @param afterColon part of the title to put after the colon
+     * @param header part of the title to put before the colon
+     * @param previewText part of the title to put after the colon
      */
-    protected void setSummaryBarTitle(String beforeColon, String afterColon) {
-        summaryBarTitleBefore.setText(beforeColon + ":");
-        summaryBarTitleAfter.setText(" " + afterColon);
+    protected void setSummaryBarTitle(String header, String previewText, Boolean addColon, Boolean addSpace) {
+        summaryBarTitleHead.setText(addColon? header + ":" : header);
+        summaryBarTitlePrev.setText(addSpace? " " + previewText: previewText);
     }
 
     /**
@@ -67,7 +67,6 @@ public class ParentController implements Initializable {
      * @param title new title for content
      */
     protected void setContentTitle(String title) {
-        // TODO: implement
-        throw new NotImplementedException();
+        mainContentTitle.setText(title);
     }
 }

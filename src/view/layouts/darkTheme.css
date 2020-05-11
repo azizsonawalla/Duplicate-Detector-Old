@@ -29,7 +29,7 @@
 
 .body {
     -fx-text-fill: #FFFFFF;
-    -fx-font-size: 10pt;
+    -fx-font-size: 12pt;
     -fx-font-family: 'Helvetica Neue LT Com 45 Light';
     -fx-font-smoothing-type: lcd;
 }

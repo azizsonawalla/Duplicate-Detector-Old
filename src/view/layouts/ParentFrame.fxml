@@ -67,8 +67,8 @@
                     </rowConstraints>
                     <children>
                         <TextFlow maxHeight="20" GridPane.rowIndex="0" GridPane.valignment="BOTTOM">
-                            <Text fx:id="summaryBarTitleBefore" styleClass="h4" text="[Placeholder]: " />
-                            <Text fx:id="summaryBarTitleAfter" styleClass="userInputPrev" text="[Placeholder]" />
+                            <Text fx:id="summaryBarTitleHead" styleClass="h4" text="[Placeholder]: " />
+                            <Text fx:id="summaryBarTitlePrev" styleClass="userInputPrev" text="[Placeholder]" />
                         </TextFlow>
                         <Label fx:id="summaryBarSubtitle" styleClass="body" text="[Placeholder]" GridPane.rowIndex="1" GridPane.valignment="TOP" />
                     </children>
@@ -109,7 +109,7 @@
                     <children>
                         <Pane id="tempPane" GridPane.rowIndex="0" />
                         <Pane id="mainContentLogo" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-                        <Text id="mainContentTitle" styleClass="h2" text="[Placeholder]" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+                        <Label fx:id="mainContentTitle" id="mainContentTitle" styleClass="h2" text="[Placeholder]" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
                         <Pane id="tempPane" GridPane.rowIndex="3" />
                         <Button id="nextButton" text="Next" GridPane.rowIndex="4" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
                         <Pane id="tempPane" GridPane.rowIndex="5" />
