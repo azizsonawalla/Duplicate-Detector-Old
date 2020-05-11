@@ -1,5 +1,8 @@
 package view.controllers;
 
+import javafx.scene.Node;
+import javafx.scene.control.Button;
+
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -18,5 +21,10 @@ public class ChooseFolderToScan extends ParentController {
         setSummaryBarTitle(SUMMARY_BAR_TITLE_HEADER, SUMMARY_BAR_TITLE_PREVIEW, false, false);
         setSummaryBarSubtitle(SUMMARY_BAR_SUBTITLE);
         setContentTitle(MAIN_CONTENT_TITLE);
+//        setContent(getMainContent());
+    }
+
+    private Node getMainContent() {
+        return new Button("hello world");
     }
 }

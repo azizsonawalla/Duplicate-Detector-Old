@@ -27,6 +27,15 @@
     -fx-font-smoothing-type: gray;
 }
 
+.userInputPrevDefault {
+    -fx-font-smoothing-type: lcd;
+    -fx-text-fill: #4d4d4d;
+    -fx-fill: #4d4d4d;
+    -fx-font-size: 14pt;
+    -fx-font-family: 'Helvetica Neue LT Com 45 Light';
+    -fx-font-smoothing-type: gray;
+}
+
 .body {
     -fx-text-fill: #FFFFFF;
     -fx-font-size: 12pt;
@@ -37,7 +46,7 @@
 /* Button Styles */
 
 
-#mainContent Button, #statusBar Button {
+#statusBar Button {
     -fx-background-color: rgba(0,0,0,0);
     -fx-border-radius: 50px;
     -fx-background-radius: 50px;
@@ -51,17 +60,17 @@
     -fx-text-fill: #FFFFFF;
 }
 
-#mainContent Button:disabled, #statusBar Button:disabled {
+#statusBar Button:disabled {
     -fx-border-color: rgba(255, 255, 255, 0.5);
     -fx-text-fill: rgba(255, 255, 255, 0.5);
 }
 
-#mainContent Button:hover, #statusBar Button:hover {
+#statusBar Button:hover {
     -fx-background-color: rgba(255, 255, 255, 0.2);
     -fx-cursor: hand;
 }
 
-#mainContent Button:pressed, #statusBar Button:pressed {
+#statusBar Button:pressed {
     -fx-background-color: rgba(0, 0, 0, 0.2);
     -fx-border-color: rgba(0, 0, 0, 0.2);
     -fx-cursor: hand;
@@ -128,8 +137,46 @@
     -fx-font-smoothing-type: lcd;
 }
 
+/* File Chooser */
+
+#filePathBox {
+    -fx-background-color: rgba(255,255,255,1);
+    -fx-background-radius: 50px;
+}
+
+#filePathLabel {
+    -fx-padding: 10 25 10 25;
+}
+
+#browseButton {
+    -fx-background-color: #333333;
+    -fx-border-radius: 50px;
+    -fx-background-radius: 50px;
+    -fx-border-width: 0px;
+    -fx-min-width: 100px;
+    -fx-font-size: 14pt;
+    -fx-font-family: 'Helvetica Neue LT Com 45 Light';
+    -fx-font-smoothing-type: lcd;
+    -fx-text-fill: #FFFFFF;
+}
+
+#browseButton:disabled {
+    -fx-border-color: rgba(255, 255, 255, 0.5);
+    -fx-text-fill: rgba(255, 255, 255, 0.5);
+}
+
+#browseButton:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-cursor: hand;
+}
+
+#browseButton:pressed {
+    -fx-background-color: rgba(0, 0, 0, 0.2);
+    -fx-border-color: rgba(0, 0, 0, 0.2);
+    -fx-cursor: hand;
+}
 
 /* Debug Only */
 GridPane {
-    -fx-grid-lines-visible: false;
+    -fx-grid-lines-visible: true;
 }

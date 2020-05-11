@@ -22,7 +22,7 @@ public class DuplicateDetectorGUIApp extends Application {
     public void start(Stage stage) {
         Parent root = null;
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("layouts/ParentFrame.fxml"));               // TODO: replace with static config reference
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("layouts/ChooseFolderToScan.fxml"));               // TODO: replace with static config reference
             loader.setController(new ChooseFolderToScan());
             root = loader.load();
         } catch (IOException e) {
@@ -37,7 +37,7 @@ public class DuplicateDetectorGUIApp extends Application {
 
         stage.setMinWidth(400);
         stage.setMinHeight(400);
-        stage.setTitle("FXML Welcome");
+        stage.setTitle("FXML Welcome"); // TODO: replace
         stage.setScene(scene);
         stage.show();
     }

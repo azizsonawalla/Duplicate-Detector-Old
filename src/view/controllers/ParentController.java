@@ -2,8 +2,10 @@ package view.controllers;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -22,6 +24,45 @@ public class ParentController implements Initializable {
         loadFonts();
     }
 
+    /**
+     * Sets the title for the navigation bar
+     * @param title new title for navigation bar
+     */
+    void setNavBarTitle(String title) {
+        navBarTitle.setText(title);
+    }
+
+    /**
+     * Sets the title for the summary bar
+     * @param header part of the title to put before the colon
+     * @param previewText part of the title to put after the colon
+     */
+    void setSummaryBarTitle(String header, String previewText, Boolean addColon, Boolean addSpace) {
+        summaryBarTitleHead.setText(addColon? header + ":" : header);
+        summaryBarTitlePrev.setText(addSpace? " " + previewText: previewText);
+    }
+
+    /**
+     * Sets the subtitle for the summary bar
+     * @param subtitle new subtitle for summary bar
+     */
+    void setSummaryBarSubtitle(String subtitle) {
+        summaryBarSubtitle.setText(subtitle);
+    }
+
+    /**
+     * Sets the main content title
+     * @param title new title for content
+     */
+    void setContentTitle(String title) {
+        mainContentTitle.setText(title);
+    }
+
+    void setContent(Node content) {
+        // TODO: implement this.
+        throw new NotImplementedException();
+    }
+
     private void loadFonts() {
         Font.loadFont(getClass().getResourceAsStream("../assets/fonts/HelveticaNeueLTCom_Lt.ttf"), 16);
     }
@@ -34,39 +75,5 @@ public class ParentController implements Initializable {
     private void goBackToPreviousDialogue() {
         // TODO: implement this. Set it as onClick event for back button.
         throw new NotImplementedException();
-    }
-
-    /**
-     * Sets the title for the navigation bar
-     * @param title new title for navigation bar
-     */
-    protected void setNavBarTitle(String title) {
-        navBarTitle.setText(title);
-    }
-
-    /**
-     * Sets the title for the summary bar
-     * @param header part of the title to put before the colon
-     * @param previewText part of the title to put after the colon
-     */
-    protected void setSummaryBarTitle(String header, String previewText, Boolean addColon, Boolean addSpace) {
-        summaryBarTitleHead.setText(addColon? header + ":" : header);
-        summaryBarTitlePrev.setText(addSpace? " " + previewText: previewText);
-    }
-
-    /**
-     * Sets the subtitle for the summary bar
-     * @param subtitle new subtitle for summary bar
-     */
-    protected void setSummaryBarSubtitle(String subtitle) {
-        summaryBarSubtitle.setText(subtitle);
-    }
-
-    /**
-     * Sets the main content title
-     * @param title new title for content
-     */
-    protected void setContentTitle(String title) {
-        mainContentTitle.setText(title);
     }
 }
