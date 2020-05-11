@@ -83,18 +83,20 @@
      -fx-background-color: rgba(0,0,0,0.2);
      -fx-cursor: hand;
 }
+
+#settingsButton {
+    -fx-background-image: url("../assets/Settings_icon.png");
+}
+
+#backButton {
+    -fx-background-image: url("../assets/Back_icon.png");
+}
+
+
 /* Navigation Bar */
 
 #navBarBG {
     -fx-background-color: #4d4d4d;
-}
-
-#settingsIcon {
-    -fx-background-image: url("../assets/Settings_icon.png");
-}
-
-#backIcon {
-    -fx-background-image: url("../assets/Back_icon.png");
 }
 
 #summaryBarBG {
@@ -127,7 +129,7 @@
 }
 
 
-/* Debug */
+/* Debug Only */
 GridPane {
-    -fx-grid-lines-visible: true;
+    -fx-grid-lines-visible: false;
 }
