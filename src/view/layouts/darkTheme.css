@@ -43,37 +43,10 @@
     -fx-font-smoothing-type: lcd;
 }
 
-/* Button Styles */
+/* Navigation Bar */
 
-
-#statusBar Button {
-    -fx-background-color: rgba(0,0,0,0);
-    -fx-border-radius: 50px;
-    -fx-background-radius: 50px;
-    -fx-border-width: 2px;
-    -fx-min-width: 100px;
-    -fx-font-size: 14pt;
-    -fx-font-weight: bold;
-    -fx-font-family: 'Helvetica Neue LT Com 45 Light';
-    -fx-font-smoothing-type: lcd;
-    -fx-border-color: rgba(255, 255, 255, 1);
-    -fx-text-fill: #FFFFFF;
-}
-
-#statusBar Button:disabled {
-    -fx-border-color: rgba(255, 255, 255, 0.5);
-    -fx-text-fill: rgba(255, 255, 255, 0.5);
-}
-
-#statusBar Button:hover {
-    -fx-background-color: rgba(255, 255, 255, 0.2);
-    -fx-cursor: hand;
-}
-
-#statusBar Button:pressed {
-    -fx-background-color: rgba(0, 0, 0, 0.2);
-    -fx-border-color: rgba(0, 0, 0, 0.2);
-    -fx-cursor: hand;
+#navBarBG {
+    -fx-background-color: #4d4d4d;
 }
 
 #navBar Button {
@@ -101,12 +74,7 @@
     -fx-background-image: url("../assets/Back_icon.png");
 }
 
-
-/* Navigation Bar */
-
-#navBarBG {
-    -fx-background-color: #4d4d4d;
-}
+/* Summary Bar */
 
 #summaryBarBG {
     -fx-background-color: #3d3d3d;
@@ -120,12 +88,47 @@
     -fx-background-color: rgba(0,0,0,0);
 }
 
-#mainWindowBG {
-     -fx-background-color: #333333;
+/* Status Bar */
+
+#statusBar Button {
+    -fx-background-color: #009ad5;
+    -fx-background-radius: 50px;
+    -fx-border-width: 0px;
+    -fx-min-width: 100px;
+    -fx-font-size: 14pt;
+    -fx-font-weight: bold;
+    -fx-font-family: 'Helvetica Neue LT Com 45 Light';
+    -fx-font-smoothing-type: lcd;
+    -fx-text-fill: #FFFFFF;
+}
+
+#statusBar Button:disabled {
+    -fx-border-width: 2px;
+    -fx-border-radius: 50px;
+    -fx-background-color: rgba(0,0,0,0);
+    -fx-border-color: rgba(255, 255, 255, 0.5);
+    -fx-text-fill: rgba(255, 255, 255, 0.5);
+}
+
+#statusBar Button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-cursor: hand;
+}
+
+#statusBar Button:pressed {
+    -fx-background-color: rgba(0, 0, 0, 0.2);
+    -fx-border-color: rgba(0, 0, 0, 0.2);
+    -fx-cursor: hand;
 }
 
 #statusBarBG {
-     -fx-background-color: #777676;
+     -fx-background-color: #3d3d3d;
+}
+
+/* Main Window */
+
+#mainWindowBG {
+     -fx-background-color: #222222;
 }
 
 #mainContentLogo {
@@ -149,7 +152,7 @@
 }
 
 #browseButton {
-    -fx-background-color: #333333;
+    -fx-background-color: #009ad5;
     -fx-border-radius: 50px;
     -fx-background-radius: 50px;
     -fx-border-width: 0px;
@@ -161,17 +164,16 @@
 }
 
 #browseButton:hover {
-    -fx-background-color: #666666;
+    -fx-background-color: #008dd3;
     -fx-cursor: hand;
 }
 
 #browseButton:pressed {
-    -fx-background-color: rgba(0, 0, 0, 0.2);
-    -fx-border-color: rgba(0, 0, 0, 0.2);
+    -fx-background-color: rgba(0,0,0, 0.8);
     -fx-cursor: hand;
 }
 
 /* Debug Only */
 GridPane {
-    -fx-grid-lines-visible: true;
+    -fx-grid-lines-visible: false;
 }

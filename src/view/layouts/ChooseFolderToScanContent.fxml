@@ -7,14 +7,14 @@
         <ColumnConstraints hgrow="SOMETIMES" percentWidth="100.0" />
     </columnConstraints>
     <rowConstraints>
-        <RowConstraints minHeight="10.0" percentHeight="30.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" percentHeight="50.0" vgrow="SOMETIMES" />
         <RowConstraints minHeight="10.0" percentHeight="30.0" vgrow="SOMETIMES" />
     </rowConstraints>
     <children>
-        <AnchorPane id="filePathBox" GridPane.halignment="CENTER" GridPane.valignment="CENTER" GridPane.rowIndex="0" maxHeight="30.0" maxWidth="400.0" prefHeight="30.0" prefWidth="400.0">
+        <AnchorPane id="filePathBox" GridPane.halignment="CENTER" GridPane.valignment="CENTER" GridPane.rowIndex="0" maxHeight="30.0" maxWidth="600.0" prefHeight="30.0" prefWidth="600.0">
             <children>
-                <Label fx:id="filePathLabel" id="filePathLabel" styleClass="userInputPrevDefault" text="Label" />
-                <Button id="browseButton" AnchorPane.rightAnchor="2.5" AnchorPane.topAnchor="2.5" text="test"/>
+                <Label fx:id="filePathLabel" id="filePathLabel" styleClass="userInputPrevDefault" text="No folder selected" />
+                <Button id="browseButton" AnchorPane.rightAnchor="2.5" AnchorPane.topAnchor="2.5" text="Browse"/>
             </children>
         </AnchorPane>
     </children>

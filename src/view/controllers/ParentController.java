@@ -15,7 +15,7 @@ import java.util.ResourceBundle;
 
 public class ParentController implements Initializable {
 
-    @FXML private Button settingsButton, backButton;
+    @FXML private Button settingsButton, backButton, nextButton, cancelButton;
     @FXML private Label navBarTitle, summaryBarSubtitle, mainContentTitle;
     @FXML private Text summaryBarTitleHead, summaryBarTitlePrev;
     @FXML private GridPane mainContent;
@@ -59,8 +59,40 @@ public class ParentController implements Initializable {
         mainContentTitle.setText(title);
     }
 
+    /**
+     * Inserts the given node in the main content window of the parent frame
+     * @param content content to be inserted
+     */
     void setContent(Node content) {
         mainContent.add(content,0, 3);
+    }
+
+    void hideSettingsButton() {
+        settingsButton.setVisible(false);
+    }
+
+    void hideBackButton() {
+        backButton.setVisible(false);
+    }
+
+    void hideCancelButton() {
+        cancelButton.setVisible(false);
+    }
+
+    void enableCancelButton() {
+        cancelButton.setDisable(false);
+    }
+
+    void disableCancelButton() {
+        cancelButton.setDisable(true);
+    }
+
+    void enableNextButton() {
+        nextButton.setDisable(false);
+    }
+
+    void disableNextButton() {
+        nextButton.setDisable(true);
     }
 
     private void loadFonts() {
