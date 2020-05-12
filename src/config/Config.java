@@ -18,7 +18,7 @@ public class Config {
     public static String STAGE_TITLE = "Duplicate Detector";
 
     /* File Paths */
-    public static String PARENT_FRAME_PATH = "layouts/ParentFrame.fxml";
-    public static String DARK_THEME_CSS_PATH = "layouts/darkTheme.css";
+    public static String PARENT_FRAME = "layouts/ParentFrame.fxml";
+    public static String DARK_THEME_CSS = "layouts/darkTheme.css";
 
 }

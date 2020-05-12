@@ -133,7 +133,7 @@ public class ScanController {
             results = duplicatesFuture.get();
         } catch (Exception e) {
             setCurrentStage(ScanStage.ERROR);
-            throw new ScanException("Error reading duplicates future object", e);
+            throw new ScanException("AppError reading duplicates future object", e);
         }
         return results;
     }
@@ -184,7 +184,7 @@ public class ScanController {
             setCurrentStage(ScanStage.STOPPED);
         } catch (IOException e) {
             setCurrentStage(ScanStage.ERROR);
-            throw new ScanException("Error while trying to stop pre-search stage", e);
+            throw new ScanException("AppError while trying to stop pre-search stage", e);
         }
     }
 
@@ -201,7 +201,7 @@ public class ScanController {
             setCurrentStage(ScanStage.STOPPED);
         } catch (Exception e) {
             setCurrentStage(ScanStage.ERROR);
-            throw new ScanException("Error while trying to stop Search stage", e);
+            throw new ScanException("AppError while trying to stop Search stage", e);
         }
     }
 

@@ -3,28 +3,30 @@ package view.controllers;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import model.async.threadPool.AppThreadPool;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import view.DuplicateDetectorGUIApp;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class ParentController implements Initializable {
+public class GUIController implements Initializable {
 
     final DuplicateDetectorGUIApp app;
+    private GUIController nextController;                                                                               // Controller to switch to when 'Next' is clicked
+
     @FXML private Button settingsButton, backButton, nextButton, cancelButton;
     @FXML private Label navBarTitle, summaryBarSubtitle, mainContentTitle;
     @FXML private Text summaryBarTitleHead, summaryBarTitlePrev;
     @FXML private GridPane mainContent;
 
-    public ParentController(DuplicateDetectorGUIApp app) {
+    public GUIController(DuplicateDetectorGUIApp app) {
         this.app = app;
     }
 
@@ -96,7 +98,9 @@ public class ParentController implements Initializable {
     }
 
     void enableNextButton() {
-        nextButton.setDisable(false);
+        if (this.nextController != null) {                                                                              // must set next controller before enabling button
+            nextButton.setDisable(false);
+        }
     }
 
     void disableNextButton() {
@@ -107,8 +111,12 @@ public class ParentController implements Initializable {
         nextButton.setText(text);
     }
 
-    void setNextButtonOnAction(EventHandler<ActionEvent> e) {
-        nextButton.setOnAction(e);
+    void setNextController(GUIController nextController) {
+        this.nextController = nextController;
+    }
+
+    private void setNextButtonOnAction() {
+        nextButton.setOnAction(event -> app.switchScene(this.nextController));
     }
 
     private void loadFonts() {

@@ -8,7 +8,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.stage.DirectoryChooser;
 import view.DuplicateDetectorGUIApp;
 
 import java.io.File;
@@ -16,7 +15,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class PreScanChecks extends ParentController {
+public class PreScanChecks extends GUIController {
 
     /* UI copy */
     private String NAV_BAR_TITLE = "Preparing to scan";
@@ -53,7 +52,6 @@ public class PreScanChecks extends ParentController {
         setContent(getMainContent());
 
         setNextButtonText("Next");
-        // TODO: set action for next button
     }
 
     private Node getMainContent() {
@@ -71,6 +69,6 @@ public class PreScanChecks extends ParentController {
         } catch (IOException e) {
             e.printStackTrace(); // TODO: error handling
         }
-        return new Label("Error loading content");
+        return new Label("AppError loading content");
     }
 }

@@ -81,7 +81,7 @@ public class AsyncDirectoryCrawler implements Callable<List<File>> {
                                 }
                             }
                         } catch (Exception e) {
-                            throw new IOException("Error reading directory", e);                                        // TODO: Add better exception msg // TODO: Record errors
+                            throw new IOException("AppError reading directory", e);                                        // TODO: Add better exception msg // TODO: Record errors
                         }
                         futures.remove(i);
                         break;

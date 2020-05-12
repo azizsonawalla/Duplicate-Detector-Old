@@ -16,15 +16,20 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class ChooseFolderToScan extends ParentController {
+public class ChooseFolderToScan extends GUIController {
 
     /* UI copy */
     private String NAV_BAR_TITLE = "Start a new scan";
-    private String SUMMARY_BAR_TITLE_HEADER = "No folder selected";
-    private String FILE_PATH_DEFAULT = SUMMARY_BAR_TITLE_HEADER;
-    private String SUMMARY_BAR_TITLE_PREVIEW = "";
-    private String SUMMARY_BAR_SUBTITLE = "0 files found";
     private String MAIN_CONTENT_TITLE = "Choose a folder to scan:";
+    private String NEXT_BUTTON_TEXT = "Next";
+
+    private String SUMMARY_BAR_TITLE_HEADER_DEFAULT = "No folder selected";
+    private String FILE_PATH_DEFAULT = SUMMARY_BAR_TITLE_HEADER_DEFAULT;
+    private String SUMMARY_BAR_TITLE_PREVIEW_DEFAULT = "";
+    private String SUMMARY_BAR_SUBTITLE_DEFAULT = "0 files found";
+
+    private String SUMMARY_BAR_TITLE_HEADER_SELECTED = "Chosen Folder";
+    private String SUMMARY_BAR_SUBTITLE_SELECTED = "Click next to begin pre-scan checks.";
 
     /* UI controls */
     private Label filePathLabel;
@@ -39,41 +44,31 @@ public class ChooseFolderToScan extends ParentController {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         super.initialize(location, resources);
-
         setNavBarTitle(NAV_BAR_TITLE);
-
-        setSummaryBarTitle(SUMMARY_BAR_TITLE_HEADER, SUMMARY_BAR_TITLE_PREVIEW, false, false);
-        setSummaryBarSubtitle(SUMMARY_BAR_SUBTITLE);
-
+        setSummaryBarTitle(SUMMARY_BAR_TITLE_HEADER_DEFAULT, SUMMARY_BAR_TITLE_PREVIEW_DEFAULT, false, false);
+        setSummaryBarSubtitle(SUMMARY_BAR_SUBTITLE_DEFAULT);
         setContentTitle(MAIN_CONTENT_TITLE);
-
         hideBackButton();
         hideCancelButton();
         disableNextButton();
-
         setContent(getMainContent());
-
         browseButton.setOnAction(this::openFileChooserAndDisplaySelectedPath);
-        setNextButtonText("Next");
-        // TODO: set action for next button
+        setNextButtonText(NEXT_BUTTON_TEXT);
     }
 
     private Node getMainContent() {
         try {
-            GridPane root = FXMLLoader.load(getClass().getResource("../layouts/ChooseFolderToScan.fxml")); // TODO: replace with static config reference
+            GridPane root = FXMLLoader.load(getClass().getResource("../layouts/ChooseFolderToScan.fxml"));              // TODO: replace with static config reference
             ObservableList<Node> rootChildren = root.getChildren();
-
             AnchorPane filePathBox = (AnchorPane) rootChildren.get(0);
             ObservableList<Node> filePathBoxChildren = filePathBox.getChildren();
-
             this.filePathLabel = (Label) filePathBoxChildren.get(0);                                                    // save references to UI elements
             this.browseButton = (Button) filePathBoxChildren.get(1);
-
             return root;
         } catch (IOException e) {
-            e.printStackTrace(); // TODO: error handling
+            e.printStackTrace();                                                                                        // TODO: error handling
         }
-        return new Label("Error loading content");
+        return new Label("AppError loading content");
     }
 
     private void openFileChooserAndDisplaySelectedPath(ActionEvent e) {
@@ -82,16 +77,20 @@ public class ChooseFolderToScan extends ParentController {
             directoryChooser.setInitialDirectory(this.chosenDirectory);
         }
         this.chosenDirectory = directoryChooser.showDialog(app.getStage());
-
         if (this.chosenDirectory != null) {
-            String path = this.chosenDirectory.getAbsolutePath();
-            filePathLabel.setText(path);
-            setSummaryBarTitle("Chosen Folder", this.chosenDirectory.getAbsolutePath(), true, true);
-            setSummaryBarSubtitle("Click next to begin pre-scan checks.");
-            enableNextButton();
+            setChosenDirectory(this.chosenDirectory);
         } else {
             disableNextButton();
             filePathLabel.setText(FILE_PATH_DEFAULT);
         }
+    }
+
+    private void setChosenDirectory(File dir) {
+        String path = dir.getAbsolutePath();
+        filePathLabel.setText(path);
+        setSummaryBarTitle(SUMMARY_BAR_TITLE_HEADER_SELECTED, dir.getAbsolutePath(), true, true);
+        setSummaryBarSubtitle(SUMMARY_BAR_SUBTITLE_SELECTED);
+        setNextController(new PreScanChecks(app));
+        enableNextButton();
     }
 }
