@@ -10,6 +10,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Future;
 
@@ -46,6 +47,15 @@ public class ScanController {
     public ScanController(List<File> rootDirectories, ISearchStrategy strategy) {
         this.rootDirectories = rootDirectories;
         this.strategy = strategy;
+    }
+
+
+    /**
+     * A controller to manage scan related tasks.
+     * @param rootDirectory the directory to scan
+     */
+    public ScanController(File rootDirectory) {
+        this(Arrays.asList(rootDirectory), null);                                                                       // TODO: add setStrategy() method // TODO: add checks for null strategy
     }
 
     /**
@@ -168,6 +178,10 @@ public class ScanController {
     public boolean isSearchDone() {
         refreshCurrentStage();
         return currentStage == ScanStage.SEARCH_DONE;
+    }
+
+    public List<File> getRootDirectories() {
+        return rootDirectories;
     }
 
 

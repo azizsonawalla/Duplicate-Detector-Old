@@ -173,6 +173,16 @@
     -fx-cursor: hand;
 }
 
+/* Pre Scan Checks */
+
+.progress-bar > .bar, .progress-bar > .track {
+    -fx-background-radius: 30;
+}
+
+.progress-bar > .bar {
+-fx-background-color: #5dc14c;
+}
+
 /* Debug Only */
 GridPane {
     -fx-grid-lines-visible: false;

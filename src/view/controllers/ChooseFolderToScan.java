@@ -9,6 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.DirectoryChooser;
+import model.searchModel.ScanController;
 import view.DuplicateDetectorGUIApp;
 
 import java.io.File;
@@ -44,12 +45,16 @@ public class ChooseFolderToScan extends GUIController {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         super.initialize(location, resources);
+        configureControls();
+        initCopy();
+    }
+
+    private void configureControls() {
         hideBackButton();
         hideCancelButton();
         disableNextButton();
-        setContent(getMainContent());
+        setContent(loadMainContent());
         browseButton.setOnAction(this::openFileChooserAndDisplaySelectedPath);
-        initCopy();
     }
 
     private void initCopy() {
@@ -65,7 +70,7 @@ public class ChooseFolderToScan extends GUIController {
         }
     }
 
-    private Node getMainContent() {
+    private Node loadMainContent() {
         try {
             GridPane root = FXMLLoader.load(getClass().getResource("../layouts/ChooseFolderToScan.fxml"));              // TODO: replace with static config reference
             ObservableList<Node> rootChildren = root.getChildren();
@@ -77,7 +82,7 @@ public class ChooseFolderToScan extends GUIController {
         } catch (IOException e) {
             e.printStackTrace();                                                                                        // TODO: error handling
         }
-        return new Label("AppError loading content");
+        return new Label("Error loading content");
     }
 
     private void openFileChooserAndDisplaySelectedPath(ActionEvent e) {
@@ -88,9 +93,6 @@ public class ChooseFolderToScan extends GUIController {
         this.chosenDirectory = directoryChooser.showDialog(app.getStage());
         if (this.chosenDirectory != null) {
             setChosenDirectory(this.chosenDirectory);
-        } else {
-            disableNextButton();
-            filePathLabel.setText(FILE_PATH_DEFAULT);
         }
     }
 
@@ -99,7 +101,13 @@ public class ChooseFolderToScan extends GUIController {
         filePathLabel.setText(path);
         setSummaryBarTitle(SUMMARY_BAR_TITLE_HEADER_SELECTED, dir.getAbsolutePath(), true, true);
         setSummaryBarSubtitle(SUMMARY_BAR_SUBTITLE_SELECTED);
-        setNextController(new PreScanChecks(app, this));
+        prepareNextScene(dir);
         enableNextButton();
+    }
+
+    private void prepareNextScene(File dir) {
+        setNextController(new PreScanChecks(app, this));
+        ScanController model = new ScanController(dir);
+        app.setModel(model);
     }
 }

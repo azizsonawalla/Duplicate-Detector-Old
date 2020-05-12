@@ -9,6 +9,7 @@ import javafx.stage.Stage;
 import model.searchModel.ScanController;
 import view.controllers.ChooseFolderToScan;
 import view.controllers.GUIController;
+import view.controllers.PreScanChecks;
 import view.util.AppError;
 
 import java.io.IOException;
