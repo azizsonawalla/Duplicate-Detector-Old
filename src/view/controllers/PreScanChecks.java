@@ -16,15 +16,14 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class ChooseFolderToScan extends ParentController {
+public class PreScanChecks extends ParentController {
 
     /* UI copy */
-    private String NAV_BAR_TITLE = "Start a new scan";
-    private String SUMMARY_BAR_TITLE_HEADER = "No folder selected";
-    private String FILE_PATH_DEFAULT = SUMMARY_BAR_TITLE_HEADER;
-    private String SUMMARY_BAR_TITLE_PREVIEW = "";
-    private String SUMMARY_BAR_SUBTITLE = "0 files found";
-    private String MAIN_CONTENT_TITLE = "Choose a folder to scan:";
+    private String NAV_BAR_TITLE = "Preparing to scan";
+    private String SUMMARY_BAR_TITLE_HEADER = "No folder selected";                                                     // TODO: take this from file passed from prev dialogue
+    private String SUMMARY_BAR_TITLE_PREVIEW = "";                                                                      // TODO: take this from file passed from prev dialogue
+    private String SUMMARY_BAR_SUBTITLE = "Run pre-scan checks to analyze folder";
+    private String MAIN_CONTENT_TITLE = "Pre-scan check";
 
     /* UI controls */
     private Label filePathLabel;
@@ -32,7 +31,7 @@ public class ChooseFolderToScan extends ParentController {
 
     private File chosenDirectory;
 
-    public ChooseFolderToScan(DuplicateDetectorGUIApp app) {
+    public PreScanChecks(DuplicateDetectorGUIApp app) {
         super(app);
     }
 
@@ -53,14 +52,13 @@ public class ChooseFolderToScan extends ParentController {
 
         setContent(getMainContent());
 
-        browseButton.setOnAction(this::openFileChooserAndDisplaySelectedPath);
         setNextButtonText("Next");
         // TODO: set action for next button
     }
 
     private Node getMainContent() {
         try {
-            GridPane root = FXMLLoader.load(getClass().getResource("../layouts/ChooseFolderToScan.fxml")); // TODO: replace with static config reference
+            GridPane root = FXMLLoader.load(getClass().getResource("../layouts/PreScanChecks.fxml"));             // TODO: replace with static config reference
             ObservableList<Node> rootChildren = root.getChildren();
 
             AnchorPane filePathBox = (AnchorPane) rootChildren.get(0);
@@ -74,24 +72,5 @@ public class ChooseFolderToScan extends ParentController {
             e.printStackTrace(); // TODO: error handling
         }
         return new Label("Error loading content");
-    }
-
-    private void openFileChooserAndDisplaySelectedPath(ActionEvent e) {
-        DirectoryChooser directoryChooser = new DirectoryChooser();
-        if (this.chosenDirectory != null) {
-            directoryChooser.setInitialDirectory(this.chosenDirectory);
-        }
-        this.chosenDirectory = directoryChooser.showDialog(app.getStage());
-
-        if (this.chosenDirectory != null) {
-            String path = this.chosenDirectory.getAbsolutePath();
-            filePathLabel.setText(path);
-            setSummaryBarTitle("Chosen Folder", this.chosenDirectory.getAbsolutePath(), true, true);
-            setSummaryBarSubtitle("Click next to begin pre-scan checks.");
-            enableNextButton();
-        } else {
-            disableNextButton();
-            filePathLabel.setText(FILE_PATH_DEFAULT);
-        }
     }
 }
