@@ -19,6 +19,7 @@ public class AsyncDirectoryCrawler implements Callable<List<File>> {
 
     private final List<File> rootDirectories;
     private final List<String> validExtensions;
+    private ConcurrentLinkedQueue<File> allFiles;
 
     public AsyncDirectoryCrawler(List<File> rootDirectories, List<String> validExtensions) {
         this.rootDirectories = rootDirectories;
@@ -30,7 +31,10 @@ public class AsyncDirectoryCrawler implements Callable<List<File>> {
      * @return Progress object with crawl progress
      */
     public Progress getProgress() {
-        throw new NotImplementedException();                                                                            // TODO: Implement this
+        if (allFiles == null) {
+            return new Progress(0, -1, -1, -1, -1, null, null);
+        }
+        return new Progress(allFiles.size(), -1, -1, -1, -1, null, null);                                               // TODO: add more info
     }
 
     /**
@@ -46,7 +50,7 @@ public class AsyncDirectoryCrawler implements Callable<List<File>> {
 
         ConcurrentLinkedQueue<File> toVisit = new ConcurrentLinkedQueue<>();
         LinkedList<Future<File[]>> futures = new LinkedList<>();
-        List<File> allFiles = new LinkedList<>();
+        allFiles = new ConcurrentLinkedQueue<>();
 
         for (File rootDirectory: this.rootDirectories) {
             try {
@@ -90,7 +94,7 @@ public class AsyncDirectoryCrawler implements Callable<List<File>> {
             }
         }
 
-        return allFiles;
+        return new LinkedList<>(allFiles);
     }
 
     private boolean isValidFile(File file) {
