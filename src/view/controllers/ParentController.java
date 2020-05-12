@@ -9,16 +9,24 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import view.DuplicateDetectorGUIApp;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class ParentController implements Initializable {
 
+    final DuplicateDetectorGUIApp app;
     @FXML private Button settingsButton, backButton, nextButton, cancelButton;
     @FXML private Label navBarTitle, summaryBarSubtitle, mainContentTitle;
     @FXML private Text summaryBarTitleHead, summaryBarTitlePrev;
     @FXML private GridPane mainContent;
+
+    public ParentController(DuplicateDetectorGUIApp app) {
+        this.app = app;
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -93,6 +101,14 @@ public class ParentController implements Initializable {
 
     void disableNextButton() {
         nextButton.setDisable(true);
+    }
+
+    void setNextButtonText(String text) {
+        nextButton.setText(text);
+    }
+
+    void setNextButtonOnAction(EventHandler<ActionEvent> e) {
+        nextButton.setOnAction(e);
     }
 
     private void loadFonts() {

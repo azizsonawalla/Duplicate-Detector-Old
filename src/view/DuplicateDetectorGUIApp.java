@@ -14,16 +14,18 @@ import java.io.IOException;
 
 public class DuplicateDetectorGUIApp extends Application {
 
+    private Stage stage;
+
     public static void main(String[] args) {
         launch(args);
     }
 
     @Override
-    public void start(Stage stage) {
+    public void start(Stage stage) {                                                                                    // TODO: cleanup
         Parent root = null;
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("layouts/ParentFrame.fxml"));               // TODO: replace with static config reference
-            loader.setController(new ChooseFolderToScan());
+            loader.setController(new ChooseFolderToScan(this));
             root = loader.load();
         } catch (IOException e) {
             e.printStackTrace();
@@ -40,5 +42,10 @@ public class DuplicateDetectorGUIApp extends Application {
         stage.setTitle("FXML Welcome"); // TODO: replace
         stage.setScene(scene);
         stage.show();
+        this.stage = stage;
+    }
+
+    public Stage getStage() {
+        return stage;
     }
 }
