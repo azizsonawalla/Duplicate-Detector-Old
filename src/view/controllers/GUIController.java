@@ -3,13 +3,11 @@ package view.controllers;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import model.async.threadPool.AppThreadPool;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import view.DuplicateDetectorGUIApp;
 
@@ -19,6 +17,7 @@ import java.util.ResourceBundle;
 public class GUIController implements Initializable {
 
     final DuplicateDetectorGUIApp app;
+    private final GUIController prevController;
     private GUIController nextController;                                                                               // Controller to switch to when 'Next' is clicked
 
     @FXML private Button settingsButton, backButton, nextButton, cancelButton;
@@ -26,13 +25,15 @@ public class GUIController implements Initializable {
     @FXML private Text summaryBarTitleHead, summaryBarTitlePrev;
     @FXML private GridPane mainContent;
 
-    public GUIController(DuplicateDetectorGUIApp app) {
+    public GUIController(DuplicateDetectorGUIApp app, GUIController prevController) {
+        this.prevController = prevController;
         this.app = app;
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         loadFonts();
+        setBackButtonOnAction();
     }
 
     /**
@@ -113,23 +114,23 @@ public class GUIController implements Initializable {
 
     void setNextController(GUIController nextController) {
         this.nextController = nextController;
+        setNextButtonOnAction();
     }
 
     private void setNextButtonOnAction() {
         nextButton.setOnAction(event -> app.switchScene(this.nextController));
     }
 
+    private void setBackButtonOnAction() {
+        backButton.setOnAction(event -> app.switchScene(this.prevController));
+    }
+
     private void loadFonts() {
         Font.loadFont(getClass().getResourceAsStream("../assets/fonts/HelveticaNeueLTCom_Lt.ttf"), 16);
     }
 
-    private void openSettingsDialogue() {
+    private void setSettingsButtonOnAction() {
         // TODO: implement this. Set it as onClick event for settings button.
-        throw new NotImplementedException();
-    }
-
-    private void goBackToPreviousDialogue() {
-        // TODO: implement this. Set it as onClick event for back button.
         throw new NotImplementedException();
     }
 }

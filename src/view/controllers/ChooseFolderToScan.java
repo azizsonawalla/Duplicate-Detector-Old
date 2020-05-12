@@ -38,22 +38,31 @@ public class ChooseFolderToScan extends GUIController {
     private File chosenDirectory;
 
     public ChooseFolderToScan(DuplicateDetectorGUIApp app) {
-        super(app);
+        super(app, null);
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         super.initialize(location, resources);
-        setNavBarTitle(NAV_BAR_TITLE);
-        setSummaryBarTitle(SUMMARY_BAR_TITLE_HEADER_DEFAULT, SUMMARY_BAR_TITLE_PREVIEW_DEFAULT, false, false);
-        setSummaryBarSubtitle(SUMMARY_BAR_SUBTITLE_DEFAULT);
-        setContentTitle(MAIN_CONTENT_TITLE);
         hideBackButton();
         hideCancelButton();
         disableNextButton();
         setContent(getMainContent());
         browseButton.setOnAction(this::openFileChooserAndDisplaySelectedPath);
+        initCopy();
+    }
+
+    private void initCopy() {
+        setContentTitle(MAIN_CONTENT_TITLE);
         setNextButtonText(NEXT_BUTTON_TEXT);
+        setNavBarTitle(NAV_BAR_TITLE);
+
+        if (chosenDirectory != null) {
+            setChosenDirectory(this.chosenDirectory);
+        } else {
+            setSummaryBarTitle(SUMMARY_BAR_TITLE_HEADER_DEFAULT, SUMMARY_BAR_TITLE_PREVIEW_DEFAULT, false, false);
+            setSummaryBarSubtitle(SUMMARY_BAR_SUBTITLE_DEFAULT);
+        }
     }
 
     private Node getMainContent() {
@@ -90,7 +99,7 @@ public class ChooseFolderToScan extends GUIController {
         filePathLabel.setText(path);
         setSummaryBarTitle(SUMMARY_BAR_TITLE_HEADER_SELECTED, dir.getAbsolutePath(), true, true);
         setSummaryBarSubtitle(SUMMARY_BAR_SUBTITLE_SELECTED);
-        setNextController(new PreScanChecks(app));
+        setNextController(new PreScanChecks(app, this));
         enableNextButton();
     }
 }
