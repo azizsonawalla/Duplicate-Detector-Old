@@ -1,23 +1,10 @@
 package view.controllers;
 
-import javafx.application.Platform;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
-import model.async.threadPool.AppThreadPool;
-import model.searchModel.ScanController;
-import model.util.Progress;
 import view.DuplicateDetectorGUIApp;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
 
 public class ChooseStrategy extends GUIController {
 
@@ -30,27 +17,16 @@ public class ChooseStrategy extends GUIController {
 
     /* UI controls */
 
-    private ScanController model;
-
-    public ChooseStrategy(DuplicateDetectorGUIApp app, GUIController prevController) {
+    ChooseStrategy(DuplicateDetectorGUIApp app, GUIController prevController) {
         super(app, prevController);
     }
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        super.initialize(location, resources);
-        model = app.getModel();
-        setContent(loadMainContent());
-        initCopy();
-        configureControls();
-    }
-
-    private void configureControls() {
+    void configureControls() {
         hideNextButton();
         hideCancelButton();
     }
 
-    private void initCopy() {
+    void initCopy() {
         setContentTitle(MAIN_CONTENT_TITLE);
         setNextButtonText(NEXT_BUTTON_TEXT);
         setNavBarTitle(NAV_BAR_TITLE);
@@ -62,7 +38,7 @@ public class ChooseStrategy extends GUIController {
         setSummaryBarTitle(SUMMARY_BAR_HEADER_DEFAULT, chosenFolder.getAbsolutePath(), true, true);                     // TODO: move to parent
     }
 
-    private Node loadMainContent() {
+    Node loadMainContent() {
 //        try {
 //            GridPane root = FXMLLoader.load(getClass().getResource("../layouts/PreScanChecks.fxml"));                   // TODO: replace with static config reference
 //

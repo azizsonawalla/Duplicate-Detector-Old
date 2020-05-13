@@ -14,8 +14,6 @@ import view.DuplicateDetectorGUIApp;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
 
 public class ChooseFolderToScan extends GUIController {
 
@@ -27,7 +25,7 @@ public class ChooseFolderToScan extends GUIController {
     private String SUMMARY_BAR_TITLE_HEADER_DEFAULT = "No folder selected";
     private String FILE_PATH_DEFAULT = SUMMARY_BAR_TITLE_HEADER_DEFAULT;
     private String SUMMARY_BAR_TITLE_PREVIEW_DEFAULT = "";
-    private String SUMMARY_BAR_SUBTITLE_DEFAULT = "0 files found";
+    private String SUMMARY_BAR_SUBTITLE_DEFAULT = "Choose a folder to begin a scan";
 
     private String SUMMARY_BAR_TITLE_HEADER_SELECTED = "Chosen Folder";
     private String SUMMARY_BAR_SUBTITLE_SELECTED = "Click next to begin pre-scan checks.";
@@ -42,22 +40,14 @@ public class ChooseFolderToScan extends GUIController {
         super(app, null);
     }
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        super.initialize(location, resources);
-        setContent(loadMainContent());
-        configureControls();
-        initCopy();
-    }
-
-    private void configureControls() {
+    void configureControls() {
         hideBackButton();
         hideCancelButton();
         disableNextButton();
         browseButton.setOnAction(this::openFileChooserAndDisplaySelectedPath);
     }
 
-    private void initCopy() {
+    void initCopy() {
         setContentTitle(MAIN_CONTENT_TITLE);
         setNextButtonText(NEXT_BUTTON_TEXT);
         setNavBarTitle(NAV_BAR_TITLE);
@@ -71,7 +61,7 @@ public class ChooseFolderToScan extends GUIController {
         }
     }
 
-    private Node loadMainContent() {
+    Node loadMainContent() {
         try {
             GridPane root = FXMLLoader.load(getClass().getResource("../layouts/ChooseFolderToScan.fxml"));              // TODO: replace with static config reference
             ObservableList<Node> rootChildren = root.getChildren();
@@ -107,8 +97,8 @@ public class ChooseFolderToScan extends GUIController {
     }
 
     private void prepareNextScene(File dir) {
-        setNextController(new PreScanChecks(app, this));
         ScanController model = new ScanController(dir);
         app.setModel(model);
+        setNextController(new PreScanChecks(app, this));
     }
 }

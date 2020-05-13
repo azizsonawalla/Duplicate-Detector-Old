@@ -10,15 +10,17 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import model.searchModel.ScanController;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import view.DuplicateDetectorGUIApp;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class GUIController implements Initializable {
+public abstract class GUIController implements Initializable {
 
     final DuplicateDetectorGUIApp app;
+    ScanController model;
     private final GUIController prevController;
     private GUIController nextController;                                                                               // Controller to switch to when 'Next' is clicked
 
@@ -34,8 +36,13 @@ public class GUIController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        this.model = app.getModel();
         loadFonts();
         setBackButtonOnAction();
+
+        setContent(loadMainContent());
+        initCopy();
+        configureControls();
     }
 
     /**
@@ -149,4 +156,10 @@ public class GUIController implements Initializable {
         // TODO: implement this. Set it as onClick event for settings button.
         throw new NotImplementedException();
     }
+
+    abstract void initCopy();
+
+    abstract void configureControls();
+
+    abstract Node loadMainContent();
 }

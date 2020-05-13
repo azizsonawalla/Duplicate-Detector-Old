@@ -33,38 +33,26 @@ public class PreScanChecks extends GUIController {
     /* UI controls */
     private Label filePathLabel, completeLabel, fileCountLabel;
     private ProgressBar progressBar;
-
-    private ScanController model;
     private TrackProgress tracker;
 
-    public PreScanChecks(DuplicateDetectorGUIApp app, GUIController prevController) {
+    PreScanChecks(DuplicateDetectorGUIApp app, GUIController prevController) {
         super(app, prevController);
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         super.initialize(location, resources);
-        model = app.getModel();
         startPreSearch();
-        setContent(loadMainContent());
-        initCopy();
-        configureControls();
     }
 
-    private void startPreSearch() {
-        model.startPreSearch();
-        tracker = new TrackProgress(model, 200);                                                                        // TODO: move interval time to config
-        AppThreadPool.getInstance().submit(tracker);
-    }
-
-    private void configureControls() {
+    void configureControls() {
         disableNextButton();
         completeLabel.setVisible(false);
         progressBar.setProgress(-1);
         setCancelButtonOnAction(this::OnCancel);
     }
 
-    private void initCopy() {
+    void initCopy() {
         setContentTitle(MAIN_CONTENT_TITLE);
         setNextButtonText(NEXT_BUTTON_TEXT);
         setNavBarTitle(NAV_BAR_TITLE);
@@ -74,6 +62,32 @@ public class PreScanChecks extends GUIController {
         setSummaryBarTitle(SUMMARY_BAR_HEADER_DEFAULT, chosenFolder.getAbsolutePath(), true, true);
         filePathLabel.setText(chosenFolder.getAbsolutePath());
         setFileCount(0);
+    }
+
+    Node loadMainContent() {
+        try {
+            GridPane root = FXMLLoader.load(getClass().getResource("../layouts/PreScanChecks.fxml"));                   // TODO: replace with static config reference
+
+            ObservableList<Node> rootChildren = root.getChildren();
+            this.filePathLabel = (Label) rootChildren.get(0);
+            this.fileCountLabel = (Label) rootChildren.get(2);
+
+            StackPane stackPane = (StackPane) rootChildren.get(1);
+            ObservableList<Node> stackPaneChildren = stackPane.getChildren();
+            this.progressBar = (ProgressBar) stackPaneChildren.get(0);
+            this.completeLabel = (Label) stackPaneChildren.get(1);
+
+            return root;
+        } catch (IOException e) {
+            e.printStackTrace();                                                                                        // TODO: error handling
+        }
+        return new Label("AppError loading content");
+    }
+
+    private void startPreSearch() {
+        model.startPreSearch();
+        tracker = new TrackProgress(model, 200);                                                                        // TODO: move interval time to config
+        AppThreadPool.getInstance().submit(tracker);
     }
 
     private void setFileCount(int i) {
@@ -93,26 +107,6 @@ public class PreScanChecks extends GUIController {
         progressBar.getStyleClass().add("cancelled-progress-bar");
         completeLabel.setText(CANCELLED_TEXT_ON_BAR);
         completeLabel.setVisible(true);
-    }
-
-    private Node loadMainContent() {
-        try {
-            GridPane root = FXMLLoader.load(getClass().getResource("../layouts/PreScanChecks.fxml"));                   // TODO: replace with static config reference
-
-            ObservableList<Node> rootChildren = root.getChildren();
-            this.filePathLabel = (Label) rootChildren.get(0);
-            this.fileCountLabel = (Label) rootChildren.get(2);
-
-            StackPane stackPane = (StackPane) rootChildren.get(1);
-            ObservableList<Node> stackPaneChildren = stackPane.getChildren();
-            this.progressBar = (ProgressBar) stackPaneChildren.get(0);
-            this.completeLabel = (Label) stackPaneChildren.get(1);
-
-            return root;
-        } catch (IOException e) {
-            e.printStackTrace();                                                                                        // TODO: error handling
-        }
-        return new Label("AppError loading content");
     }
 
     private void OnCancel(ActionEvent e) {                                                                              // TODO: show 'are you sure?' dialogue
