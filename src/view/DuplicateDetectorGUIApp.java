@@ -9,6 +9,7 @@ import javafx.stage.Stage;
 import model.async.threadPool.AppThreadPool;
 import model.searchModel.ScanController;
 import view.controllers.ChooseFolderToScan;
+import view.controllers.ChooseStrategy;
 import view.controllers.GUIController;
 import view.util.AppError;
 
@@ -26,7 +27,7 @@ public class DuplicateDetectorGUIApp extends Application {
 
     @Override
     public void start(Stage stage) {
-        GUIController controller = new ChooseFolderToScan(this);
+        GUIController controller = new ChooseStrategy(this, null);
         try {
             Scene firstScene = loadDefaultScene(controller);
             this.stage = configureDefaultStage(stage, firstScene);

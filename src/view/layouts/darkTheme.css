@@ -9,6 +9,16 @@
     -fx-font-smoothing-type: gray;
 }
 
+.h3 {
+    -fx-font-smoothing-type: lcd;
+    -fx-text-fill: #FFFFFF;
+    -fx-fill: #FFFFFF;
+    -fx-font-size: 14pt;
+    -fx-font-family: 'Helvetica Neue LT Com 45 Light';
+    -fx-font-smoothing-type: gray;
+    -fx-font-weight: bold;
+}
+
 .h4 {
     -fx-font-smoothing-type: lcd;
     -fx-text-fill: #FFFFFF;
@@ -38,6 +48,7 @@
 
 .body {
     -fx-text-fill: #FFFFFF;
+    -fx-fill: #FFFFFF;
     -fx-font-size: 12pt;
     -fx-font-family: 'Helvetica Neue LT Com 45 Light';
     -fx-font-smoothing-type: lcd;
@@ -194,6 +205,14 @@
 
 .cancelled-progress-bar > .bar {
 -fx-background-color: #ed1c24;
+}
+
+/* Choose Strategy */
+
+.strategyButton {
+    -fx-border-color: rgba(255, 255, 255, 1);
+    -fx-border-radius: 60px;
+    -fx-padding: 25 60 25 60;
 }
 
 /* Debug Only */
