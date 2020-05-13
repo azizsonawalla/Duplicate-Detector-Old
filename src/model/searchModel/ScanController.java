@@ -50,13 +50,20 @@ public class ScanController {
         this.strategy = strategy;
     }
 
-
     /**
      * A controller to manage scan related tasks.
      * @param rootDirectory the directory to scan
      */
     public ScanController(File rootDirectory) {
-        this(Arrays.asList(rootDirectory), null);                                                                       // TODO: add setStrategy() method // TODO: add checks for null strategy
+        this(Arrays.asList(rootDirectory), null);
+    }
+
+    /**
+     * Set the search strategy
+     * @param strategy search strategy to use
+     */
+    public void setStrategy(ISearchStrategy strategy) {
+        this.strategy = strategy;
     }
 
     /**
@@ -111,6 +118,9 @@ public class ScanController {
     public void startSearch() throws ScanException {
         if (!isPreSearchDone()) {
             throw new ScanException("Cannot start search stage. Pre-search hasn't started or search has already started.");
+        }
+        if (strategy == null) {
+            throw new ScanException("No strategy set for search");
         }
         List<File> allFiles;
         try {
