@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 /**
@@ -63,8 +64,15 @@ public class ScanController {
      * @throws ScanException if no task is being performed
      */
     public Progress getProgress() throws ScanException {
-        if (isPreSearchInProgress() || isPreSearchDone()) {
+        if (isPreSearchInProgress()) {
             return this.getPreSearchProgress();
+        }
+        if (isPreSearchDone()) {
+            try {
+                return new Progress(allFilesFuture.get().size(), 0, 0, 0, 0, null, "Pre-Search Completed");             // TODO: change current task to current stage enum  // TODO: remove multiple calls to get() - save result on first call
+            } catch (Exception e) {
+                throw new ScanException("Failed to get pre search results", e);
+            }
         }
         if (isSearchInProgress() || isSearchDone()) {
             return this.getSearchProgress();

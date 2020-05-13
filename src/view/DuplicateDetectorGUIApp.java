@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import model.async.threadPool.AppThreadPool;
 import model.searchModel.ScanController;
 import view.controllers.ChooseFolderToScan;
 import view.controllers.GUIController;
@@ -57,6 +58,11 @@ public class DuplicateDetectorGUIApp extends Application {
             AppError.showError("An error occurred while loading the next page. Please restart the application.");
         }
         this.stage.setScene(newScene);
+    }
+
+    @Override
+    public void stop() {
+        AppThreadPool.getInstance().shutdownNow();
     }
 
     private Scene loadDefaultScene(GUIController c) throws IOException {

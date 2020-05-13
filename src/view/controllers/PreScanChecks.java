@@ -19,15 +19,13 @@ import view.DuplicateDetectorGUIApp;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
-import java.util.concurrent.Callable;
 
 public class PreScanChecks extends GUIController {
 
     /* UI copy */
     private String NAV_BAR_TITLE = "Preparing to scan";
-    private String MAIN_CONTENT_TITLE = "Pre-scan checks";
+    private String MAIN_CONTENT_TITLE = "Pre-scan analysis";
     private String NEXT_BUTTON_TEXT = "Next";
     private String SUMMARY_BAR_SUBTITLE_DEFAULT = "Analyzing folder";
     private String SUMMARY_BAR_HEADER_DEFAULT = "Chosen Folder";
@@ -75,7 +73,15 @@ public class PreScanChecks extends GUIController {
     }
 
     private void setFileCount(int i) {
-        Platform.runLater(() -> fileCountLabel.setText(String.format(FILE_COUNT_TEMPLATE, i)));                         // TODO: remove use of runLater
+        Platform.runLater(() -> fileCountLabel.setText(String.format(FILE_COUNT_TEMPLATE, i)));                         // TODO: remove use of runLater // TODO: javadoc
+    }
+
+    private void setProgressBarLevel(double p) {
+        Platform.runLater(() -> progressBar.setProgress(p));                                                            // TODO: remove use of runLater // TODO: javadoc
+    }
+
+    private void setCompleteLabelVisible() {
+        Platform.runLater(() -> completeLabel.setVisible(true));                                                        // TODO: remove use of runLater // TODO: javadoc
     }
 
     private Node loadMainContent() {
@@ -111,6 +117,7 @@ public class PreScanChecks extends GUIController {
         @Override
         public void run() {
             while (!model.isPreSearchDone()) {
+                System.out.println("Presearch still in progress");
                 updateFileCount();
                 try {
                     Thread.sleep(interval);
@@ -118,19 +125,27 @@ public class PreScanChecks extends GUIController {
                     e.printStackTrace();                                                                                // TODO: error handling // TODO: add ability to cancel
                 }
             }
+            System.out.println("Pre-search done");
             updateFileCount();
             setComplete();
         }
 
         private void updateFileCount() {
-            Progress progress = model.getProgress();
-            int count = progress.getDone();
-            setFileCount(count);
+            try {
+                Progress progress = model.getProgress();
+                int count = progress.getDone();
+                System.out.println("Count is now " + count);
+                setFileCount(count);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         private void setComplete() {
-            progressBar.setProgress(1.0);
-            completeLabel.setVisible(true);
+            System.out.println("Setting complete");
+            setProgressBarLevel(1.0);
+            setCompleteLabelVisible();
+            // TODO: set next controller
             enableNextButton();
             disableCancelButton();
         }
