@@ -8,6 +8,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import model.searchModel.ScanController;
@@ -28,6 +29,7 @@ public abstract class GUIController implements Initializable {
     @FXML private Label navBarTitle, summaryBarSubtitle, mainContentTitle;
     @FXML private Text summaryBarTitleHead, summaryBarTitlePrev;
     @FXML private GridPane mainContent;
+    @FXML private Pane mainContentLogo;
 
     GUIController(DuplicateDetectorGUIApp app, GUIController prevController) {                                          // TODO: javadoc
         this.prevController = prevController;
@@ -79,14 +81,6 @@ public abstract class GUIController implements Initializable {
         mainContentTitle.setText(title);
     }
 
-    /**
-     * Inserts the given node in the main content window of the parent frame
-     * @param content content to be inserted
-     */
-    void setContent(Node content) {
-        mainContent.add(content,0, 3);
-    }
-
     void hideSettingsButton() {
         settingsButton.setVisible(false);
     }
@@ -132,6 +126,11 @@ public abstract class GUIController implements Initializable {
         cancelButton.setOnAction(e);
     }
 
+    void removeMainWindowLogo() {
+        mainContent.getChildren().remove(0);
+        mainContent.getRowConstraints().get(1).setPercentHeight(0);
+    }
+
     /**
      * Cleans-up and goes back to the previous scene
      */
@@ -140,12 +139,22 @@ public abstract class GUIController implements Initializable {
         app.switchScene(prevController);
     }
 
+    /**
+     * Inserts the given node in the main content window of the parent frame
+     * @param content content to be inserted
+     */
+    private void setContent(Node content) {
+        mainContent.add(content,0, 3);
+    }
+
     private void setNextButtonOnAction() {
         nextButton.setOnAction(event -> app.switchScene(this.nextController));
     }
 
     private void setBackButtonOnAction() {
-        backButton.setOnAction(event -> app.switchScene(this.prevController));
+        if (this.prevController != null) {
+            backButton.setOnAction(event -> app.switchScene(this.prevController));
+        }
     }
 
     private void loadFonts() {

@@ -4,8 +4,6 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import view.DuplicateDetectorGUIApp;
 
-import java.io.File;
-
 public class ChooseStrategy extends GUIController {
 
     /* UI copy */
@@ -17,13 +15,14 @@ public class ChooseStrategy extends GUIController {
 
     /* UI controls */
 
-    ChooseStrategy(DuplicateDetectorGUIApp app, GUIController prevController) {
+    public ChooseStrategy(DuplicateDetectorGUIApp app, GUIController prevController) {
         super(app, prevController);
     }
 
     void configureControls() {
         hideNextButton();
         hideCancelButton();
+        removeMainWindowLogo();
     }
 
     void initCopy() {
@@ -31,11 +30,11 @@ public class ChooseStrategy extends GUIController {
         setNextButtonText(NEXT_BUTTON_TEXT);
         setNavBarTitle(NAV_BAR_TITLE);
 
-        long totalFileCount = model.getProgress().getDone();
-        setSummaryBarSubtitle(String.format(SUMMARY_BAR_SUBTITLE_TEMPLATE, totalFileCount));
-
-        File chosenFolder = model.getRootDirectories().get(0);
-        setSummaryBarTitle(SUMMARY_BAR_HEADER_DEFAULT, chosenFolder.getAbsolutePath(), true, true);                     // TODO: move to parent
+//        long totalFileCount = model.getProgress().getDone();
+//        setSummaryBarSubtitle(String.format(SUMMARY_BAR_SUBTITLE_TEMPLATE, totalFileCount));
+//
+//        File chosenFolder = model.getRootDirectories().get(0);
+//        setSummaryBarTitle(SUMMARY_BAR_HEADER_DEFAULT, chosenFolder.getAbsolutePath(), true, true);                     // TODO: move to parent
     }
 
     Node loadMainContent() {
