@@ -45,6 +45,7 @@ public class ChooseFolderToScan extends GUIController {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         super.initialize(location, resources);
+        setContent(loadMainContent());
         configureControls();
         initCopy();
     }
@@ -53,7 +54,6 @@ public class ChooseFolderToScan extends GUIController {
         hideBackButton();
         hideCancelButton();
         disableNextButton();
-        setContent(loadMainContent());
         browseButton.setOnAction(this::openFileChooserAndDisplaySelectedPath);
     }
 
@@ -67,6 +67,7 @@ public class ChooseFolderToScan extends GUIController {
         } else {
             setSummaryBarTitle(SUMMARY_BAR_TITLE_HEADER_DEFAULT, SUMMARY_BAR_TITLE_PREVIEW_DEFAULT, false, false);
             setSummaryBarSubtitle(SUMMARY_BAR_SUBTITLE_DEFAULT);
+            filePathLabel.setText(FILE_PATH_DEFAULT);
         }
     }
 

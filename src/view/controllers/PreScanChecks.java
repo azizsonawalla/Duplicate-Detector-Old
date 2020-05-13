@@ -12,7 +12,6 @@ import javafx.scene.layout.StackPane;
 import model.async.threadPool.AppThreadPool;
 import model.searchModel.ScanController;
 import model.util.Progress;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import view.DuplicateDetectorGUIApp;
 
 import java.io.File;
@@ -27,7 +26,7 @@ public class PreScanChecks extends GUIController {
     private String MAIN_CONTENT_TITLE = "Pre-scan Analysis";
     private String NEXT_BUTTON_TEXT = "Next";
     private String SUMMARY_BAR_SUBTITLE_DEFAULT = "Analyzing folder";
-    private String SUMMARY_BAR_HEADER_DEFAULT = "Chosen Folder";
+    private String SUMMARY_BAR_HEADER_DEFAULT = "Analyzing";
     private String FILE_COUNT_TEMPLATE = "Files found: %d";
     private String CANCELLED_TEXT_ON_BAR = "Cancelling analysis...";
 
@@ -46,20 +45,23 @@ public class PreScanChecks extends GUIController {
     public void initialize(URL location, ResourceBundle resources) {
         super.initialize(location, resources);
         model = app.getModel();
+        startPreSearch();
         setContent(loadMainContent());
-        configureControls();
         initCopy();
+        configureControls();
+    }
 
+    private void startPreSearch() {
         model.startPreSearch();
-        tracker = new TrackProgress(model, 1000);
+        tracker = new TrackProgress(model, 200);                                                                        // TODO: move interval time to config
         AppThreadPool.getInstance().submit(tracker);
-        setCancelButtonOnAction(this::OnCancel);
     }
 
     private void configureControls() {
         disableNextButton();
         completeLabel.setVisible(false);
         progressBar.setProgress(-1);
+        setCancelButtonOnAction(this::OnCancel);
     }
 
     private void initCopy() {
@@ -122,9 +124,17 @@ public class PreScanChecks extends GUIController {
         reset();
     }
 
-    private void setNextController() {
-        // TODO: next controller not yet created
-        throw new NotImplementedException();
+    private void createAndSetNextController() {
+        ChooseStrategy c = new ChooseStrategy(app, this);
+        setNextController(c);
+    }
+
+    private void setComplete() {
+        setProgressBarLevel(1.0);
+        setCompleteLabelVisible();
+        createAndSetNextController();
+        enableNextButton();
+        disableCancelButton();
     }
 
     private class TrackProgress implements Runnable {                                                                   // TODO: javadoc
@@ -155,7 +165,7 @@ public class PreScanChecks extends GUIController {
             setComplete();
         }
 
-        public void stop() {
+        void stop() {
             interrupted = true;
         }
 
@@ -167,14 +177,6 @@ public class PreScanChecks extends GUIController {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
-
-        private void setComplete() {
-            setProgressBarLevel(1.0);
-            setCompleteLabelVisible();
-            setNextController();
-            enableNextButton();
-            disableCancelButton();
         }
     }
 }

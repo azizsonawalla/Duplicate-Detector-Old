@@ -108,6 +108,10 @@ public class GUIController implements Initializable {
         nextButton.setDisable(true);
     }
 
+    void hideNextButton() {
+        nextButton.setVisible(false);
+    }
+
     void setNextButtonText(String text) {
         nextButton.setText(text);
     }
