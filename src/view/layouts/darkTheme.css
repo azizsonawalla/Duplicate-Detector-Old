@@ -181,16 +181,15 @@
     -fx-font-family: 'Helvetica Neue LT Com 45 Light';
     -fx-font-smoothing-type: lcd;
     -fx-text-fill: #FFFFFF;
+    -fx-cursor: hand;
 }
 
 #browseButton:hover {
     -fx-background-color: #008dd3;
-    -fx-cursor: hand;
 }
 
 #browseButton:pressed {
     -fx-background-color: rgba(0,0,0, 0.8);
-    -fx-cursor: hand;
 }
 
 /* Pre Scan Checks */
@@ -213,6 +212,27 @@
     -fx-border-color: rgba(255, 255, 255, 1);
     -fx-border-radius: 60px;
     -fx-padding: 25 60 25 60;
+    -fx-cursor: hand;
+}
+
+.strategyButton: hover {
+     -fx-background-color: #009ad5;
+     -fx-background-radius: 60px;
+     -fx-border-color: #009ad5;
+}
+
+.strategyButton: pressed {
+     -fx-background-color: rgba(255,255,255, 0.2);
+     -fx-background-radius: 60px;
+     -fx-border-color: rgba(255,255,255, 0.2);
+}
+
+.nextArrow {
+    -fx-background-image: url("../assets/Forward_icon.png");
+    -fx-background-size: 25px;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: right;
+    -fx-background-color: rgba(0,0,0,0);
 }
 
 /* Debug Only */

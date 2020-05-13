@@ -20,19 +20,21 @@
         <RowConstraints minHeight="20.0" percentHeight="30.0" vgrow="SOMETIMES" />
     </rowConstraints>
    <children>
-       <GridPane styleClass="strategyButton" maxHeight="100" maxWidth="600" prefWidth="600" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.halignment="CENTER">
+       <GridPane styleClass="strategyButton" maxHeight="100" maxWidth="700" prefWidth="700" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.halignment="CENTER">
            <columnConstraints>
-               <ColumnConstraints hgrow="SOMETIMES" percentWidth="100.0" />
+               <ColumnConstraints hgrow="SOMETIMES" percentWidth="95.0" />
+               <ColumnConstraints hgrow="SOMETIMES" percentWidth="5.0" />
            </columnConstraints>
            <rowConstraints>
                <RowConstraints minHeight="25.0" percentHeight="30.0" vgrow="SOMETIMES" />
                <RowConstraints minHeight="20.0" percentHeight="70.0" vgrow="SOMETIMES" />
            </rowConstraints>
            <children>
-               <Label styleClass="h3" text="Advanced Scan (slowest)" GridPane.rowIndex="0" GridPane.valignment="TOP"/>
-               <TextFlow  maxHeight="15" GridPane.rowIndex="1" GridPane.valignment="BOTTOM">
+               <Label styleClass="h3" text="Advanced Scan (slowest)" GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.valignment="TOP"/>
+               <TextFlow  maxHeight="15" GridPane.rowIndex="1" GridPane.columnIndex="0" GridPane.valignment="BOTTOM">
                    <Text styleClass="body" text="Finds photos that are modified versions of each other. This includes scaled, cropped and colour corrected versions of the same image."/>
                </TextFlow>
+               <Pane styleClass="nextArrow" GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.halignment="CENTER" GridPane.valignment="CENTER" maxHeight="20" GridPane.rowSpan="2"/>
            </children>
        </GridPane>
    </children>
