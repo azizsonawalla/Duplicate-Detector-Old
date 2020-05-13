@@ -1,8 +1,12 @@
 package view.controllers;
 
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.layout.GridPane;
 import view.DuplicateDetectorGUIApp;
+
+import java.io.IOException;
 
 public class ChooseStrategy extends GUIController {
 
@@ -38,9 +42,9 @@ public class ChooseStrategy extends GUIController {
     }
 
     Node loadMainContent() {
-//        try {
-//            GridPane root = FXMLLoader.load(getClass().getResource("../layouts/PreScanChecks.fxml"));                   // TODO: replace with static config reference
-//
+        try {
+            GridPane root = FXMLLoader.load(getClass().getResource("../layouts/ChooseStrategy.fxml"));                  // TODO: replace with static config reference
+
 //            ObservableList<Node> rootChildren = root.getChildren();
 //            this.filePathLabel = (Label) rootChildren.get(0);
 //            this.fileCountLabel = (Label) rootChildren.get(2);
@@ -49,11 +53,11 @@ public class ChooseStrategy extends GUIController {
 //            ObservableList<Node> stackPaneChildren = stackPane.getChildren();
 //            this.progressBar = (ProgressBar) stackPaneChildren.get(0);
 //            this.completeLabel = (Label) stackPaneChildren.get(1);
-//
-//            return root;
-//        } catch (IOException e) {
-//            e.printStackTrace();                                                                                        // TODO: error handling
-//        }
+
+            return root;
+        } catch (IOException e) {
+            e.printStackTrace();                                                                                        // TODO: error handling
+        }
         return new Label("Error loading content");
     }
 
