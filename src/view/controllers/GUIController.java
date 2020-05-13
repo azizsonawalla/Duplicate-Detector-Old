@@ -1,5 +1,7 @@
 package view.controllers;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -25,7 +27,7 @@ public class GUIController implements Initializable {
     @FXML private Text summaryBarTitleHead, summaryBarTitlePrev;
     @FXML private GridPane mainContent;
 
-    public GUIController(DuplicateDetectorGUIApp app, GUIController prevController) {
+    GUIController(DuplicateDetectorGUIApp app, GUIController prevController) {                                          // TODO: javadoc
         this.prevController = prevController;
         this.app = app;
     }
@@ -99,9 +101,7 @@ public class GUIController implements Initializable {
     }
 
     void enableNextButton() {
-        if (this.nextController != null) {                                                                              // must set next controller before enabling button
-            nextButton.setDisable(false);
-        }
+        nextButton.setDisable(false);
     }
 
     void disableNextButton() {
@@ -115,6 +115,18 @@ public class GUIController implements Initializable {
     void setNextController(GUIController nextController) {
         this.nextController = nextController;
         setNextButtonOnAction();
+    }
+
+    void setCancelButtonOnAction(EventHandler<ActionEvent> e) {
+        cancelButton.setOnAction(e);
+    }
+
+    /**
+     * Cleans-up and goes back to the previous scene
+     */
+    void reset() {
+        prevController.nextController = null;                                                                           // remove reference to this controller to free memory
+        app.switchScene(prevController);
     }
 
     private void setNextButtonOnAction() {

@@ -121,8 +121,17 @@
     -fx-cursor: hand;
 }
 
+#cancelButton {
+    -fx-border-width: 2px;
+    -fx-border-radius: 50px;
+    -fx-background-color: rgba(0,0,0,0);
+    -fx-border-color: rgba(237, 28, 26, 0.9);
+    -fx-text-fill: rgba(255, 255, 255, 1);
+}
+
 #statusBarBG {
-     -fx-background-color: #3d3d3d;
+    -fx-background-color: #3d3d3d;
+    -fx-border-width: 0px;
 }
 
 /* Main Window */
@@ -181,6 +190,10 @@
 
 .progress-bar > .bar {
 -fx-background-color: #5dc14c;
+}
+
+.cancelled-progress-bar > .bar {
+-fx-background-color: #ed1c24;
 }
 
 /* Debug Only */

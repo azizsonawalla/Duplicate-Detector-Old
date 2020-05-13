@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 /**
@@ -20,6 +21,7 @@ public class AsyncDirectoryCrawler implements Callable<List<File>> {
     private final List<File> rootDirectories;
     private final List<String> validExtensions;
     private ConcurrentLinkedQueue<File> allFiles;
+    private boolean interrupted = false;
 
     public AsyncDirectoryCrawler(List<File> rootDirectories, List<String> validExtensions) {
         this.rootDirectories = rootDirectories;
@@ -34,67 +36,87 @@ public class AsyncDirectoryCrawler implements Callable<List<File>> {
         if (allFiles == null) {
             return new Progress(0, -1, -1, -1, -1, null, null);
         }
-        return new Progress(allFiles.size(), -1, -1, -1, -1, null, null);                                               // TODO: add more info
+        return new Progress(allFiles.size(), -1, -1, -1, -1, null, null);                                               // TODO: add more info. Can estimate eta by calculating size differences
     }
 
     /**
-     * Cancel the directory crawl
+     * Cancel the directory crawl. The future object will return null once cancelled.
      * @throws IOException if cannot cancel
      */
     public void cancel() throws IOException {
-        throw new NotImplementedException();                                                                            // TODO: Implement this
+        this.interrupted = true;
     }
 
     @Override
-    public List<File> call() throws IOException {
-
-        ConcurrentLinkedQueue<File> toVisit = new ConcurrentLinkedQueue<>();
-        LinkedList<Future<File[]>> futures = new LinkedList<>();
+    public List<File> call() throws IOException {                                                                       // TODO: break this down into helpers
+        ConcurrentLinkedQueue<File> toVisit = new ConcurrentLinkedQueue<>(getDirectoriesOnly(this.rootDirectories));
+        LinkedList<Future<File[]>> visitors = new LinkedList<>();
         allFiles = new ConcurrentLinkedQueue<>();
 
-        for (File rootDirectory: this.rootDirectories) {
-            try {
-                if (!rootDirectory.isDirectory()) {
-                    throw new IOException("Root directory is not a directory");                                         // TODO: log errors
-                }
-                toVisit.add(rootDirectory);
-            } catch (Exception e) {
-                throw new IOException("Cannot read rootDirectories directory: " + e.getMessage());                        // TODO: log errors
-            }
+        if (toVisit.size() != this.rootDirectories.size()) {
+            throw new IOException("Some files given are not directories");                                              // TODO: log errors
         }
 
-        AppThreadPool threadPool = AppThreadPool.getInstance();
-        while(!toVisit.isEmpty() || !futures.isEmpty()) {
+        while(!toVisit.isEmpty() || !visitors.isEmpty()) {
+            if (interrupted) {
+                return null;
+            }
             if (!toVisit.isEmpty()) {
-                File thisDirectory = toVisit.poll();
-                AsyncFileList loader = new AsyncFileList(thisDirectory);
-                Future<File[]> future = threadPool.submit(loader);
-                futures.add(future);
+                Future<File[]> visitor = createVisitor(toVisit.poll());
+                visitors.add(visitor);
             } else {
-                for (int i = 0; i < futures.size(); i++) {                                                              // Check if any of the futures are ready
-                    Future<File[]> future = futures.get(i);
-                    if (future.isDone()) {
-                        try {
-                            File[] unseenFiles = future.get();
-                            for (File file: unseenFiles) {
-                                if (file.isDirectory()) {
-                                    toVisit.add(file);
-                                } else if (isValidFile(file)) {
-                                    allFiles.add(file);
-                                    // System.out.println(file.getName());                                                 // TODO: Remove this (used for debugging)
-                                }
-                            }
-                        } catch (Exception e) {
-                            throw new IOException("AppError reading directory", e);                                        // TODO: Add better exception msg // TODO: Record errors
-                        }
-                        futures.remove(i);
+                for (int i = 0; i < visitors.size(); i++) {
+                    if (interrupted) {
+                        return null;
+                    }
+                    Future<File[]> visitor = visitors.get(i);
+                    if (visitor.isDone()) {
+                        parseVisitorResults(visitor, toVisit);
+                        visitors.remove(i);
                         break;
                     }
                 }
             }
         }
-
         return new LinkedList<>(allFiles);
+    }
+
+    private void parseVisitorResults(Future<File[]> visitor, ConcurrentLinkedQueue<File> toVisit) throws IOException {
+        File[] results;
+        try {
+            results = visitor.get();
+        } catch (Exception e) {
+            e.printStackTrace();                                                                                        // TODO: error handling
+            throw new IOException("Error reading directory", e);
+        }
+
+        for (File file: results) {
+            if (file.isDirectory()) {
+                toVisit.add(file);
+            } else if (isValidFile(file)) {
+                allFiles.add(file);
+            }
+        }
+    }
+
+    private Future<File[]> createVisitor(File dir) {
+        AsyncFileList loader = new AsyncFileList(dir);
+        return AppThreadPool.getInstance().submit(loader);
+    }
+
+    /**
+     * Filters given list and keeps only directories
+     * @param files list to filter
+     * @return directories from given list
+     */
+    private List<File> getDirectoriesOnly(List<File> files) {
+        List<File> filtered = new LinkedList<>();
+        files.forEach((File f) -> {
+            if (f.isDirectory()) {
+                filtered.add(f);
+            }
+        });
+        return filtered;
     }
 
     private boolean isValidFile(File file) {

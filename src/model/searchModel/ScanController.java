@@ -130,9 +130,11 @@ public class ScanController {
     public void stop() throws ScanException {
         if (isPreSearchInProgress()) {
             this.stopPreSearch();
+            return;
         }
         if (isSearchInProgress()) {
             this.stopSearch();
+            return;
         }
         throw new ScanException("No stage is currently being executed");
     }

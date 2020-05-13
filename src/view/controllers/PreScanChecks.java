@@ -5,15 +5,14 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import model.async.threadPool.AppThreadPool;
 import model.searchModel.ScanController;
 import model.util.Progress;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import view.DuplicateDetectorGUIApp;
 
 import java.io.File;
@@ -25,17 +24,19 @@ public class PreScanChecks extends GUIController {
 
     /* UI copy */
     private String NAV_BAR_TITLE = "Preparing to scan";
-    private String MAIN_CONTENT_TITLE = "Pre-scan analysis";
+    private String MAIN_CONTENT_TITLE = "Pre-scan Analysis";
     private String NEXT_BUTTON_TEXT = "Next";
     private String SUMMARY_BAR_SUBTITLE_DEFAULT = "Analyzing folder";
     private String SUMMARY_BAR_HEADER_DEFAULT = "Chosen Folder";
     private String FILE_COUNT_TEMPLATE = "Files found: %d";
+    private String CANCELLED_TEXT_ON_BAR = "Cancelling analysis...";
 
     /* UI controls */
     private Label filePathLabel, completeLabel, fileCountLabel;
     private ProgressBar progressBar;
 
     private ScanController model;
+    private TrackProgress tracker;
 
     public PreScanChecks(DuplicateDetectorGUIApp app, GUIController prevController) {
         super(app, prevController);
@@ -50,8 +51,9 @@ public class PreScanChecks extends GUIController {
         initCopy();
 
         model.startPreSearch();
-        TrackProgress tracker = new TrackProgress(model, 1000);
+        tracker = new TrackProgress(model, 1000);
         AppThreadPool.getInstance().submit(tracker);
+        setCancelButtonOnAction(this::OnCancel);
     }
 
     private void configureControls() {
@@ -84,6 +86,13 @@ public class PreScanChecks extends GUIController {
         Platform.runLater(() -> completeLabel.setVisible(true));                                                        // TODO: remove use of runLater // TODO: javadoc
     }
 
+    private void setUIToCancelledMode() {
+        progressBar.setProgress(1.0);
+        progressBar.getStyleClass().add("cancelled-progress-bar");
+        completeLabel.setText(CANCELLED_TEXT_ON_BAR);
+        completeLabel.setVisible(true);
+    }
+
     private Node loadMainContent() {
         try {
             GridPane root = FXMLLoader.load(getClass().getResource("../layouts/PreScanChecks.fxml"));                   // TODO: replace with static config reference
@@ -104,37 +113,56 @@ public class PreScanChecks extends GUIController {
         return new Label("AppError loading content");
     }
 
+    private void OnCancel(ActionEvent e) {                                                                              // TODO: show 'are you sure?' dialogue
+        setUIToCancelledMode();
+        if (tracker != null) {
+            tracker.stop();
+        }
+        model.stop();                                                                                                   // TODO: catch exception/error handling
+        reset();
+    }
+
+    private void setNextController() {
+        // TODO: next controller not yet created
+        throw new NotImplementedException();
+    }
+
     private class TrackProgress implements Runnable {                                                                   // TODO: javadoc
 
         private final ScanController model;
         private final long interval;
+        private boolean interrupted = false;
 
         TrackProgress(ScanController model, long interval) {
             this.model = model;
             this.interval = interval;
         }
-        
+
         @Override
         public void run() {
             while (!model.isPreSearchDone()) {
-                System.out.println("Presearch still in progress");
+                if (interrupted) return;
                 updateFileCount();
                 try {
                     Thread.sleep(interval);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();                                                                                // TODO: error handling // TODO: add ability to cancel
+                    e.printStackTrace();                                                                                // TODO: error handling
                 }
             }
-            System.out.println("Pre-search done");
+            if (interrupted) return;
             updateFileCount();
+            if (interrupted) return;
             setComplete();
+        }
+
+        public void stop() {
+            interrupted = true;
         }
 
         private void updateFileCount() {
             try {
                 Progress progress = model.getProgress();
                 int count = progress.getDone();
-                System.out.println("Count is now " + count);
                 setFileCount(count);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -142,10 +170,9 @@ public class PreScanChecks extends GUIController {
         }
 
         private void setComplete() {
-            System.out.println("Setting complete");
             setProgressBarLevel(1.0);
             setCompleteLabelVisible();
-            // TODO: set next controller
+            setNextController();
             enableNextButton();
             disableCancelButton();
         }
