@@ -54,6 +54,11 @@
     -fx-font-smoothing-type: lcd;
 }
 
+.body: disabled {
+    -fx-text-fill: rgba(255,255,255,0.5);
+    -fx-fill: rgba(255,255,255,0.5);
+}
+
 /* Navigation Bar */
 
 #navBarBG {
@@ -210,9 +215,14 @@
 
 .strategyButton {
     -fx-border-color: rgba(255, 255, 255, 1);
+    -fx-border-width: 2px;
     -fx-border-radius: 60px;
     -fx-padding: 25 60 25 60;
     -fx-cursor: hand;
+}
+
+.strategyButton: disabled {
+    -fx-border-color: rgba(255, 255, 255, 0.5);
 }
 
 .strategyButton: hover {
@@ -233,6 +243,10 @@
     -fx-background-repeat: no-repeat;
     -fx-background-position: right;
     -fx-background-color: rgba(0,0,0,0);
+}
+
+.nextArrow: disabled {
+    -fx-opacity: 0.5;
 }
 
 /* Debug Only */
