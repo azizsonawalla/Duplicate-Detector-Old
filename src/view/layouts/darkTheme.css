@@ -165,7 +165,7 @@
     -fx-font-smoothing-type: lcd;
 }
 
-/* File Chooser */
+/* New Scan */
 
 #filePathBox {
     -fx-background-color: rgba(255,255,255,1);
@@ -197,7 +197,7 @@
     -fx-background-color: rgba(0,0,0, 0.8);
 }
 
-/* Pre Scan Checks */
+/* Prepare To Scan */
 
 .progress-bar > .bar, .progress-bar > .track {
     -fx-background-radius: 30;
@@ -211,7 +211,7 @@
 -fx-background-color: #ed1c24;
 }
 
-/* Choose Strategy */
+/* Configure Scan */
 
 .strategyButton {
     -fx-border-color: rgba(255, 255, 255, 1);
@@ -247,6 +247,29 @@
 
 .nextArrow: disabled {
     -fx-opacity: 0.5;
+}
+
+/* Run Scan */
+
+#startScanButton {
+    -fx-background-color: #009ad5;
+    -fx-border-radius: 50px;
+    -fx-background-radius: 50px;
+    -fx-border-width: 0px;
+    -fx-min-width: 150px;
+    -fx-font-size: 14pt;
+    -fx-font-family: 'Helvetica Neue LT Com 45 Light';
+    -fx-font-smoothing-type: lcd;
+    -fx-text-fill: #FFFFFF;
+    -fx-cursor: hand;
+}
+
+#startScanButton:hover {
+    -fx-background-color: #008dd3;
+}
+
+#startScanButton:pressed {
+    -fx-background-color: rgba(0,0,0, 0.8);
 }
 
 /* Debug Only */

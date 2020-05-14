@@ -7,16 +7,14 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import model.searchModel.searchStrategies.MetadataStrategy;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import view.DuplicateDetectorGUIApp;
 
-import java.io.File;
 import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.Arrays;
 import java.util.List;
 
-public class ChooseStrategy extends GUIController {
+public class ConfigureScan extends GUIController {
 
     /* UI copy */
     private String NAV_BAR_TITLE = "Configure scan";
@@ -28,7 +26,7 @@ public class ChooseStrategy extends GUIController {
     /* UI controls */
     private GridPane quickScan, fullScan, advScan;
 
-    public ChooseStrategy(DuplicateDetectorGUIApp app, GUIController prevController) {
+    ConfigureScan(DuplicateDetectorGUIApp app, GUIController prevController) {
         super(app, prevController);
     }
 
@@ -53,7 +51,7 @@ public class ChooseStrategy extends GUIController {
 
     Node loadMainContent() {
         try {
-            GridPane root = FXMLLoader.load(getClass().getResource("../layouts/ChooseStrategy.fxml"));                  // TODO: replace with static config reference
+            GridPane root = FXMLLoader.load(getClass().getResource("../layouts/ConfigureScan.fxml"));                  // TODO: replace with static config reference
             ObservableList<Node> rootChildren = root.getChildren();
             quickScan = (GridPane) rootChildren.get(0);
             fullScan = (GridPane) rootChildren.get(1);
@@ -68,7 +66,6 @@ public class ChooseStrategy extends GUIController {
     private void setStrategyAndGoToNextScene(MouseEvent e) {                                                            // TODO: add remaining strategies when created
         Object source = e.getSource();
         if (source.equals(quickScan)) {
-            System.out.println("Strategy set to MetadataStrategy");
             model.setStrategy(new MetadataStrategy());
         } else {
             throw new InvalidParameterException("Couldn't identify strategy for button");
@@ -80,6 +77,7 @@ public class ChooseStrategy extends GUIController {
     }
 
     private void createAndSetNextController() {
-        throw new NotImplementedException();
+        RunScan rs = new RunScan(app, this);
+        setNextController(rs);
     }
 }

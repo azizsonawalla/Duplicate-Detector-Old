@@ -15,7 +15,7 @@ import view.DuplicateDetectorGUIApp;
 import java.io.File;
 import java.io.IOException;
 
-public class ChooseFolderToScan extends GUIController {
+public class NewScan extends GUIController {
 
     /* UI copy */
     private String NAV_BAR_TITLE = "Start a new scan";
@@ -36,7 +36,7 @@ public class ChooseFolderToScan extends GUIController {
 
     private File chosenDirectory;
 
-    public ChooseFolderToScan(DuplicateDetectorGUIApp app) {
+    public NewScan(DuplicateDetectorGUIApp app) {
         super(app, null);                                                                                               // this is the first scene so prev scene is always null
     }
 
@@ -63,7 +63,7 @@ public class ChooseFolderToScan extends GUIController {
 
     Node loadMainContent() {
         try {
-            GridPane root = FXMLLoader.load(getClass().getResource("../layouts/ChooseFolderToScan.fxml"));              // TODO: replace with static config reference
+            GridPane root = FXMLLoader.load(getClass().getResource("../layouts/NewScan.fxml"));              // TODO: replace with static config reference
             ObservableList<Node> rootChildren = root.getChildren();
             AnchorPane filePathBox = (AnchorPane) rootChildren.get(0);
             ObservableList<Node> filePathBoxChildren = filePathBox.getChildren();
@@ -99,6 +99,6 @@ public class ChooseFolderToScan extends GUIController {
     private void prepareNextScene(File dir) {
         ScanController model = new ScanController(dir);
         app.setModel(model);
-        setNextController(new PreScanChecks(app, this));
+        setNextController(new PrepareToScan(app, this));
     }
 }

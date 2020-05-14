@@ -5,67 +5,71 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
-import model.async.threadPool.AppThreadPool;
 import model.searchModel.ScanController;
 import model.util.Progress;
 import view.DuplicateDetectorGUIApp;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class PreScanChecks extends GUIController {
+public class RunScan extends GUIController {
 
     /* UI copy */
-    private String NAV_BAR_TITLE = "Preparing to scan";
-    private String MAIN_CONTENT_TITLE = "Pre-scan Analysis";
+    private String NAV_BAR_TITLE = "Run scan";
+    private String MAIN_CONTENT_TITLE_BEFORE_START = "Ready to Scan";
     private String NEXT_BUTTON_TEXT = "Next";
-    private String SUMMARY_BAR_SUBTITLE_DEFAULT = "Analyzing folder";
-    private String SUMMARY_BAR_HEADER_DEFAULT = "Analyzing";
+    private String SUMMARY_BAR_SUBTITLE_TEMPLATE = "%d files will be scanned";
+    private String SUMMARY_BAR_SUBTITLE_COMPLETE = "Analyses complete. Click next to configure the scan.";
+    private String SUMMARY_BAR_HEADER_DEFAULT = "Scanning";
+    private String FILE_COUNT_DEFAULT = "Scan hasn't started";
     private String FILE_COUNT_TEMPLATE = "Files found: %d";
     private String CANCELLED_TEXT_ON_BAR = "Cancelling analysis...";
 
     /* UI controls */
     private Label filePathLabel, completeLabel, fileCountLabel;
+    private Button startScanButton;
     private ProgressBar progressBar;
     private TrackProgress tracker;
 
-    PreScanChecks(DuplicateDetectorGUIApp app, GUIController prevController) {
+    public RunScan(DuplicateDetectorGUIApp app, GUIController prevController) {
         super(app, prevController);
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         super.initialize(location, resources);
-        startPreSearch();
     }
 
     void configureControls() {
         disableNextButton();
+        disableCancelButton();
         completeLabel.setVisible(false);
-        progressBar.setProgress(-1);
+        progressBar.setProgress(0);
         setCancelButtonOnAction(this::OnCancel);
+        progressBar.setVisible(false);
+        fileCountLabel.setText(FILE_COUNT_DEFAULT);
     }
 
     void initCopy() {
-        setContentTitle(MAIN_CONTENT_TITLE);
+        setContentTitle(MAIN_CONTENT_TITLE_BEFORE_START);
         setNextButtonText(NEXT_BUTTON_TEXT);
         setNavBarTitle(NAV_BAR_TITLE);
-        setSummaryBarSubtitle(SUMMARY_BAR_SUBTITLE_DEFAULT);
-
-        setSummaryBarHeadWithFilePath(SUMMARY_BAR_HEADER_DEFAULT);
-        filePathLabel.setText(getPathToCurrentRootDir());
-        setFileCount(0);
+//        setSummaryBarSubtitle(SUMMARY_BAR_SUBTITLE_DEFAULT);
+//
+//        setSummaryBarHeadWithFilePath(SUMMARY_BAR_HEADER_DEFAULT);
+//        filePathLabel.setText(getPathToCurrentRootDir());
+//        setFileCount(0);
     }
 
     Node loadMainContent() {
         try {
-            GridPane root = FXMLLoader.load(getClass().getResource("../layouts/PreScanChecks.fxml"));                   // TODO: replace with static config reference
+            GridPane root = FXMLLoader.load(getClass().getResource("../layouts/RunScan.fxml"));                         // TODO: replace with static config reference
 
             ObservableList<Node> rootChildren = root.getChildren();
             this.filePathLabel = (Label) rootChildren.get(0);
@@ -73,20 +77,15 @@ public class PreScanChecks extends GUIController {
 
             StackPane stackPane = (StackPane) rootChildren.get(1);
             ObservableList<Node> stackPaneChildren = stackPane.getChildren();
-            this.progressBar = (ProgressBar) stackPaneChildren.get(0);
-            this.completeLabel = (Label) stackPaneChildren.get(1);
+            this.startScanButton = (Button) stackPaneChildren.get(0);
+            this.progressBar = (ProgressBar) stackPaneChildren.get(1);
+            this.completeLabel = (Label) stackPaneChildren.get(2);
 
             return root;
         } catch (IOException e) {
             e.printStackTrace();                                                                                        // TODO: error handling
         }
         return new Label("Error loading content");
-    }
-
-    private void startPreSearch() {
-        model.startPreSearch();
-        tracker = new TrackProgress(model, 200);                                                                        // TODO: move interval time to config
-        AppThreadPool.getInstance().submit(tracker);
     }
 
     private void setFileCount(int i) {
@@ -118,7 +117,7 @@ public class PreScanChecks extends GUIController {
     }
 
     private void createAndSetNextController() {
-        ChooseStrategy c = new ChooseStrategy(app, this);
+        ConfigureScan c = new ConfigureScan(app, this);
         setNextController(c);
     }
 
@@ -126,6 +125,7 @@ public class PreScanChecks extends GUIController {
         setProgressBarLevel(1.0);
         setCompleteLabelVisible();
         createAndSetNextController();
+        setSummaryBarSubtitle(SUMMARY_BAR_SUBTITLE_COMPLETE);
         enableNextButton();
         disableCancelButton();
     }
@@ -155,7 +155,7 @@ public class PreScanChecks extends GUIController {
             if (interrupted) return;
             updateFileCount();
             if (interrupted) return;
-            setComplete();
+            Platform.runLater(RunScan.this::setComplete);                                                       // TODO: remove use of runlater
         }
 
         void stop() {
