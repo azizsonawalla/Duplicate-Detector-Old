@@ -27,13 +27,14 @@ public class DuplicateDetectorGUIApp extends Application {
 
     @Override
     public void start(Stage stage) {
-        GUIController controller = new ChooseStrategy(this, null);
+        GUIController controller = new ChooseFolderToScan(this);
         try {
             Scene firstScene = loadDefaultScene(controller);
             this.stage = configureDefaultStage(stage, firstScene);
             this.stage.show();
         } catch (IOException e) {
-            // TODO: shutdown
+            // TODO: log
+            stop();
         }
     }
 

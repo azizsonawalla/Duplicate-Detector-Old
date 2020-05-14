@@ -1,12 +1,20 @@
 package view.controllers;
 
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import model.searchModel.searchStrategies.MetadataStrategy;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import view.DuplicateDetectorGUIApp;
 
+import java.io.File;
 import java.io.IOException;
+import java.security.InvalidParameterException;
+import java.util.Arrays;
+import java.util.List;
 
 public class ChooseStrategy extends GUIController {
 
@@ -18,6 +26,7 @@ public class ChooseStrategy extends GUIController {
     private String SUMMARY_BAR_SUBTITLE_TEMPLATE = "%d files will be inspected";
 
     /* UI controls */
+    private GridPane quickScan, fullScan, advScan;
 
     public ChooseStrategy(DuplicateDetectorGUIApp app, GUIController prevController) {
         super(app, prevController);
@@ -27,6 +36,9 @@ public class ChooseStrategy extends GUIController {
         hideNextButton();
         hideCancelButton();
         removeMainWindowLogo();
+
+        List<GridPane> allStrategyButtons = Arrays.asList(quickScan, fullScan, advScan);
+        allStrategyButtons.forEach((GridPane g) -> g.setOnMouseClicked(this::setStrategyAndGoToNextScene));
     }
 
     void initCopy() {
@@ -34,26 +46,20 @@ public class ChooseStrategy extends GUIController {
         setNextButtonText(NEXT_BUTTON_TEXT);
         setNavBarTitle(NAV_BAR_TITLE);
 
-//        long totalFileCount = model.getProgress().getDone();
-//        setSummaryBarSubtitle(String.format(SUMMARY_BAR_SUBTITLE_TEMPLATE, totalFileCount));
-//
-//        File chosenFolder = model.getRootDirectories().get(0);
-//        setSummaryBarTitle(SUMMARY_BAR_HEADER_DEFAULT, chosenFolder.getAbsolutePath(), true, true);                     // TODO: move to parent
+        long totalFileCount = model.getProgress().getDone();
+        setSummaryBarSubtitle(String.format(SUMMARY_BAR_SUBTITLE_TEMPLATE, totalFileCount));
+
+        File chosenFolder = model.getRootDirectories().get(0);
+        setSummaryBarTitle(SUMMARY_BAR_HEADER_DEFAULT, chosenFolder.getAbsolutePath(), true, true);                     // TODO: move to parent
     }
 
     Node loadMainContent() {
         try {
             GridPane root = FXMLLoader.load(getClass().getResource("../layouts/ChooseStrategy.fxml"));                  // TODO: replace with static config reference
-
-//            ObservableList<Node> rootChildren = root.getChildren();
-//            this.filePathLabel = (Label) rootChildren.get(0);
-//            this.fileCountLabel = (Label) rootChildren.get(2);
-//
-//            StackPane stackPane = (StackPane) rootChildren.get(1);
-//            ObservableList<Node> stackPaneChildren = stackPane.getChildren();
-//            this.progressBar = (ProgressBar) stackPaneChildren.get(0);
-//            this.completeLabel = (Label) stackPaneChildren.get(1);
-
+            ObservableList<Node> rootChildren = root.getChildren();
+            quickScan = (GridPane) rootChildren.get(0);
+            fullScan = (GridPane) rootChildren.get(1);
+            advScan = (GridPane) rootChildren.get(2);
             return root;
         } catch (IOException e) {
             e.printStackTrace();                                                                                        // TODO: error handling
@@ -61,8 +67,21 @@ public class ChooseStrategy extends GUIController {
         return new Label("Error loading content");
     }
 
+    private void setStrategyAndGoToNextScene(MouseEvent e) {                                                                            // TODO: add remaining strategies when created
+        Object source = e.getSource();
+        if (source.equals(quickScan)) {
+            System.out.println("Strategy set to MetadataStrategy");
+            model.setStrategy(new MetadataStrategy());
+        } else {
+            throw new InvalidParameterException("Couldn't identify strategy for button");
+            // TODO: error handling
+        }
+
+        createAndSetNextController();
+        goToNextScene();
+    }
+
     private void createAndSetNextController() {
-        ChooseStrategy c = new ChooseStrategy(app, this);
-        setNextController(c);
+        throw new NotImplementedException();
     }
 }

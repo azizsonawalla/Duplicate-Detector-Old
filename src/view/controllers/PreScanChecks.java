@@ -81,7 +81,7 @@ public class PreScanChecks extends GUIController {
         } catch (IOException e) {
             e.printStackTrace();                                                                                        // TODO: error handling
         }
-        return new Label("AppError loading content");
+        return new Label("Error loading content");
     }
 
     private void startPreSearch() {

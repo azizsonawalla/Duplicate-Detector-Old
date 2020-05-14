@@ -131,12 +131,20 @@ public abstract class GUIController implements Initializable {
         mainContent.getRowConstraints().get(1).setPercentHeight(0);
     }
 
+    void goToNextScene() {
+        app.switchScene(this.nextController);
+    }
+
+    void goToPrevScene() {
+        app.switchScene(prevController);
+    }
+
     /**
      * Cleans-up and goes back to the previous scene
      */
     void reset() {
         prevController.nextController = null;                                                                           // remove reference to this controller to free memory
-        app.switchScene(prevController);
+        goToPrevScene();
     }
 
     /**
@@ -148,7 +156,7 @@ public abstract class GUIController implements Initializable {
     }
 
     private void setNextButtonOnAction() {
-        nextButton.setOnAction(event -> app.switchScene(this.nextController));
+        nextButton.setOnAction(event -> goToNextScene());
     }
 
     private void setBackButtonOnAction() {

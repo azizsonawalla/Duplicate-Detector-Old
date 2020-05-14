@@ -37,7 +37,7 @@ public class ChooseFolderToScan extends GUIController {
     private File chosenDirectory;
 
     public ChooseFolderToScan(DuplicateDetectorGUIApp app) {
-        super(app, null);
+        super(app, null);                                                                                               // this is the first scene so prev scene is always null
     }
 
     void configureControls() {
