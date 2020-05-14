@@ -2,7 +2,6 @@ package model.async.asyncFileSystem;
 
 import model.async.threadPool.AppThreadPool;
 import model.util.Progress;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,7 +9,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 /**
@@ -34,9 +32,9 @@ public class AsyncDirectoryCrawler implements Callable<List<File>> {
      */
     public Progress getProgress() {
         if (allFiles == null) {
-            return new Progress(0, -1, -1, -1, -1, null, null);
+            return new Progress(0, -1, -1, -1, -1, -1, null, null);
         }
-        return new Progress(allFiles.size(), -1, -1, -1, -1, null, null);                                               // TODO: add more info. Can estimate eta by calculating size differences
+        return new Progress(allFiles.size(), -1, -1, -1, -1, -1, null, null);                                               // TODO: add more info. Can estimate eta by calculating size differences
     }
 
     /**

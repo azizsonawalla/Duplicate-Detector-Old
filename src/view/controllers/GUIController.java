@@ -162,7 +162,7 @@ public abstract class GUIController implements Initializable {
      */
     void reset() {
         prevController.nextController = null;                                                                           // remove reference to this controller to free memory
-        goToPrevScene();
+        goToPrevScene();                                                                                                // TODO: go to first scene instead // TODO: set all globals to null
     }
 
     /**

@@ -7,11 +7,12 @@ import java.util.List;
  */
 public class Progress {
 
-    private int done;              // number of tasks already done
-    private int inProgress;        // number of tasks being done right now
-    private int remaining;         // number of tasks yet to check
+    private long done;              // number of tasks already done
+    private long inProgress;        // number of tasks being done right now
+    private long remaining;         // number of tasks yet to check
+    private long positives;        // number of tasks that returned positive result
     private long eta;              // estimated time remaining
-    private int errors;            // number of errors so far
+    private long errors;            // number of errors so far
     private List<String> errMsgs;  // error messages encountered
     private String currentTask;    // name of current task
 
@@ -20,15 +21,17 @@ public class Progress {
      * @param done number of tasks done
      * @param inProgress number of tasks currently being processed
      * @param remaining number of tasks remaining to be processed
+     * @param positives number of tasks that returned a positive result
      * @param eta time in milliseconds that remains for all tasks to be completed
      * @param errors number of tasks that resulted in errors
      * @param errMsgs error messages encountered so far
      * @param currentTask current task that is being worked on
      */
-    public Progress(int done, int inProgress, int remaining, long eta,
-                    int errors, List<String> errMsgs, String currentTask) {
+    public Progress(long done, long inProgress, long remaining, long positives, long eta,
+                    long errors, List<String> errMsgs, String currentTask) {
         this.done = done;
         this.inProgress = inProgress;
+        this.positives = positives;
         this.remaining = remaining;
         this.eta = eta;
         this.errors = errors;
@@ -36,7 +39,7 @@ public class Progress {
         this.currentTask = currentTask;
     }
 
-    public int getDone() {
+    public long getDone() {
         return done;
     }
 
@@ -44,7 +47,7 @@ public class Progress {
         this.done = done;
     }
 
-    public int getInProgress() {
+    public long getInProgress() {
         return inProgress;
     }
 
@@ -52,8 +55,12 @@ public class Progress {
         this.inProgress = inProgress;
     }
 
-    public int getRemaining() {
+    public long getRemaining() {
         return remaining;
+    }
+
+    public long getPositives() {
+        return positives;
     }
 
     public void setRemaining(int remaining) {
@@ -68,7 +75,7 @@ public class Progress {
         this.eta = eta;
     }
 
-    public int getErrors() {
+    public long getErrors() {
         return errors;
     }
 

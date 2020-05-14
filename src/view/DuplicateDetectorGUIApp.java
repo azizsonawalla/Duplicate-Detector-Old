@@ -27,7 +27,7 @@ public class DuplicateDetectorGUIApp extends Application {
 
     @Override
     public void start(Stage stage) {
-        GUIController controller = new RunScan(this, null);
+        GUIController controller = new NewScan(this);
         try {
             Scene firstScene = loadDefaultScene(controller);
             this.stage = configureDefaultStage(stage, firstScene);

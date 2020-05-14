@@ -89,7 +89,7 @@ public class PrepareToScan extends GUIController {
         AppThreadPool.getInstance().submit(tracker);
     }
 
-    private void setFileCount(int i) {
+    private void setFileCount(long i) {
         Platform.runLater(() -> fileCountLabel.setText(String.format(FILE_COUNT_TEMPLATE, i)));                         // TODO: remove use of runLater // TODO: javadoc
     }
 
@@ -166,7 +166,7 @@ public class PrepareToScan extends GUIController {
         private void updateFileCount() {
             try {
                 Progress progress = model.getProgress();
-                int count = progress.getDone();
+                long count = progress.getDone();
                 setFileCount(count);
             } catch (Exception e) {
                 e.printStackTrace();

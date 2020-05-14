@@ -17,12 +17,13 @@ import java.util.concurrent.*;
 public class MetadataStrategy implements ISearchStrategy {
 
     private LinkedList<Future> taskFutures;                                                                             // TODO: maybe use thread safe Queue?
+    private LockableConcurrentHashMap<String, LinkedList<File>> duplicates;
     private int totalFileCount;
     private long startTime;                                                                                             // epoch time for when last search was started
 
     @Override
     public Progress getProgress() throws ScanException {
-        int done = 0;                                                                                                   // TODO: add check for if search has started
+        int done = 0;                                                                                                   // TODO: add check for if search has started // TODO: break into helpers
         for (Future future: this.taskFutures) {
             if (future.isDone()) {
                 done++;
@@ -35,12 +36,19 @@ public class MetadataStrategy implements ISearchStrategy {
         long rate = elapsedTime / done;                                                                                 // We lose decimal accuracy here but for our purposes it doesn't matter
         long eta = remaining*rate;
 
-        return new Progress(done,-1,remaining, eta, -1, null, null);                // TODO: add support for remaining stats
+        long duplicatesCount = 0;
+        for (List<File> files: duplicates.values()) {
+            if (files.size() > 1) {
+                duplicatesCount++;
+            }
+        }
+
+        return new Progress(done,-1,remaining, duplicatesCount, eta, -1, null, null);                                   // TODO: add support for remaining stats
     }
 
     @Override
     public Future<List<List<File>>> findDuplicates(List<File> allFiles) {                                               // TODO: javadoc
-        LockableConcurrentHashMap<String, LinkedList<File>> duplicates = new LockableConcurrentHashMap<>();
+        duplicates = new LockableConcurrentHashMap<>();
         this.taskFutures = new LinkedList<>();
         this.totalFileCount = allFiles.size();
         this.startTime = System.currentTimeMillis();

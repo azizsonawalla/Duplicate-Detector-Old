@@ -10,40 +10,46 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
+import model.async.threadPool.AppThreadPool;
 import model.searchModel.ScanController;
 import model.util.Progress;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import view.DuplicateDetectorGUIApp;
 
 import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
 
 public class RunScan extends GUIController {
+
+    /**
+     * To Fix:
+     * - Progress bar shape is weird at low percentages
+     * - ETA always 0
+     * - Need to do a last refresh of stats after completing scan
+     * - View Results button text doesn't fit
+     * - Percentage complete is wrong
+     **/
 
     /* UI copy */
     private String NAV_BAR_TITLE = "Run scan";
     private String MAIN_CONTENT_TITLE_BEFORE_START = "Ready to Scan";
-    private String NEXT_BUTTON_TEXT = "Next";
+    private String NEXT_BUTTON_TEXT = "View Results";
     private String SUMMARY_BAR_SUBTITLE_TEMPLATE = "%d files will be scanned";
-    private String SUMMARY_BAR_SUBTITLE_COMPLETE = "Analyses complete. Click next to configure the scan.";
+    private String SUMMARY_BAR_SUBTITLE_COMPLETE = "Scan complete. Click next to view results.";
     private String SUMMARY_BAR_HEADER_DEFAULT = "Scanning";
     private String FILE_COUNT_DEFAULT = "Scan hasn't started";
-    private String FILE_COUNT_TEMPLATE = "Files found: %d";
-    private String CANCELLED_TEXT_ON_BAR = "Cancelling analysis...";
+    private String FILE_COUNT_TEMPLATE = "Files scanned: %d";
+    private String DUPLICATES_TEMPLATE = "Suspected Duplicates: %d";
+    private String ETA_TEMPLATE = "Estimated time remaining: %s";
+    private String CANCELLED_TEXT_ON_BAR = "Cancelling scan...";
 
     /* UI controls */
-    private Label filePathLabel, completeLabel, fileCountLabel;
+    private Label filePathLabel, completeLabel, filesScanned, suspectedDuplicates, etaLabel;
     private Button startScanButton;
     private ProgressBar progressBar;
     private TrackProgress tracker;
 
     public RunScan(DuplicateDetectorGUIApp app, GUIController prevController) {
         super(app, prevController);
-    }
-
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        super.initialize(location, resources);
     }
 
     void configureControls() {
@@ -53,18 +59,20 @@ public class RunScan extends GUIController {
         progressBar.setProgress(0);
         setCancelButtonOnAction(this::OnCancel);
         progressBar.setVisible(false);
-        fileCountLabel.setText(FILE_COUNT_DEFAULT);
+        filesScanned.setText(FILE_COUNT_DEFAULT);
+        startScanButton.setOnAction(this::startScan);
+        suspectedDuplicates.setVisible(false);
+        etaLabel.setVisible(false);
     }
 
     void initCopy() {
         setContentTitle(MAIN_CONTENT_TITLE_BEFORE_START);
         setNextButtonText(NEXT_BUTTON_TEXT);
         setNavBarTitle(NAV_BAR_TITLE);
-//        setSummaryBarSubtitle(SUMMARY_BAR_SUBTITLE_DEFAULT);
-//
-//        setSummaryBarHeadWithFilePath(SUMMARY_BAR_HEADER_DEFAULT);
-//        filePathLabel.setText(getPathToCurrentRootDir());
-//        setFileCount(0);
+        setSummaryBarSubtitle(String.format(SUMMARY_BAR_SUBTITLE_TEMPLATE, model.getProgress().getDone()));
+
+        setSummaryBarHeadWithFilePath(SUMMARY_BAR_HEADER_DEFAULT);
+        filePathLabel.setText(getPathToCurrentRootDir());
     }
 
     Node loadMainContent() {
@@ -73,7 +81,9 @@ public class RunScan extends GUIController {
 
             ObservableList<Node> rootChildren = root.getChildren();
             this.filePathLabel = (Label) rootChildren.get(0);
-            this.fileCountLabel = (Label) rootChildren.get(2);
+            this.filesScanned = (Label) rootChildren.get(2);
+            this.suspectedDuplicates = (Label) rootChildren.get(3);
+            this.etaLabel = (Label) rootChildren.get(4);
 
             StackPane stackPane = (StackPane) rootChildren.get(1);
             ObservableList<Node> stackPaneChildren = stackPane.getChildren();
@@ -88,8 +98,52 @@ public class RunScan extends GUIController {
         return new Label("Error loading content");
     }
 
-    private void setFileCount(int i) {
-        Platform.runLater(() -> fileCountLabel.setText(String.format(FILE_COUNT_TEMPLATE, i)));                         // TODO: remove use of runLater // TODO: javadoc
+    private void startScan(ActionEvent e) {
+        tracker = new TrackProgress(model, 500);
+        AppThreadPool.getInstance().submit(tracker);
+        try {
+            model.startSearch();
+        } catch (Exception e2) {
+            e2.printStackTrace();
+            // TODO: error handling
+        }
+        startScanButton.setVisible(false);
+        progressBar.setVisible(true);
+        enableCancelButton();
+        suspectedDuplicates.setVisible(true);
+        etaLabel.setVisible(true);
+    }
+
+    private void setProgressStats(long scanned, long duplicates, long eta, double percentageDone) {                     // TODO: javadoc
+        System.out.println("Setting progress stats");
+        Platform.runLater(() -> {
+            filesScanned.setText(String.format(FILE_COUNT_TEMPLATE, scanned));
+            suspectedDuplicates.setText(String.format(DUPLICATES_TEMPLATE, duplicates));
+            etaLabel.setText(String.format(ETA_TEMPLATE, milliSecondsToTime(eta)));
+            progressBar.setProgress(percentageDone);
+        });
+    }
+
+    private String milliSecondsToTime(long milli) {
+        long seconds = milli/1000;
+        long mins = seconds/60;
+        long hours = mins/60;
+        long days = hours/24;
+
+        seconds -= mins*60;
+        mins -= hours*60;
+        hours -= days*24;
+
+        if (days > 0) {
+            return String.format("%dd %dh %dm %ds", days, hours, mins, seconds);
+        }
+        if (hours > 0) {
+            return String.format("%dh %dm %ds", hours, mins, seconds);
+        }
+        if (mins > 0) {
+            return String.format("%dm %ds", mins, seconds);
+        }
+        return String.format("%ds", seconds);
     }
 
     private void setProgressBarLevel(double p) {
@@ -117,17 +171,17 @@ public class RunScan extends GUIController {
     }
 
     private void createAndSetNextController() {
-        ConfigureScan c = new ConfigureScan(app, this);
-        setNextController(c);
+        // TODO:
+        throw new NotImplementedException();
     }
 
     private void setComplete() {
         setProgressBarLevel(1.0);
         setCompleteLabelVisible();
-        createAndSetNextController();
         setSummaryBarSubtitle(SUMMARY_BAR_SUBTITLE_COMPLETE);
-        enableNextButton();
         disableCancelButton();
+//        createAndSetNextController();
+        enableNextButton();
     }
 
     private class TrackProgress implements Runnable {                                                                   // TODO: javadoc
@@ -143,9 +197,16 @@ public class RunScan extends GUIController {
 
         @Override
         public void run() {
-            while (!model.isPreSearchDone()) {
+            while (!model.isSearchInProgress()) {                                                                       // TODO: add timeout
+                try {
+                    Thread.sleep(interval);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();                                                                                // TODO: error handling
+                }
+            }
+            while (!model.isSearchDone()) {
                 if (interrupted) return;
-                updateFileCount();
+                getAndSetProgressStats();
                 try {
                     Thread.sleep(interval);
                 } catch (InterruptedException e) {
@@ -153,22 +214,26 @@ public class RunScan extends GUIController {
                 }
             }
             if (interrupted) return;
-            updateFileCount();
+            getAndSetProgressStats();
             if (interrupted) return;
-            Platform.runLater(RunScan.this::setComplete);                                                       // TODO: remove use of runlater
+            Platform.runLater(RunScan.this::setComplete);                                                               // TODO: remove use of runlater
         }
 
         void stop() {
             interrupted = true;
         }
 
-        private void updateFileCount() {
+        private void getAndSetProgressStats() {
             try {
                 Progress progress = model.getProgress();
-                int count = progress.getDone();
-                setFileCount(count);
+                long scanned = progress.getDone();
+                long duplicates = progress.getPositives();
+                long eta = progress.getEta();
+                long remaining = progress.getRemaining();
+                double percentageDone = scanned*.1 / (scanned+remaining);
+                setProgressStats(scanned, duplicates, eta, percentageDone);
             } catch (Exception e) {
-                e.printStackTrace();
+                // TODO: log
             }
         }
     }

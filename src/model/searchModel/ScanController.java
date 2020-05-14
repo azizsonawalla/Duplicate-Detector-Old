@@ -76,7 +76,7 @@ public class ScanController {
         }
         if (isPreSearchDone()) {
             try {
-                return new Progress(allFilesFuture.get().size(), 0, 0, 0, 0, null, "Pre-Search Completed");             // TODO: change current task to current stage enum  // TODO: remove multiple calls to get() - save result on first call
+                return new Progress(allFilesFuture.get().size(), 0, 0, 0, 0, 0, null, "Pre-Search Completed");             // TODO: change current task to current stage enum  // TODO: remove multiple calls to get() - save result on first call
             } catch (Exception e) {
                 throw new ScanException("Failed to get pre search results", e);
             }
@@ -235,7 +235,7 @@ public class ScanController {
             setCurrentStage(ScanStage.STOPPED);
         } catch (Exception e) {
             setCurrentStage(ScanStage.ERROR);
-            throw new ScanException("AppError while trying to stop Search stage", e);
+            throw new ScanException("Error while trying to stop Search stage", e);
         }
     }
 
