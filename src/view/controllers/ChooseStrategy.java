@@ -45,12 +45,10 @@ public class ChooseStrategy extends GUIController {
         setContentTitle(MAIN_CONTENT_TITLE);
         setNextButtonText(NEXT_BUTTON_TEXT);
         setNavBarTitle(NAV_BAR_TITLE);
+        setSummaryBarHeadWithFilePath(SUMMARY_BAR_HEADER_DEFAULT);
 
         long totalFileCount = model.getProgress().getDone();
         setSummaryBarSubtitle(String.format(SUMMARY_BAR_SUBTITLE_TEMPLATE, totalFileCount));
-
-        File chosenFolder = model.getRootDirectories().get(0);
-        setSummaryBarTitle(SUMMARY_BAR_HEADER_DEFAULT, chosenFolder.getAbsolutePath(), true, true);                     // TODO: move to parent
     }
 
     Node loadMainContent() {
@@ -67,7 +65,7 @@ public class ChooseStrategy extends GUIController {
         return new Label("Error loading content");
     }
 
-    private void setStrategyAndGoToNextScene(MouseEvent e) {                                                                            // TODO: add remaining strategies when created
+    private void setStrategyAndGoToNextScene(MouseEvent e) {                                                            // TODO: add remaining strategies when created
         Object source = e.getSource();
         if (source.equals(quickScan)) {
             System.out.println("Strategy set to MetadataStrategy");

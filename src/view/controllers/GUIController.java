@@ -15,6 +15,7 @@ import model.searchModel.ScanController;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import view.DuplicateDetectorGUIApp;
 
+import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -53,6 +54,23 @@ public abstract class GUIController implements Initializable {
      */
     void setNavBarTitle(String title) {
         navBarTitle.setText(title);
+    }
+
+    /**
+     * Sets the given string as the summary bar header and uses the absolute path of the current root directory set in
+     * the model as the preview text. Assumes model and root directory are not null.
+     * @param header part of the title to put before the colon
+     */
+    void setSummaryBarHeadWithFilePath(String header) {
+        setSummaryBarTitle(header, getPathToCurrentRootDir(), true, true);
+    }
+
+    /**
+     * Returns the absolute path of the root directory currently set in the model. Assumes model and root directory
+     * are not null.
+     */
+    String getPathToCurrentRootDir() {
+        return model.getRootDirectories().get(0).getAbsolutePath();
     }
 
     /**

@@ -58,9 +58,8 @@ public class PreScanChecks extends GUIController {
         setNavBarTitle(NAV_BAR_TITLE);
         setSummaryBarSubtitle(SUMMARY_BAR_SUBTITLE_DEFAULT);
 
-        File chosenFolder = model.getRootDirectories().get(0);
-        setSummaryBarTitle(SUMMARY_BAR_HEADER_DEFAULT, chosenFolder.getAbsolutePath(), true, true);
-        filePathLabel.setText(chosenFolder.getAbsolutePath());
+        setSummaryBarHeadWithFilePath(SUMMARY_BAR_HEADER_DEFAULT);
+        filePathLabel.setText(getPathToCurrentRootDir());
         setFileCount(0);
     }
 
