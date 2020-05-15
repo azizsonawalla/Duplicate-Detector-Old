@@ -66,12 +66,12 @@ public class TaskProgressTracker implements Runnable {                          
                 throw new TimeoutException("Timed out while waiting");
             }
             if (update != null) {
-                update.run();
+                Platform.runLater(update);
             }
             Thread.sleep(pollInterval);
         }
         if (update != null) {
-            update.run();
+            Platform.runLater(update);
         }
     }
 }
