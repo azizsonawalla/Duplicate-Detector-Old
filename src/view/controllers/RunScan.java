@@ -22,12 +22,7 @@ public class RunScan extends GUIController {
 
     /**
      * To Fix:
-     * - Progress bar shape is weird at low percentages
-     * - ETA always 0
-     * - Need to do a last refresh of stats after completing scan
      * - View Results button text doesn't fit
-     * - Percentage complete is wrong
-     * - Align stat labels to left, numbers to right. Remove need to concat every time.
      **/
 
     /* UI copy */
@@ -37,10 +32,8 @@ public class RunScan extends GUIController {
     private String SUMMARY_BAR_SUBTITLE_TEMPLATE = "%d files will be scanned";
     private String SUMMARY_BAR_SUBTITLE_COMPLETE = "Scan complete. Click next to view results.";
     private String SUMMARY_BAR_HEADER_DEFAULT = "Scanning";
-    private String FILE_COUNT_DEFAULT = "Scan hasn't started";
-    private String FILE_COUNT_TEMPLATE = "Files scanned: %d";
-    private String DUPLICATES_TEMPLATE = "Suspected Duplicates: %d";
-    private String ETA_TEMPLATE = "Estimated time remaining: %s";
+    private String STATS_DEFAULT = "Not started";
+    private String FILE_COUNT_TEMPLATE = "%d (%6.2f%%)";
     private String CANCELLED_TEXT_ON_BAR = "Cancelling scan...";
 
     /* UI constants */
@@ -52,21 +45,24 @@ public class RunScan extends GUIController {
     private ProgressBar progressBar;
     private TrackProgress tracker;
 
-    public RunScan(DuplicateDetectorGUIApp app, GUIController prevController) {
+    RunScan(DuplicateDetectorGUIApp app, GUIController prevController) {
         super(app, prevController);
     }
 
     void configureControls() {
         disableNextButton();
         disableCancelButton();
+
         completeLabel.setVisible(false);
         progressBar.setProgress(0);
-        setCancelButtonOnAction(this::OnCancel);
         progressBar.setVisible(false);
-        filesScanned.setText(FILE_COUNT_DEFAULT);
+
+        filesScanned.setText(STATS_DEFAULT);
+        suspectedDuplicates.setText(STATS_DEFAULT);
+        etaLabel.setText(STATS_DEFAULT);
+
+        setCancelButtonOnAction(this::OnCancel);
         startScanButton.setOnAction(this::startScan);
-        suspectedDuplicates.setVisible(false);
-        etaLabel.setVisible(false);
     }
 
     void initCopy() {
@@ -85,15 +81,24 @@ public class RunScan extends GUIController {
 
             ObservableList<Node> rootChildren = root.getChildren();
             this.filePathLabel = (Label) rootChildren.get(0);
-            this.filesScanned = (Label) rootChildren.get(2);
-            this.suspectedDuplicates = (Label) rootChildren.get(3);
-            this.etaLabel = (Label) rootChildren.get(4);
 
-            StackPane stackPane = (StackPane) rootChildren.get(1);
-            ObservableList<Node> stackPaneChildren = stackPane.getChildren();
-            this.startScanButton = (Button) stackPaneChildren.get(0);
-            this.progressBar = (ProgressBar) stackPaneChildren.get(1);
-            this.completeLabel = (Label) stackPaneChildren.get(2);
+            StackPane stackPane1 = (StackPane) rootChildren.get(1);
+            ObservableList<Node> stackPaneChildren1 = stackPane1.getChildren();
+            this.startScanButton = (Button) stackPaneChildren1.get(0);
+            this.progressBar = (ProgressBar) stackPaneChildren1.get(1);
+            this.completeLabel = (Label) stackPaneChildren1.get(2);
+
+            StackPane stackPane2 = (StackPane) rootChildren.get(2);
+            ObservableList<Node> stackPaneChildren2 = stackPane2.getChildren();
+            this.filesScanned = (Label) stackPaneChildren2.get(1);
+
+            StackPane stackPane3 = (StackPane) rootChildren.get(3);
+            ObservableList<Node> stackPaneChildren3 = stackPane3.getChildren();
+            this.suspectedDuplicates = (Label) stackPaneChildren3.get(1);
+
+            StackPane stackPane4 = (StackPane) rootChildren.get(4);
+            ObservableList<Node> stackPaneChildren4 = stackPane4.getChildren();
+            this.etaLabel = (Label) stackPaneChildren4.get(1);
 
             return root;
         } catch (IOException e) {
@@ -119,11 +124,10 @@ public class RunScan extends GUIController {
     }
 
     private void setProgressStats(long scanned, long duplicates, long eta, double percentageDone) {                     // TODO: javadoc
-        System.out.println("Setting progress stats");
         Platform.runLater(() -> {
-            filesScanned.setText(String.format(FILE_COUNT_TEMPLATE, scanned));
-            suspectedDuplicates.setText(String.format(DUPLICATES_TEMPLATE, duplicates));
-            etaLabel.setText(String.format(ETA_TEMPLATE, milliSecondsToTime(eta)));
+            filesScanned.setText(String.format(FILE_COUNT_TEMPLATE, scanned, percentageDone*100));
+            suspectedDuplicates.setText(Long.toString(duplicates));
+            etaLabel.setText(milliSecondsToTime(eta));
             progressBar.setProgress(Math.max(percentageDone, PROGRESS_BAR_MIN_VALUE));                                  // min value helps give illusion of progress
         });
     }
@@ -201,6 +205,8 @@ public class RunScan extends GUIController {
 
         @Override
         public void run() {
+
+            // If search hasn't started, wait for a bit
             while (!model.isSearchInProgress()) {                                                                       // TODO: add timeout
                 try {
                     Thread.sleep(interval);
@@ -208,6 +214,7 @@ public class RunScan extends GUIController {
                     e.printStackTrace();                                                                                // TODO: error handling
                 }
             }
+
             while (!model.isSearchDone()) {
                 if (interrupted) return;
                 getAndSetProgressStats();
@@ -217,6 +224,7 @@ public class RunScan extends GUIController {
                     e.printStackTrace();                                                                                // TODO: error handling
                 }
             }
+
             if (interrupted) return;
             getAndSetProgressStats();
             if (interrupted) return;
@@ -234,7 +242,7 @@ public class RunScan extends GUIController {
                 long duplicates = progress.getPositives();
                 long eta = progress.getEta();
                 long remaining = progress.getRemaining();
-                double percentageDone = scanned*.1 / (scanned+remaining);
+                double percentageDone = scanned*1. / (scanned+remaining);
                 setProgressStats(scanned, duplicates, eta, percentageDone);
             } catch (Exception e) {
                 // TODO: log

@@ -122,16 +122,16 @@
             <children>
                 <GridPane GridPane.columnIndex="2" GridPane.halignment="RIGHT">
                     <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" percentWidth="80" />
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="100.0" percentWidth="10" />
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="100.0" percentWidth="10" />
+                        <ColumnConstraints hgrow="SOMETIMES" percentWidth="74" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="100.0" percentWidth="13" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="100.0" percentWidth="13" />
                     </columnConstraints>
                     <rowConstraints>
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                     <children>
-                        <Button fx:id="cancelButton" id="cancelButton" text="Cancel" GridPane.columnIndex="1" GridPane.halignment="RIGHT" />
-                        <Button fx:id="nextButton" id="nextButton" text="Next" GridPane.columnIndex="2" GridPane.halignment="RIGHT" />
+                        <Button fx:id="cancelButton" id="cancelButton" text="Cancel" GridPane.columnIndex="1" GridPane.halignment="LEFT" />
+                        <Button fx:id="nextButton" id="nextButton" text="Next" GridPane.columnIndex="2" GridPane.halignment="RIGHT"/>
                     </children>
                 </GridPane>
             </children>

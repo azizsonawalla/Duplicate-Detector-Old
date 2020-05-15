@@ -19,7 +19,8 @@ public class MetadataStrategy implements ISearchStrategy {
 
     private LinkedList<Future> taskFutures;                                                                             // TODO: maybe use thread safe Queue?
     private LockableConcurrentHashMap<String, LinkedList<File>> duplicates;
-    private int totalFileCount;
+
+    private long totalInitialFileCount;                                                                                 // total number of files that will be scanned
     private long startTime;                                                                                             // epoch time for when last search was started
 
     @Override
@@ -30,12 +31,12 @@ public class MetadataStrategy implements ISearchStrategy {
                 done++;
             }
         }
-        int remaining = this.totalFileCount - done;
+        long remaining = this.totalInitialFileCount - done;
 
         long currentTime = System.currentTimeMillis();
         long elapsedTime = currentTime - this.startTime;
-        long rate = elapsedTime / done;                                                                                 // We lose decimal accuracy here but for our purposes it doesn't matter
-        long eta = remaining*rate;
+        double rate = elapsedTime*1. / done;
+        long eta = Math.round(remaining*rate);
 
         long duplicatesCount = 0;
         for (List<File> files: duplicates.values()) {
@@ -51,7 +52,7 @@ public class MetadataStrategy implements ISearchStrategy {
     public Future<List<List<File>>> findDuplicates(List<File> allFiles) {                                               // TODO: javadoc
         duplicates = new LockableConcurrentHashMap<>();
         this.taskFutures = new LinkedList<>();
-        this.totalFileCount = allFiles.size();
+        this.totalInitialFileCount = allFiles.size();
         this.startTime = System.currentTimeMillis();
 
         for (File file: allFiles) {
