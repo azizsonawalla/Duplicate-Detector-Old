@@ -26,10 +26,11 @@ public class ConfigureScan extends GUIController {
     /* UI controls */
     private GridPane quickScan, fullScan, advScan;
 
-    ConfigureScan(DuplicateDetectorGUIApp app, GUIController prevController) {
-        super(app, prevController);
+    ConfigureScan(DuplicateDetectorGUIApp app) {
+        super(app, null);
     }
 
+    @Override
     void configureControls() {
         hideNextButton();
         hideCancelButton();
@@ -39,6 +40,7 @@ public class ConfigureScan extends GUIController {
         allStrategyButtons.forEach((GridPane g) -> g.setOnMouseClicked(this::setStrategyAndGoToNextScene));
     }
 
+    @Override
     void initCopy() {
         setContentTitle(MAIN_CONTENT_TITLE);
         setNextButtonText(NEXT_BUTTON_TEXT);
@@ -49,6 +51,7 @@ public class ConfigureScan extends GUIController {
         setSummaryBarSubtitle(String.format(SUMMARY_BAR_SUBTITLE_TEMPLATE, totalFileCount));
     }
 
+    @Override
     Node loadMainContent() {
         try {
             GridPane root = FXMLLoader.load(getClass().getResource("../layouts/ConfigureScan.fxml"));                  // TODO: replace with static config reference
@@ -61,6 +64,11 @@ public class ConfigureScan extends GUIController {
             e.printStackTrace();                                                                                        // TODO: error handling
         }
         return new Label("Error loading content");
+    }
+
+    @Override
+    protected void cleanupSelf() {
+        // TODO:
     }
 
     private void setStrategyAndGoToNextScene(MouseEvent e) {                                                            // TODO: add remaining strategies when created
@@ -77,7 +85,7 @@ public class ConfigureScan extends GUIController {
     }
 
     private void createAndSetNextController() {
-        RunScan rs = new RunScan(app, this);
+        RunScan rs = new RunScan(app);
         setNextController(rs);
     }
 }

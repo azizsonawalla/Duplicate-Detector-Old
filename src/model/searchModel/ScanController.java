@@ -65,6 +65,10 @@ public class ScanController {
         this.strategy = strategy;
     }
 
+    public ISearchStrategy getStrategy() {
+        return strategy;
+    }
+
     /**
      * Get information on the current scan stage and progress statistics
      * @throws ScanException if no task is being performed
@@ -80,8 +84,15 @@ public class ScanController {
                 throw new ScanException("Failed to get pre search results", e);
             }
         }
-        if (isSearchInProgress() || isSearchDone()) {
+        if (isSearchInProgress()) {
             return this.getSearchProgress();
+        }
+        if (isSearchDone()) {
+            try {
+                return new Progress(allFilesFuture.get().size(), 0, 0, duplicatesFuture.get().size(), 0, 0, null, "Search Complete");   // TODO: change current task to current stage enum  // TODO: remove multiple calls to get() - save result on first call
+            } catch (Exception e) {
+                throw new ScanException("Failed to get pre search results", e);
+            }
         }
         throw new ScanException("No stage is currently being executed");
     }

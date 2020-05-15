@@ -15,7 +15,6 @@ import model.searchModel.ScanController;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import view.DuplicateDetectorGUIApp;
 
-import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -157,12 +156,16 @@ public abstract class GUIController implements Initializable {
         app.switchScene(prevController);
     }
 
+    private void goToFirstScene() {
+        app.switchScene(new NewScan(app));
+    }
+
     /**
      * Cleans-up and goes back to the previous scene
      */
     void reset() {
-        prevController.nextController = null;                                                                           // remove reference to this controller to free memory
-        goToPrevScene();                                                                                                // TODO: go to first scene instead // TODO: set all globals to null
+        cleanupSelf();
+        goToFirstScene();
     }
 
     /**
@@ -179,7 +182,9 @@ public abstract class GUIController implements Initializable {
 
     private void setBackButtonOnAction() {
         if (this.prevController != null) {
-            backButton.setOnAction(event -> app.switchScene(this.prevController));
+            backButton.setOnAction(event -> goToPrevScene());
+        } else {
+            backButton.setOnAction(event -> goToFirstScene());
         }
     }
 
@@ -197,4 +202,6 @@ public abstract class GUIController implements Initializable {
     abstract void configureControls();
 
     abstract Node loadMainContent();
+
+    protected abstract void cleanupSelf();
 }

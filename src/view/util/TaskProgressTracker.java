@@ -40,7 +40,6 @@ public class TaskProgressTracker implements Runnable {                          
 
     @Override
     public void run() {
-
         try {
             pollAndUpdate(waitTimeout, waitPollInterval, isStarted, null);
             if (interrupted) { return; }

@@ -46,6 +46,7 @@ public class PrepareToScan extends GUIController {
         startPreSearch();
     }
 
+    @Override
     void configureControls() {
         disableNextButton();
         completeLabel.setVisible(false);
@@ -53,6 +54,7 @@ public class PrepareToScan extends GUIController {
         setCancelButtonOnAction(this::OnCancel);
     }
 
+    @Override
     void initCopy() {
         setContentTitle(MAIN_CONTENT_TITLE);
         setNextButtonText(NEXT_BUTTON_TEXT);
@@ -64,6 +66,7 @@ public class PrepareToScan extends GUIController {
         setFileCount(0);
     }
 
+    @Override
     Node loadMainContent() {
         try {
             GridPane root = FXMLLoader.load(getClass().getResource("../layouts/PrepareToScan.fxml"));                   // TODO: replace with static config reference
@@ -82,6 +85,11 @@ public class PrepareToScan extends GUIController {
             e.printStackTrace();                                                                                        // TODO: error handling
         }
         return new Label("Error loading content");
+    }
+
+    @Override
+    protected void cleanupSelf() {
+        // TODO:
     }
 
     private void startPreSearch() {
@@ -129,7 +137,7 @@ public class PrepareToScan extends GUIController {
     }
 
     private void createAndSetNextController() {
-        ConfigureScan c = new ConfigureScan(app, this);
+        ConfigureScan c = new ConfigureScan(app);
         setNextController(c);
     }
 

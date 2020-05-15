@@ -9,7 +9,6 @@ import model.util.ScanException;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.*;
 
 /**
@@ -63,8 +62,7 @@ public class MetadataStrategy implements ISearchStrategy {
 
         return new FutureCollection<List<List<File>>>(taskFutures) {
             @Override
-            public List<List<File>> get(long timeout, TimeUnit unit)
-                    throws InterruptedException, ExecutionException, TimeoutException {
+            public List<List<File>> get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException {
 
                 for (Future future: this.futures) {
                     future.get();
@@ -99,11 +97,6 @@ public class MetadataStrategy implements ISearchStrategy {
             String key = getNameSizeHash(this.file);
             try {
                 this.duplicates.lock();
-
-                if (new Random().nextInt(101) < 30) {                                                                   // slow down the process to help debug
-                    Thread.sleep(1);                                                                                    // TODO: remove this - debugging only
-                }
-
                 if (this.duplicates.containsKey(key)) {
                     LinkedList<File> existingSet = this.duplicates.get(key);
                     existingSet.add(this.file);

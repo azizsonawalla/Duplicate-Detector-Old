@@ -40,6 +40,7 @@ public class NewScan extends GUIController {
         super(app, null);                                                                                               // this is the first scene so prev scene is always null
     }
 
+    @Override
     void configureControls() {
         hideBackButton();
         hideCancelButton();
@@ -47,6 +48,7 @@ public class NewScan extends GUIController {
         browseButton.setOnAction(this::openFileChooserAndDisplaySelectedPath);
     }
 
+    @Override
     void initCopy() {
         setContentTitle(MAIN_CONTENT_TITLE);
         setNextButtonText(NEXT_BUTTON_TEXT);
@@ -61,6 +63,7 @@ public class NewScan extends GUIController {
         }
     }
 
+    @Override
     Node loadMainContent() {
         try {
             GridPane root = FXMLLoader.load(getClass().getResource("../layouts/NewScan.fxml"));              // TODO: replace with static config reference
@@ -74,6 +77,11 @@ public class NewScan extends GUIController {
             e.printStackTrace();                                                                                        // TODO: error handling
         }
         return new Label("Error loading content");
+    }
+
+    @Override
+    protected void cleanupSelf() {
+        // TODO:
     }
 
     private void openFileChooserAndDisplaySelectedPath(ActionEvent e) {

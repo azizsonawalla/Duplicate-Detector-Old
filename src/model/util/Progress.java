@@ -10,11 +10,11 @@ public class Progress {
     private long done;              // number of tasks already done
     private long inProgress;        // number of tasks being done right now
     private long remaining;         // number of tasks yet to check
-    private long positives;        // number of tasks that returned positive result
-    private long eta;              // estimated time remaining
+    private long positives;         // number of tasks that returned positive result
+    private long eta;               // estimated time remaining
     private long errors;            // number of errors so far
-    private List<String> errMsgs;  // error messages encountered
-    private String currentTask;    // name of current task
+    private List<String> errMsgs;   // error messages encountered
+    private String currentTask;     // name of current task
 
     /**
      * Create an instance of task progress

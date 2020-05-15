@@ -1,5 +1,6 @@
 package view.controllers;
 
+import config.Config;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -21,7 +22,7 @@ import java.io.IOException;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeoutException;
 
-public class RunScan extends GUIController {
+public class RunScan extends GUIController {                                                                            // TODO: create a parent for this and PrepareToScan
 
     /* UI copy */
     private String NAV_BAR_TITLE = "Run scan";
@@ -43,10 +44,11 @@ public class RunScan extends GUIController {
     private ProgressBar progressBar;
     private TaskProgressTracker tracker;
 
-    RunScan(DuplicateDetectorGUIApp app, GUIController prevController) {
-        super(app, prevController);
+    RunScan(DuplicateDetectorGUIApp app) {
+        super(app, null);
     }
 
+    @Override
     void configureControls() {
         disableNextButton();
         disableCancelButton();
@@ -63,16 +65,25 @@ public class RunScan extends GUIController {
         startScanButton.setOnAction(this::startScan);
     }
 
+    @Override
     void initCopy() {
-        setContentTitle(MAIN_CONTENT_TITLE_BEFORE_START);
+        if (model.getStrategy().getClass().equals(Config.quick.getStrategy())){
+            setContentTitle(Config.quick.getUiName());
+            // TODO: check for other scan types when implemented
+        } else {
+            setContentTitle(MAIN_CONTENT_TITLE_BEFORE_START);
+        }
+
         setNextButtonText(NEXT_BUTTON_TEXT);
         setNavBarTitle(NAV_BAR_TITLE);
-        setSummaryBarSubtitle(String.format(SUMMARY_BAR_SUBTITLE_TEMPLATE, model.getProgress().getDone()));
+        long totalFilesToBeScanned = model.getProgress().getDone();
+        setSummaryBarSubtitle(String.format(SUMMARY_BAR_SUBTITLE_TEMPLATE, totalFilesToBeScanned));
 
         setSummaryBarHeadWithFilePath(SUMMARY_BAR_HEADER_DEFAULT);
         filePathLabel.setText(getPathToCurrentRootDir());
     }
 
+    @Override
     Node loadMainContent() {
         try {
             GridPane root = FXMLLoader.load(getClass().getResource("../layouts/RunScan.fxml"));                         // TODO: replace with static config reference
@@ -105,6 +116,11 @@ public class RunScan extends GUIController {
         return new Label("Error loading content");
     }
 
+    @Override
+    protected void cleanupSelf() {
+        // TODO:
+    }
+
     private void startScan(ActionEvent e) {
         createAndStartTracker();
         try {
@@ -121,16 +137,24 @@ public class RunScan extends GUIController {
     }
 
     private void createAndStartTracker() {
-        tracker = new TaskProgressTracker(500, 2000, 500, Long.MAX_VALUE, model::isSearchInProgress,model::isSearchDone,
+        tracker = new TaskProgressTracker(500, 2000, 200, Long.MAX_VALUE, model::isSearchInProgress,model::isSearchDone,
                                             this::getAndSetProgressStats, this::setComplete);                           // TODO: move to config
         AppThreadPool.getInstance().submit(tracker);
     }
 
     private void setProgressStats(long scanned, long duplicates, long eta, double percentageDone) {                     // TODO: javadoc
-        filesScanned.setText(String.format(FILE_COUNT_TEMPLATE, scanned, percentageDone*100));
-        suspectedDuplicates.setText(Long.toString(duplicates));
-        etaLabel.setText(milliSecondsToTime(eta));
-        setProgressBarLevel(Math.max(percentageDone, PROGRESS_BAR_MIN_VALUE));                                          // min value helps give illusion of progress
+        if (scanned > -1) {
+            filesScanned.setText(String.format(FILE_COUNT_TEMPLATE, scanned, percentageDone*100));
+        }
+        if (duplicates > -1) {
+            suspectedDuplicates.setText(Long.toString(duplicates));
+        }
+        if (eta > -1) {
+            etaLabel.setText(milliSecondsToTime(eta));
+        }
+        if (percentageDone > -1) {
+            setProgressBarLevel(Math.max(percentageDone, PROGRESS_BAR_MIN_VALUE));                                      // min value helps give illusion of progress
+        }
     }
 
     private static String milliSecondsToTime(long milli) {
@@ -177,7 +201,7 @@ public class RunScan extends GUIController {
         }
         model.stop();                                                                                                   // TODO: catch exception/error handling
         reset();
-    }
+    }                                                                                                // TODO: call this on back button press too
 
     private void createAndSetNextController() {
         // TODO:
@@ -185,25 +209,28 @@ public class RunScan extends GUIController {
     }
 
     private void setComplete() {
-        setProgressBarLevel(1.0);
         setCompleteLabelVisible();
         setSummaryBarSubtitle(SUMMARY_BAR_SUBTITLE_COMPLETE);
         disableCancelButton();
-//        createAndSetNextController();
+        createAndSetNextController();
         enableNextButton();
     }
 
     private void getAndSetProgressStats() {
+        Progress progress;
         try {
-            Progress progress = model.getProgress();
-            long scanned = progress.getDone();
-            long duplicates = progress.getPositives();
-            long eta = progress.getEta();
-            long remaining = progress.getRemaining();
-            double percentageDone = scanned*1. / (scanned+remaining);
-            Platform.runLater(() -> setProgressStats(scanned, duplicates, eta, percentageDone));
+            progress = model.getProgress();
         } catch (Exception e) {
+            return;
             // TODO: log
         }
+
+        long scanned = progress.getDone();
+        long duplicates = progress.getPositives();
+        long eta = progress.getEta();
+        long remaining = progress.getRemaining();
+        double percentageDone = scanned*1. / (scanned+remaining);
+        setProgressStats(scanned, duplicates, eta, percentageDone);
+        System.out.println(scanned +" "+ remaining +" "+ percentageDone);
     }
 }
