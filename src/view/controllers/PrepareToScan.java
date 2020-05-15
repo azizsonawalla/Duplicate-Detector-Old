@@ -101,22 +101,22 @@ public class PrepareToScan extends GUIController {
     }
 
     private void setFileCount(long i) {
-        Platform.runLater(() -> fileCountLabel.setText(String.format(FILE_COUNT_TEMPLATE, i)));                         // TODO: remove use of runLater // TODO: javadoc
+        fileCountLabel.setText(String.format(FILE_COUNT_TEMPLATE, i));                                                  // TODO: javadoc
     }
 
     private void setProgressBarLevel(double p) {
-        Platform.runLater(() -> progressBar.setProgress(p));                                                            // TODO: remove use of runLater // TODO: javadoc
+        progressBar.setProgress(p);                                                                                     // TODO: remove use of runLater // TODO: javadoc
     }
 
     private void setCompleteLabelVisible() {
-        Platform.runLater(() -> completeLabel.setVisible(true));                                                        // TODO: remove use of runLater // TODO: javadoc
+        completeLabel.setVisible(true);                                                                                 // TODO: javadoc
     }
 
     private void setUIToCancelledMode() {
-        progressBar.setProgress(1.0);
+        setProgressBarLevel(1.0);
         progressBar.getStyleClass().add("cancelled-progress-bar");
         completeLabel.setText(CANCELLED_TEXT_ON_BAR);
-        completeLabel.setVisible(true);
+        setCompleteLabelVisible();
     }
 
     private void OnCancel(ActionEvent e) {                                                                              // TODO: show 'are you sure?' dialogue
