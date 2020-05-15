@@ -13,6 +13,7 @@ import model.async.threadPool.AppThreadPool;
 import model.searchModel.ScanController;
 import model.util.Progress;
 import view.DuplicateDetectorGUIApp;
+import view.util.TaskProgressTracker;
 
 import java.io.IOException;
 import java.net.URL;
@@ -33,7 +34,7 @@ public class PrepareToScan extends GUIController {
     /* UI controls */
     private Label filePathLabel, completeLabel, fileCountLabel;
     private ProgressBar progressBar;
-    private TrackProgress tracker;
+    private TaskProgressTracker tracker;
 
     PrepareToScan(DuplicateDetectorGUIApp app, GUIController prevController) {
         super(app, prevController);
@@ -84,8 +85,18 @@ public class PrepareToScan extends GUIController {
     }
 
     private void startPreSearch() {
-        model.startPreSearch();
-        tracker = new TrackProgress(model, 200);                                                                        // TODO: move interval time to config
+        try {
+            model.startPreSearch();
+        } catch (Exception e) {
+            e.printStackTrace();
+            // TODO: error handling
+        }
+        createAndStartTracker();
+    }
+
+    private void createAndStartTracker() {
+        tracker = new TaskProgressTracker(100, 2000, 100, Long.MAX_VALUE, model::isPreSearchInProgress,
+                model::isPreSearchDone, this::getAndSetProgressStats, this::setComplete);                               // TODO: move to config
         AppThreadPool.getInstance().submit(tracker);
     }
 
@@ -122,6 +133,16 @@ public class PrepareToScan extends GUIController {
         setNextController(c);
     }
 
+    private void getAndSetProgressStats() {
+        try {
+            Progress progress = model.getProgress();
+            long count = progress.getDone();
+            setFileCount(count);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void setComplete() {
         setProgressBarLevel(1.0);
         setCompleteLabelVisible();
@@ -129,48 +150,5 @@ public class PrepareToScan extends GUIController {
         setSummaryBarSubtitle(SUMMARY_BAR_SUBTITLE_COMPLETE);
         enableNextButton();
         disableCancelButton();
-    }
-
-    private class TrackProgress implements Runnable {                                                                   // TODO: javadoc
-
-        private final ScanController model;
-        private final long interval;
-        private boolean interrupted = false;
-
-        TrackProgress(ScanController model, long interval) {
-            this.model = model;
-            this.interval = interval;
-        }
-
-        @Override
-        public void run() {
-            while (!model.isPreSearchDone()) {
-                if (interrupted) return;
-                updateFileCount();
-                try {
-                    Thread.sleep(interval);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();                                                                                // TODO: error handling
-                }
-            }
-            if (interrupted) return;
-            updateFileCount();
-            if (interrupted) return;
-            Platform.runLater(PrepareToScan.this::setComplete);                                                       // TODO: remove use of runlater
-        }
-
-        void stop() {
-            interrupted = true;
-        }
-
-        private void updateFileCount() {
-            try {
-                Progress progress = model.getProgress();
-                long count = progress.getDone();
-                setFileCount(count);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
     }
 }

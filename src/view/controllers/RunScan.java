@@ -15,15 +15,13 @@ import model.searchModel.ScanController;
 import model.util.Progress;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import view.DuplicateDetectorGUIApp;
+import view.util.TaskProgressTracker;
 
 import java.io.IOException;
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeoutException;
 
 public class RunScan extends GUIController {
-
-    /**
-     * To Fix:
-     * - View Results button text doesn't fit
-     **/
 
     /* UI copy */
     private String NAV_BAR_TITLE = "Run scan";
@@ -43,7 +41,7 @@ public class RunScan extends GUIController {
     private Label filePathLabel, completeLabel, filesScanned, suspectedDuplicates, etaLabel;
     private Button startScanButton;
     private ProgressBar progressBar;
-    private TrackProgress tracker;
+    private TaskProgressTracker tracker;
 
     RunScan(DuplicateDetectorGUIApp app, GUIController prevController) {
         super(app, prevController);
@@ -108,8 +106,7 @@ public class RunScan extends GUIController {
     }
 
     private void startScan(ActionEvent e) {
-        tracker = new TrackProgress(model, 500);
-        AppThreadPool.getInstance().submit(tracker);
+        createAndStartTracker();
         try {
             model.startSearch();
         } catch (Exception e2) {
@@ -123,16 +120,20 @@ public class RunScan extends GUIController {
         etaLabel.setVisible(true);
     }
 
-    private void setProgressStats(long scanned, long duplicates, long eta, double percentageDone) {                     // TODO: javadoc
-        Platform.runLater(() -> {
-            filesScanned.setText(String.format(FILE_COUNT_TEMPLATE, scanned, percentageDone*100));
-            suspectedDuplicates.setText(Long.toString(duplicates));
-            etaLabel.setText(milliSecondsToTime(eta));
-            progressBar.setProgress(Math.max(percentageDone, PROGRESS_BAR_MIN_VALUE));                                  // min value helps give illusion of progress
-        });
+    private void createAndStartTracker() {
+        tracker = new TaskProgressTracker(500, 2000, 500, Long.MAX_VALUE, model::isSearchInProgress,model::isSearchDone,
+                                            this::getAndSetProgressStats, this::setComplete);                           // TODO: move to config
+        AppThreadPool.getInstance().submit(tracker);
     }
 
-    private String milliSecondsToTime(long milli) {
+    private void setProgressStats(long scanned, long duplicates, long eta, double percentageDone) {                     // TODO: javadoc
+        filesScanned.setText(String.format(FILE_COUNT_TEMPLATE, scanned, percentageDone*100));
+        suspectedDuplicates.setText(Long.toString(duplicates));
+        etaLabel.setText(milliSecondsToTime(eta));
+        setProgressBarLevel(Math.max(percentageDone, PROGRESS_BAR_MIN_VALUE));                                          // min value helps give illusion of progress
+    }
+
+    private static String milliSecondsToTime(long milli) {
         long seconds = milli/1000;
         long mins = seconds/60;
         long hours = mins/60;
@@ -155,18 +156,18 @@ public class RunScan extends GUIController {
     }
 
     private void setProgressBarLevel(double p) {
-        Platform.runLater(() -> progressBar.setProgress(p));                                                            // TODO: remove use of runLater // TODO: javadoc
+        progressBar.setProgress(p);                                                                                     // TODO: remove use of runLater // TODO: javadoc
     }
 
     private void setCompleteLabelVisible() {
-        Platform.runLater(() -> completeLabel.setVisible(true));                                                        // TODO: remove use of runLater // TODO: javadoc
+        completeLabel.setVisible(true);                                                                                 // TODO: javadoc
     }
 
     private void setUIToCancelledMode() {
-        progressBar.setProgress(1.0);
+        setProgressBarLevel(1.0);
         progressBar.getStyleClass().add("cancelled-progress-bar");
         completeLabel.setText(CANCELLED_TEXT_ON_BAR);
-        completeLabel.setVisible(true);
+        setCompleteLabelVisible();
     }
 
     private void OnCancel(ActionEvent e) {                                                                              // TODO: show 'are you sure?' dialogue
@@ -192,61 +193,17 @@ public class RunScan extends GUIController {
         enableNextButton();
     }
 
-    private class TrackProgress implements Runnable {                                                                   // TODO: javadoc
-
-        private final ScanController model;
-        private final long interval;
-        private boolean interrupted = false;
-
-        TrackProgress(ScanController model, long interval) {
-            this.model = model;
-            this.interval = interval;
-        }
-
-        @Override
-        public void run() {
-
-            // If search hasn't started, wait for a bit
-            while (!model.isSearchInProgress()) {                                                                       // TODO: add timeout
-                try {
-                    Thread.sleep(interval);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();                                                                                // TODO: error handling
-                }
-            }
-
-            while (!model.isSearchDone()) {
-                if (interrupted) return;
-                getAndSetProgressStats();
-                try {
-                    Thread.sleep(interval);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();                                                                                // TODO: error handling
-                }
-            }
-
-            if (interrupted) return;
-            getAndSetProgressStats();
-            if (interrupted) return;
-            Platform.runLater(RunScan.this::setComplete);                                                               // TODO: remove use of runlater
-        }
-
-        void stop() {
-            interrupted = true;
-        }
-
-        private void getAndSetProgressStats() {
-            try {
-                Progress progress = model.getProgress();
-                long scanned = progress.getDone();
-                long duplicates = progress.getPositives();
-                long eta = progress.getEta();
-                long remaining = progress.getRemaining();
-                double percentageDone = scanned*1. / (scanned+remaining);
-                setProgressStats(scanned, duplicates, eta, percentageDone);
-            } catch (Exception e) {
-                // TODO: log
-            }
+    private void getAndSetProgressStats() {
+        try {
+            Progress progress = model.getProgress();
+            long scanned = progress.getDone();
+            long duplicates = progress.getPositives();
+            long eta = progress.getEta();
+            long remaining = progress.getRemaining();
+            double percentageDone = scanned*1. / (scanned+remaining);
+            Platform.runLater(() -> setProgressStats(scanned, duplicates, eta, percentageDone));
+        } catch (Exception e) {
+            // TODO: log
         }
     }
 }
