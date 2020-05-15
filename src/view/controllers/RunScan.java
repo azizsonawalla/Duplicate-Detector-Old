@@ -27,6 +27,7 @@ public class RunScan extends GUIController {
      * - Need to do a last refresh of stats after completing scan
      * - View Results button text doesn't fit
      * - Percentage complete is wrong
+     * - Align stat labels to left, numbers to right. Remove need to concat every time.
      **/
 
     /* UI copy */
@@ -41,6 +42,9 @@ public class RunScan extends GUIController {
     private String DUPLICATES_TEMPLATE = "Suspected Duplicates: %d";
     private String ETA_TEMPLATE = "Estimated time remaining: %s";
     private String CANCELLED_TEXT_ON_BAR = "Cancelling scan...";
+
+    /* UI constants */
+    private double PROGRESS_BAR_MIN_VALUE = 0.09;
 
     /* UI controls */
     private Label filePathLabel, completeLabel, filesScanned, suspectedDuplicates, etaLabel;
@@ -120,7 +124,7 @@ public class RunScan extends GUIController {
             filesScanned.setText(String.format(FILE_COUNT_TEMPLATE, scanned));
             suspectedDuplicates.setText(String.format(DUPLICATES_TEMPLATE, duplicates));
             etaLabel.setText(String.format(ETA_TEMPLATE, milliSecondsToTime(eta)));
-            progressBar.setProgress(percentageDone);
+            progressBar.setProgress(Math.max(percentageDone, PROGRESS_BAR_MIN_VALUE));                                  // min value helps give illusion of progress
         });
     }
 

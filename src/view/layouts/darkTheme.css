@@ -200,7 +200,7 @@
 /* Prepare To Scan */
 
 .progress-bar > .bar, .progress-bar > .track {
-    -fx-background-radius: 30;
+    -fx-background-radius: 200;
 }
 
 .progress-bar > .bar {
