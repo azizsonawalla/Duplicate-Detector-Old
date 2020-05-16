@@ -201,11 +201,11 @@ public class RunScan extends GUIController {                                    
         }
         model.stop();                                                                                                   // TODO: catch exception/error handling
         reset();
-    }                                                                                                // TODO: call this on back button press too
+    }                                                                                                                   // TODO: call this on back button press too
 
     private void createAndSetNextController() {
-        // TODO:
-        throw new NotImplementedException();
+        Results r = new Results(app);
+        setNextController(r);
     }
 
     private void setComplete() {

@@ -9,7 +9,7 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.TextFlow?>
 
-<GridPane minHeight="350" minWidth="400" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
+<GridPane fx:id="root" minHeight="350" minWidth="400" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="400" percentWidth="100" />
     </columnConstraints>
@@ -75,7 +75,7 @@
         </GridPane>
 
         <Pane id="mainWindowBG" GridPane.rowIndex="2" />
-        <GridPane id="mainWindow" GridPane.rowIndex="2">
+        <GridPane fx:id="mainWindow" id="mainWindow" GridPane.rowIndex="2">
             <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="50" prefWidth="35" />
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="50" prefWidth="50" />

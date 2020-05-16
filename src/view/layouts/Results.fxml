@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+        <?import javafx.scene.control.ScrollPane?>
+        <?import javafx.scene.layout.AnchorPane?>
+        <?import javafx.scene.layout.ColumnConstraints?>
+        <?import javafx.scene.layout.GridPane?>
+        <?import javafx.scene.layout.Pane?>
+        <?import javafx.scene.layout.RowConstraints?>
+
+<GridPane GridPane.halignment="CENTER" GridPane.valignment="CENTER" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
+<columnConstraints>
+    <ColumnConstraints hgrow="SOMETIMES" percentWidth="100.0" />
+</columnConstraints>
+<rowConstraints>
+    <RowConstraints minHeight="10.0" percentHeight="10.0" vgrow="SOMETIMES" />
+    <RowConstraints minHeight="40.0" percentHeight="90.0" vgrow="SOMETIMES" />
+</rowConstraints>
+<children>
+    <Pane id="actionBarBG" GridPane.rowIndex="0" />
+
+    <ScrollPane id="resultsScrollWindow" GridPane.rowIndex="1" >
+        <content>
+            <GridPane id="resultsParentGridPane" minHeight="1000">
+                <columnConstraints>
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="50" prefWidth="35" />
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="50" prefWidth="50" />
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="200" prefWidth="1750" />
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="50" prefWidth="50" />
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="50" prefWidth="35" />
+                </columnConstraints>
+            </GridPane>
+        </content>
+    </ScrollPane>
+
+</children>
+</GridPane>

@@ -1,8 +1,10 @@
 package view.controllers;
 
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -15,6 +17,7 @@ import model.searchModel.ScanController;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import view.DuplicateDetectorGUIApp;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -28,7 +31,7 @@ public abstract class GUIController implements Initializable {
     @FXML private Button settingsButton, backButton, nextButton, cancelButton;
     @FXML private Label navBarTitle, summaryBarSubtitle, mainContentTitle;
     @FXML private Text summaryBarTitleHead, summaryBarTitlePrev;
-    @FXML private GridPane mainContent;
+    @FXML private GridPane mainContent, mainWindow, root;
     @FXML private Pane mainContentLogo;
 
     GUIController(DuplicateDetectorGUIApp app, GUIController prevController) {                                          // TODO: javadoc
@@ -42,7 +45,7 @@ public abstract class GUIController implements Initializable {
         loadFonts();
         setBackButtonOnAction();
 
-        setContent(loadMainContent());
+        setMainContent(loadMainContent());
         initCopy();
         configureControls();
     }
@@ -143,9 +146,27 @@ public abstract class GUIController implements Initializable {
         cancelButton.setOnAction(e);
     }
 
+    /**
+     * Replaces the main window with the given node
+     * @param content content to be inserted
+     */
+    void setMainWindow(Node content) {
+        int mainWindowRowIdx = GridPane.getRowIndex(mainWindow);
+        root.getChildren().remove(mainWindow);
+        GridPane.setRowIndex(content, mainWindowRowIdx);
+        root.getChildren().add(root.getChildren().size(), content);
+    }
+
     void removeMainWindowLogo() {
         mainContent.getChildren().remove(0);
-        mainContent.getRowConstraints().get(1).setPercentHeight(0);
+        int rowIdx = GridPane.getRowIndex(mainContentLogo);
+        mainContent.getRowConstraints().get(rowIdx).setPercentHeight(0);
+    }
+
+    void makeMainContentFillWidth() {
+        GridPane.setColumnIndex(mainContent, 0);
+        int cols = mainWindow.getColumnConstraints().size();
+        GridPane.setColumnSpan(mainContent, cols);
     }
 
     void goToNextScene() {
@@ -169,10 +190,10 @@ public abstract class GUIController implements Initializable {
     }
 
     /**
-     * Inserts the given node in the main content window of the parent frame
+     * Inserts the given node in the main content pane of the parent frame
      * @param content content to be inserted
      */
-    private void setContent(Node content) {
+    private void setMainContent(Node content) {
         mainContent.add(content,0, 3);
     }
 
@@ -201,7 +222,14 @@ public abstract class GUIController implements Initializable {
 
     abstract void configureControls();
 
-    abstract Node loadMainContent();
+
+    /**
+     * Load the main content for this scene
+     * @return Node holding main content
+     */
+    Node loadMainContent() {
+        return new Label("No content available");                                                                       // sub-classes are expected to override this or replace main window entirely
+    }
 
     protected abstract void cleanupSelf();
 }

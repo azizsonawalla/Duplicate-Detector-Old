@@ -272,7 +272,19 @@
     -fx-background-color: rgba(0,0,0, 0.8);
 }
 
+/* Results */
+
+#actionBarBG {
+    -fx-background-color: #999999;
+}
+
+#resultsScrollWindow {}
+
+#resultsParentGridPane{
+    -fx-background-color: #222222;
+}
+
 /* Debug Only */
 GridPane {
-    -fx-grid-lines-visible: false;
+    -fx-grid-lines-visible: true;
 }
