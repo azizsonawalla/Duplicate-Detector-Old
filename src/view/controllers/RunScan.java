@@ -231,6 +231,5 @@ public class RunScan extends GUIController {                                    
         long remaining = progress.getRemaining();
         double percentageDone = scanned*1. / (scanned+remaining);
         setProgressStats(scanned, duplicates, eta, percentageDone);
-        System.out.println(scanned +" "+ remaining +" "+ percentageDone);
     }
 }
