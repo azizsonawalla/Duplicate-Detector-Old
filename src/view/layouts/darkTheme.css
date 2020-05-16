@@ -278,7 +278,38 @@
     -fx-background-color: #999999;
 }
 
-#resultsScrollWindow {}
+#resultsScrollWindow .scroll-pane {
+    -fx-background-color: #222222;
+    -fx-border-width: 0;
+    -fx-border-color: #222222;
+}
+
+#resultsScrollWindow .scroll-bar:horizontal, #resultsScrollWindow .scroll-bar:vertical{
+    -fx-background-color: #222222;
+}
+
+#resultsScrollWindow .increment-button, #resultsScrollWindow .decrement-button {
+    -fx-background-color: #222222;
+    -fx-border-color: #222222;
+}
+
+#resultsScrollWindow .scroll-bar:horizontal .track,
+#resultsScrollWindow .scroll-bar:vertical .track {
+    -fx-background-color: #222222;
+    -fx-border-color: #222222;
+    -fx-background-radius: 0em;
+}
+
+#resultsScrollWindow .scroll-bar:horizontal .thumb,
+#resultsScrollWindow .scroll-bar:vertical .thumb {
+    -fx-background-color: #999999;
+    -fx-background-radius: 5em;
+}
+
+.scroll-pane > .corner {
+    -fx-background-color: #222222;
+    -fx-border-color: #222222;
+}
 
 #resultsParentGridPane{
     -fx-background-color: #222222;
@@ -286,5 +317,5 @@
 
 /* Debug Only */
 GridPane {
-    -fx-grid-lines-visible: true;
+    -fx-grid-lines-visible: false;
 }
