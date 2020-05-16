@@ -319,3 +319,11 @@
 GridPane {
     -fx-grid-lines-visible: false;
 }
+
+#imagePreview {
+    -fx-background-image: url("../assets/sample_image.jpeg");
+    -fx-background-size: 300px;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+    -fx-background-color: rgba(0,0,0,0);
+}
