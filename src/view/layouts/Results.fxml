@@ -24,7 +24,6 @@
             <GridPane id="resultsParentGridPane">
                 <columnConstraints>
                     <ColumnConstraints hgrow="SOMETIMES" minWidth="50" prefWidth="35" />
-                    <ColumnConstraints hgrow="SOMETIMES" minWidth="50" prefWidth="50" />
                     <ColumnConstraints hgrow="SOMETIMES" minWidth="200" prefWidth="1750" />
                     <ColumnConstraints hgrow="SOMETIMES" minWidth="50" prefWidth="50" />
                     <ColumnConstraints hgrow="SOMETIMES" minWidth="50" prefWidth="35" />
@@ -34,9 +33,10 @@
                 </rowConstraints>
                 <children>
 
-                    <GridPane GridPane.columnIndex="2" GridPane.rowIndex="0">
+                    <GridPane GridPane.columnIndex="1" GridPane.rowIndex="0">
                         <columnConstraints>
                             <!-- Number of cols = max size of duplicate set -->
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="100" />
                             <ColumnConstraints hgrow="SOMETIMES" maxWidth="300" />
                             <ColumnConstraints hgrow="SOMETIMES" maxWidth="300" />
                             <ColumnConstraints hgrow="SOMETIMES" maxWidth="300" />
@@ -48,8 +48,12 @@
                             <RowConstraints prefHeight="350" />
                         </rowConstraints>
                         <children>
+
+                            <!-- Duplicate set number -->
+                            <Label text="1" opacity="0.5" styleClass="h2" GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.halignment="LEFT" GridPane.valignment="CENTER"/>
+
                             <!-- An image pane -->
-                            <GridPane maxHeight="300" maxWidth="300" GridPane.columnIndex="0" GridPane.rowIndex="0" >
+                            <GridPane maxHeight="300" maxWidth="300" GridPane.columnIndex="1" GridPane.rowIndex="0" >
                                 <columnConstraints>
                                     <ColumnConstraints percentWidth="90"/>
                                 </columnConstraints>
@@ -71,29 +75,23 @@
                             <!-- End of image pane -->
 
                             <!-- An image pane -->
-                            <GridPane maxHeight="300" maxWidth="300" GridPane.columnIndex="1" GridPane.rowIndex="0" >
-                                <columnConstraints>
-                                    <ColumnConstraints percentWidth="90"/>
-                                </columnConstraints>
-                                <rowConstraints>
-                                    <RowConstraints percentHeight="75"/>
-                                </rowConstraints>
-                                <children>
-                                    <Pane GridPane.rowIndex="0" id="imagePreview" prefWidth="300" prefHeight="300"/>
-                                </children>
-                            </GridPane>
-                            <!-- End of image pane -->
-
-                            <!-- An image pane -->
                             <GridPane maxHeight="300" maxWidth="300" GridPane.columnIndex="2" GridPane.rowIndex="0" >
                                 <columnConstraints>
                                     <ColumnConstraints percentWidth="90"/>
                                 </columnConstraints>
                                 <rowConstraints>
-                                    <RowConstraints percentHeight="75"/>
+                                    <RowConstraints percentHeight="70"/>
+                                    <RowConstraints percentHeight="7"/>
+                                    <RowConstraints percentHeight="7"/>
+                                    <RowConstraints percentHeight="7"/>
+                                    <RowConstraints percentHeight="7"/>
                                 </rowConstraints>
                                 <children>
                                     <Pane GridPane.rowIndex="0" id="imagePreview" prefWidth="300" prefHeight="300"/>
+                                    <Label text="[Name]" styleClass="body" GridPane.rowIndex="1"/>
+                                    <Label text="[Parent Folder]" styleClass="body" GridPane.rowIndex="2"/>
+                                    <Label text="[Size]" styleClass="body" GridPane.rowIndex="3"/>
+                                    <Label text="[Date last modified]" styleClass="body" GridPane.rowIndex="4"/>
                                 </children>
                             </GridPane>
                             <!-- End of image pane -->
@@ -104,27 +102,48 @@
                                     <ColumnConstraints percentWidth="90"/>
                                 </columnConstraints>
                                 <rowConstraints>
-                                    <RowConstraints percentHeight="75"/>
+                                    <RowConstraints percentHeight="70"/>
+                                    <RowConstraints percentHeight="7"/>
+                                    <RowConstraints percentHeight="7"/>
+                                    <RowConstraints percentHeight="7"/>
+                                    <RowConstraints percentHeight="7"/>
                                 </rowConstraints>
                                 <children>
                                     <Pane GridPane.rowIndex="0" id="imagePreview" prefWidth="300" prefHeight="300"/>
+                                    <Label text="[Name]" styleClass="body" GridPane.rowIndex="1"/>
+                                    <Label text="[Parent Folder]" styleClass="body" GridPane.rowIndex="2"/>
+                                    <Label text="[Size]" styleClass="body" GridPane.rowIndex="3"/>
+                                    <Label text="[Date last modified]" styleClass="body" GridPane.rowIndex="4"/>
                                 </children>
                             </GridPane>
                             <!-- End of image pane -->
 
                             <!-- An image pane -->
-                            <GridPane maxHeight="300" maxWidth="300" GridPane.columnIndex="0" GridPane.rowIndex="1" >
+                            <GridPane maxHeight="300" maxWidth="300" GridPane.columnIndex="4" GridPane.rowIndex="0" >
                                 <columnConstraints>
                                     <ColumnConstraints percentWidth="90"/>
                                 </columnConstraints>
                                 <rowConstraints>
-                                    <RowConstraints percentHeight="75"/>
+                                    <RowConstraints percentHeight="70"/>
+                                    <RowConstraints percentHeight="7"/>
+                                    <RowConstraints percentHeight="7"/>
+                                    <RowConstraints percentHeight="7"/>
+                                    <RowConstraints percentHeight="7"/>
                                 </rowConstraints>
                                 <children>
                                     <Pane GridPane.rowIndex="0" id="imagePreview" prefWidth="300" prefHeight="300"/>
+                                    <Label text="[Name]" styleClass="body" GridPane.rowIndex="1"/>
+                                    <Label text="[Parent Folder]" styleClass="body" GridPane.rowIndex="2"/>
+                                    <Label text="[Size]" styleClass="body" GridPane.rowIndex="3"/>
+                                    <Label text="[Date last modified]" styleClass="body" GridPane.rowIndex="4"/>
                                 </children>
                             </GridPane>
                             <!-- End of image pane -->
+
+
+
+                            <!-- Duplicate set number -->
+                            <Label text="2" opacity="0.5" styleClass="h2" GridPane.rowIndex="1" GridPane.columnIndex="0" GridPane.halignment="LEFT" GridPane.valignment="CENTER"/>
 
                             <!-- An image pane -->
                             <GridPane maxHeight="300" maxWidth="300" GridPane.columnIndex="1" GridPane.rowIndex="1" >
@@ -132,10 +151,18 @@
                                     <ColumnConstraints percentWidth="90"/>
                                 </columnConstraints>
                                 <rowConstraints>
-                                    <RowConstraints percentHeight="75"/>
+                                    <RowConstraints percentHeight="70"/>
+                                    <RowConstraints percentHeight="7"/>
+                                    <RowConstraints percentHeight="7"/>
+                                    <RowConstraints percentHeight="7"/>
+                                    <RowConstraints percentHeight="7"/>
                                 </rowConstraints>
                                 <children>
                                     <Pane GridPane.rowIndex="0" id="imagePreview" prefWidth="300" prefHeight="300"/>
+                                    <Label text="[Name]" styleClass="body" GridPane.rowIndex="1"/>
+                                    <Label text="[Parent Folder]" styleClass="body" GridPane.rowIndex="2"/>
+                                    <Label text="[Size]" styleClass="body" GridPane.rowIndex="3"/>
+                                    <Label text="[Date last modified]" styleClass="body" GridPane.rowIndex="4"/>
                                 </children>
                             </GridPane>
                             <!-- End of image pane -->
@@ -146,10 +173,18 @@
                                     <ColumnConstraints percentWidth="90"/>
                                 </columnConstraints>
                                 <rowConstraints>
-                                    <RowConstraints percentHeight="75"/>
+                                    <RowConstraints percentHeight="70"/>
+                                    <RowConstraints percentHeight="7"/>
+                                    <RowConstraints percentHeight="7"/>
+                                    <RowConstraints percentHeight="7"/>
+                                    <RowConstraints percentHeight="7"/>
                                 </rowConstraints>
                                 <children>
                                     <Pane GridPane.rowIndex="0" id="imagePreview" prefWidth="300" prefHeight="300"/>
+                                    <Label text="[Name]" styleClass="body" GridPane.rowIndex="1"/>
+                                    <Label text="[Parent Folder]" styleClass="body" GridPane.rowIndex="2"/>
+                                    <Label text="[Size]" styleClass="body" GridPane.rowIndex="3"/>
+                                    <Label text="[Date last modified]" styleClass="body" GridPane.rowIndex="4"/>
                                 </children>
                             </GridPane>
                             <!-- End of image pane -->
@@ -160,10 +195,40 @@
                                     <ColumnConstraints percentWidth="90"/>
                                 </columnConstraints>
                                 <rowConstraints>
-                                    <RowConstraints percentHeight="75"/>
+                                    <RowConstraints percentHeight="70"/>
+                                    <RowConstraints percentHeight="7"/>
+                                    <RowConstraints percentHeight="7"/>
+                                    <RowConstraints percentHeight="7"/>
+                                    <RowConstraints percentHeight="7"/>
                                 </rowConstraints>
                                 <children>
                                     <Pane GridPane.rowIndex="0" id="imagePreview" prefWidth="300" prefHeight="300"/>
+                                    <Label text="[Name]" styleClass="body" GridPane.rowIndex="1"/>
+                                    <Label text="[Parent Folder]" styleClass="body" GridPane.rowIndex="2"/>
+                                    <Label text="[Size]" styleClass="body" GridPane.rowIndex="3"/>
+                                    <Label text="[Date last modified]" styleClass="body" GridPane.rowIndex="4"/>
+                                </children>
+                            </GridPane>
+                            <!-- End of image pane -->
+
+                            <!-- An image pane -->
+                            <GridPane maxHeight="300" maxWidth="300" GridPane.columnIndex="4" GridPane.rowIndex="1" >
+                                <columnConstraints>
+                                    <ColumnConstraints percentWidth="90"/>
+                                </columnConstraints>
+                                <rowConstraints>
+                                    <RowConstraints percentHeight="70"/>
+                                    <RowConstraints percentHeight="7"/>
+                                    <RowConstraints percentHeight="7"/>
+                                    <RowConstraints percentHeight="7"/>
+                                    <RowConstraints percentHeight="7"/>
+                                </rowConstraints>
+                                <children>
+                                    <Pane GridPane.rowIndex="0" id="imagePreview" prefWidth="300" prefHeight="300"/>
+                                    <Label text="[Name]" styleClass="body" GridPane.rowIndex="1"/>
+                                    <Label text="[Parent Folder]" styleClass="body" GridPane.rowIndex="2"/>
+                                    <Label text="[Size]" styleClass="body" GridPane.rowIndex="3"/>
+                                    <Label text="[Date last modified]" styleClass="body" GridPane.rowIndex="4"/>
                                 </children>
                             </GridPane>
                             <!-- End of image pane -->
