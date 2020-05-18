@@ -53,7 +53,7 @@
                             <Label text="1" opacity="0.5" styleClass="h2" GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.halignment="LEFT" GridPane.valignment="CENTER"/>
 
                             <!-- An image pane -->
-                            <GridPane maxHeight="300" maxWidth="300" GridPane.columnIndex="1" GridPane.rowIndex="0" >
+                            <GridPane maxHeight="300" maxWidth="300" GridPane.rowIndex="0" GridPane.columnIndex="1"  >
                                 <columnConstraints>
                                     <ColumnConstraints percentWidth="90"/>
                                 </columnConstraints>

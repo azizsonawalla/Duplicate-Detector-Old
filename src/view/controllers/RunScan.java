@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeoutException;
 
+import static view.util.FormatConverter.milliSecondsToTime;
+
 public class RunScan extends GUIController {                                                                            // TODO: create a parent for this and PrepareToScan
 
     /* UI copy */
@@ -155,28 +157,6 @@ public class RunScan extends GUIController {                                    
         if (percentageDone > -1) {
             setProgressBarLevel(Math.max(percentageDone, PROGRESS_BAR_MIN_VALUE));                                      // min value helps give illusion of progress
         }
-    }
-
-    private static String milliSecondsToTime(long milli) {
-        long seconds = milli/1000;
-        long mins = seconds/60;
-        long hours = mins/60;
-        long days = hours/24;
-
-        seconds -= mins*60;
-        mins -= hours*60;
-        hours -= days*24;
-
-        if (days > 0) {
-            return String.format("%dd %dh %dm %ds", days, hours, mins, seconds);
-        }
-        if (hours > 0) {
-            return String.format("%dh %dm %ds", hours, mins, seconds);
-        }
-        if (mins > 0) {
-            return String.format("%dm %ds", mins, seconds);
-        }
-        return String.format("%ds", seconds);
     }
 
     private void setProgressBarLevel(double p) {
