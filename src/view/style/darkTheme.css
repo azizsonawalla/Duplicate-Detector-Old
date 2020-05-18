@@ -59,6 +59,14 @@
     -fx-fill: rgba(255,255,255,0.5);
 }
 
+.details {
+    -fx-text-fill: #FFFFFF;
+    -fx-fill: #FFFFFF;
+    -fx-font-size: 10pt;
+    -fx-font-family: 'Helvetica Neue LT Com 45 Light';
+    -fx-font-smoothing-type: lcd;
+}
+
 /* Navigation Bar */
 
 #navBarBG {

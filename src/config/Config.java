@@ -4,6 +4,7 @@ import model.searchModel.searchStrategies.ISearchStrategy;
 import model.searchModel.searchStrategies.MetadataStrategy;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Config {
@@ -35,7 +36,7 @@ public class Config {
     }
 
     /* Model */
-    public static List<String> SUPPORTED_FILE_TYPES = new ArrayList<>();                                                // TODO: Add list of supported file types  // TODO: move this to individual strategies
+    public static List<String> SUPPORTED_FILE_TYPES = Arrays.asList("JPEG", "JPG", "PNG");                              // TODO: Add list of supported file types  // TODO: move this to individual strategies
     public static Integer POOL_SIZE = 3;                                                                                // TODO: calculate based on available vCPUs. Maybe let user configure
 
     /* UI */
@@ -48,7 +49,7 @@ public class Config {
 
     /* File Paths */
     public static String PARENT_FRAME = "layouts/ParentFrame.fxml";
-    public static String DARK_THEME_CSS = "layouts/darkTheme.css";
+    public static String DARK_THEME_CSS = "style/darkTheme.css";
     
     /* Search Strategies */
     public static SearchStrategyDescription quick = new SearchStrategyDescription(MetadataStrategy.class,

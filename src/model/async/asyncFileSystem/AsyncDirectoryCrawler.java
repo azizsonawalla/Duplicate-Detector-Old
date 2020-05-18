@@ -120,6 +120,7 @@ public class AsyncDirectoryCrawler implements Callable<List<File>> {
     private boolean isValidFile(File file) {
         if (file.isFile()) {
             if (this.validExtensions.isEmpty()) {
+                System.err.println("empty");
                 return true;
             }
             String ext = getFileExtension(file).toUpperCase();
@@ -135,7 +136,7 @@ public class AsyncDirectoryCrawler implements Callable<List<File>> {
      */
     private static String getFileExtension(File file) {
         String name = file.getName();
-        String[] parts = name.split(".");
+        String[] parts = name.split("\\.");
         if (parts.length > 1) {
             return parts[parts.length-1];
         }

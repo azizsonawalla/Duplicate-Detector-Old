@@ -6,6 +6,7 @@ import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -22,8 +23,12 @@ import java.io.IOException;
 import java.net.URL;
 import java.security.InvalidParameterException;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
+
+import static view.util.FormatConverter.milliSecondsToTime;
+import static view.util.FormatConverter.sensibleDiskSpaceValue;
 
 public class Results extends GUIController {
 
@@ -56,10 +61,10 @@ public class Results extends GUIController {
     void initCopy() {
         setNextButtonText(NEXT_BUTTON_TEXT);
         setNavBarTitle(NAV_BAR_TITLE);
-//        setSummaryBarHeadWithFilePath(SUMMARY_BAR_HEADER_DEFAULT);
+        setSummaryBarHeadWithFilePath(SUMMARY_BAR_HEADER_DEFAULT);
 
-//        long totalFileCount = model.getProgress().getDone();
-//        setSummaryBarSubtitle(String.format(SUMMARY_BAR_SUBTITLE_TEMPLATE, totalFileCount));
+        long duplicateCount = model.getProgress().getPositives();
+        setSummaryBarSubtitle(String.format(SUMMARY_BAR_SUBTITLE_TEMPLATE, duplicateCount));
     }
 
     @Override
@@ -71,12 +76,34 @@ public class Results extends GUIController {
         try {
             GridPane root = FXMLLoader.load(getClass().getResource("../layouts/Results.fxml"));                         // TODO: replace with static config reference
             ObservableList<Node> rootChildren = root.getChildren();
-            // TODO: implement
+
+            ScrollPane s = (ScrollPane) rootChildren.get(1);                                                            // TODO: replace all FXML child access from index to id
+            GridPane g = (GridPane) s.getContent();
+            GridPane results = createResultsPane(model.getResults());
+            GridPane.setRowIndex(results, 0);
+            GridPane.setColumnIndex(results, 1);
+            g.getChildren().add(results);
+
             return root;
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();                                                                                        // TODO: error handling
         }
         return new Label("Error loading content");
+    }
+
+    private List<List<File>> getDummyResults() {                                                                        // TODO: remove this
+        List<List<File>> res = new LinkedList<>();
+        File f = new File("D:\\Coding Projects\\Duplicate-Detector\\src\\view\\assets\\sample_image.jpeg");
+
+        for (int i=0; i < 5; i++) {
+            List<File> innerRes = new LinkedList<>();
+            for (int j = 0; j < 5; j++) {
+                innerRes.add(f);
+            }
+            res.add(innerRes);
+        }
+
+        return res;
     }
 
     private GridPane createResultsPane(List<List<File>> duplicateSets) {
@@ -127,7 +154,7 @@ public class Results extends GUIController {
 
     private GridPane addRowConstraints(int numOfDupSets, @NotNull GridPane g) {
         for (int i = 0; i < numOfDupSets; i++) {
-            g.getRowConstraints().add(new RowConstraints(350, 350, 350));
+            g.getRowConstraints().add(new RowConstraints(450, 450, 450));
         }
         return g;
     }
@@ -141,60 +168,74 @@ public class Results extends GUIController {
         return l;                                                                                                       // TODO: col and row index set by caller
     }
 
-    private GridPane createFilePreviewPane(File file) {
-        String name = file.getName();
-        String parent = file.getParent();
-        String size = Long.toString(file.length());
-        String lastModified = FormatConverter.milliSecondsToTime(System.currentTimeMillis() - file.lastModified()) + " ago";
+    private GridPane createFilePreviewPane(File file) {                                                                 // TODO: move all constants to config
+
+        if (!file.isFile()) {
+            throw new InvalidParameterException("File is invalid");                                                     // TODO: error handling
+        }
 
         GridPane g = new GridPane();
         g.setMaxWidth(300);
-        g.setMaxWidth(300);                                                                                             // TODO: col and row index will be set by caller
+        g.setMaxHeight(300);                                                                                             // TODO: col and row index will be set by caller
 
         ColumnConstraints c = new ColumnConstraints();
         c.setPercentWidth(90);
         g.getColumnConstraints().add(c);
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 5; i++) {
             RowConstraints r = new RowConstraints();
-            r.setPercentHeight(7);
+            r.setPercentHeight(6);
+            r.setMaxHeight(0.07*300);
             g.getRowConstraints().add(r);
         }
         RowConstraints r = new RowConstraints();
         r.setPercentHeight(70);
+        r.setMaxHeight(0.7*300);
         g.getRowConstraints().add(0, r);
 
-        Label nameLabel = new Label(name);
-        nameLabel.setStyle("body");
-        Label parentLabel = new Label(parent);
-        parentLabel.setStyle("body");
-        Label sizeLabel = new Label(size);
-        sizeLabel.setStyle("body");
-        Label modifiedLabel = new Label(lastModified);
-        modifiedLabel.setStyle("body");
+        List<Label> labels = createImagePreviewDetails(file);
 
-        Pane imagePane = createImagePreviewPane(file.getAbsolutePath());
+        ObservableList<Node> children = g.getChildren();                                                                // TODO: replace with calls to FXML util functions
+        for (int j = 0; j < labels.size(); j++) {
+            GridPane.setRowIndex(labels.get(j), j+2);
+            labels.get(j).getStyleClass().add("details");
+            children.add(labels.get(j));
+        }
+        labels.get(0).getStyleClass().clear();
+        labels.get(0).getStyleClass().add("body");
 
-        ObservableList<Node> children = g.getChildren();
+        Pane imagePane = createImagePreviewPane(file.toURI().toString());
+        GridPane.setRowIndex(imagePane, 0);
         children.add(0, imagePane);
-        children.add(1, nameLabel);
-        children.add(2, parentLabel);
-        children.add(3, sizeLabel);
-        children.add(4, modifiedLabel);
 
         return g;
     }
 
-    private Pane createImagePreviewPane(String absPath) {
+    private List<Label> createImagePreviewDetails(File file) {
+        String name = file.getName();
+        String parent = file.getParentFile().getName();
+        String size = sensibleDiskSpaceValue(file.length());
+        String lastModified = createLastModifiedString(file.lastModified());
+
+        return Arrays.asList(
+                new Label(name),
+                new Label(parent),
+                new Label(size),
+                new Label(lastModified)
+        );
+    }
+
+    private Pane createImagePreviewPane(String fileURI) {                                                               // TODO: create low res preview temp file
         Pane p = new Pane();
         GridPane.setRowIndex(p, 0);
-        p.prefWidth(300);
-        p.prefHeight(300);
-
-        String bgCss = String.format("-fx-background-image: url(\"%s\")", absPath);                                     // TODO: might have to be relative path  // TODO: might have to be async
-        p.setStyle(bgCss);
+        String bgCss = String.format("-fx-background-image: url(\"%s\");", fileURI);                                     // TODO: might have to be relative path  // TODO: might have to be async
+        p.setStyle(bgCss + "-fx-background-position: center; -fx-background-size: cover;");
         return p;
     }
 
-
+    private String createLastModifiedString(long lastModified) {
+        String template = "Modified: %s ago";
+        String time = milliSecondsToTime(System.currentTimeMillis() - lastModified);
+        return String.format(template, time);
+    }
 }

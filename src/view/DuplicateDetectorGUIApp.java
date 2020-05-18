@@ -10,7 +10,6 @@ import model.async.threadPool.AppThreadPool;
 import model.searchModel.ScanController;
 import view.controllers.NewScan;
 import view.controllers.GUIController;
-import view.controllers.Results;
 import view.util.AppError;
 
 import java.io.IOException;
@@ -27,7 +26,7 @@ public class DuplicateDetectorGUIApp extends Application {
 
     @Override
     public void start(Stage stage) {
-        GUIController controller = new Results(this);
+        GUIController controller = new NewScan(this);
         try {
             Scene firstScene = loadDefaultScene(controller);
             this.stage = configureDefaultStage(stage, firstScene);

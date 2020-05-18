@@ -16,22 +16,35 @@ public class FormatConverter {
         days -= weeks*7;
         weeks -= years*52;
 
-        if (years > 0) {
-            return String.format("%d years %d weeks %dd", years, weeks, days);
+        String strYears = years > 0 ? years + " years " : "";
+        String strWeeks = weeks > 0 ? weeks + " weeks " : "";
+        String strDays = days > 0 ? days + " days " : "";
+        String strHours = hours > 0 ? hours + "h " : "";
+        String strMins = mins > 0 ? mins + "m " : "";
+        String strSecs = seconds > 0 ? seconds + "s " : "";
+
+        return (strYears + strWeeks + strDays + strHours + strMins + strSecs).trim();
+    }
+
+    public static String sensibleDiskSpaceValue(long bytes) {                                                           // TODO: javadoc
+        double kb = bytes/1000.;
+        double mb = kb/1000.;
+        double gb = mb/1000.;
+        double tb = gb/1000.;
+
+        if ((long)tb > 0) {
+            return String.format("%.2f Tb", tb);
         }
-        if (weeks > 0) {
-            return String.format("%d weeks %dd %dh", weeks, days, hours);
+        if ((long)gb > 0) {
+            return String.format("%.2f Gb", gb);
         }
-        if (days > 0) {
-            return String.format("%dd %dh %dm %ds", days, hours, mins, seconds);
+        if ((long)mb > 0) {
+            return String.format("%.2f Mb", mb);
         }
-        if (hours > 0) {
-            return String.format("%dh %dm %ds", hours, mins, seconds);
+        if ((long)kb > 0) {
+            return String.format("%.2f Kb", kb);
         }
-        if (mins > 0) {
-            return String.format("%dm %ds", mins, seconds);
-        }
-        return String.format("%ds", seconds);
+        return String.format("%d bytes", bytes);
     }
 
 }
