@@ -5,6 +5,7 @@ import model.util.Progress;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.InvalidParameterException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -12,47 +13,70 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Future;
 
 /**
- * An asynchronous directory crawler. Recursively lists all files in directory.
+ * An asynchronous directory crawler. Recursively lists all files in the given directories, and filters for valid file
+ * extensions. Implements the Callable interface to be able to run the crawl in a background thread.
  */
 public class AsyncDirectoryCrawler implements Callable<List<File>> {
+
+    private enum CrawlStage {
+        NOT_STARTED, IN_PROGRESS, DONE, CANCELLED
+    }
 
     private final List<File> rootDirectories;
     private final List<String> validExtensions;
     private ConcurrentLinkedQueue<File> allFiles;
-    private boolean interrupted = false;
+    private LinkedList<Exception> errors = new LinkedList<>();
 
+    private boolean interrupted = false;
+    private CrawlStage currentStage = CrawlStage.NOT_STARTED;
+
+    /**
+     * Creates an asynchronous directory crawler.
+     * @param rootDirectories the directories to crawl through
+     * @param validExtensions only files matching these extensions will be returned. Empty list will return all files
+     *                        (i.e. no filtering). eg. input = ("JPEG", "PNG", "PDF")
+     */
     public AsyncDirectoryCrawler(List<File> rootDirectories, List<String> validExtensions) {
         this.rootDirectories = rootDirectories;
         this.validExtensions = validExtensions;
     }
 
     /**
-     * Get stats on the number of files processed so far
-     * @return Progress object with crawl progress
+     * Get stats on the progress of the directory crawl
+     * @return Progress object with stats
      */
     public Progress getProgress() {
-        if (allFiles == null) {
-            return new Progress(0, -1, -1, -1, -1, -1, null, null);
+        if (currentStage == CrawlStage.CANCELLED) {
+            return new Progress(-1, -1, -1, -1, -1, null, currentStage.toString());
         }
-        return new Progress(allFiles.size(), -1, -1, -1, -1, -1, null, null);                                               // TODO: add more info. Can estimate eta by calculating size differences
+        if (currentStage == CrawlStage.NOT_STARTED) {
+            return new Progress(0, 0, -1, -1, -1, errors, currentStage.toString());
+        }
+        if (currentStage == CrawlStage.DONE) {
+            return new Progress(allFiles.size(),0,0,-1,0, errors, currentStage.toString());
+        }
+        return new Progress(allFiles.size(),-1,-1,-1,-1, errors, currentStage.toString());                              // TODO: add more info. Can estimate eta by calculating size differences
     }
 
     /**
-     * Cancel the directory crawl. The future object will return null once cancelled.
-     * @throws IOException if cannot cancel
+     * Cancel the directory crawl. The call() method will return null once cancelled.
      */
-    public void cancel() throws IOException {
+    public void cancel() {
         this.interrupted = true;
     }
 
+    /**
+     * Begin the directory crawl.
+     * @return the list of all files under the given directories
+     */
     @Override
-    public List<File> call() throws IOException {                                                                       // TODO: break this down into helpers
+    public List<File> call() {
         ConcurrentLinkedQueue<File> toVisit = new ConcurrentLinkedQueue<>(getDirectoriesOnly(this.rootDirectories));
         LinkedList<Future<File[]>> visitors = new LinkedList<>();
         allFiles = new ConcurrentLinkedQueue<>();
 
         if (toVisit.size() != this.rootDirectories.size()) {
-            throw new IOException("Some files given are not directories");                                              // TODO: log errors
+            errors.add(new InvalidParameterException("Some files given are not directories"));
         }
 
         while(!toVisit.isEmpty() || !visitors.isEmpty()) {
@@ -69,7 +93,11 @@ public class AsyncDirectoryCrawler implements Callable<List<File>> {
                     }
                     Future<File[]> visitor = visitors.get(i);
                     if (visitor.isDone()) {
-                        parseVisitorResults(visitor, toVisit);
+                        try {
+                            parseVisitorResults(visitor, toVisit);
+                        } catch (IOException e) {
+                            errors.add(e);
+                        }
                         visitors.remove(i);
                         break;
                     }
@@ -79,6 +107,12 @@ public class AsyncDirectoryCrawler implements Callable<List<File>> {
         return new LinkedList<>(allFiles);
     }
 
+    /**
+     * Gets and filters the results from a directory visitor. Adds valid files to allFiles and directories to toVisit
+     * @param visitor
+     * @param toVisit
+     * @throws IOException
+     */
     private void parseVisitorResults(Future<File[]> visitor, ConcurrentLinkedQueue<File> toVisit) throws IOException {
         File[] results;
         try {
