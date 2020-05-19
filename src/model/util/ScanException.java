@@ -1,6 +1,6 @@
 package model.util;
 
-public class ScanException extends Exception {
+public class ScanException extends RuntimeException {                                                                   // TODO: change this to regular Exception
 
     public ScanException() {
         super();

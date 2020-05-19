@@ -1,10 +1,8 @@
 package view.controllers;
 
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -17,15 +15,17 @@ import model.searchModel.ScanController;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import view.DuplicateDetectorGUIApp;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+/**
+ * An abstract controller for the GUI. Implements methods to help control UI elements common to most scenes
+ */
 public abstract class GUIController implements Initializable {
 
     final DuplicateDetectorGUIApp app;
     ScanController model;
-    private final GUIController prevController;
+    private GUIController prevController;
     private GUIController nextController;                                                                               // Controller to switch to when 'Next' is clicked
 
     @FXML private Button settingsButton, backButton, nextButton, cancelButton;
@@ -34,11 +34,17 @@ public abstract class GUIController implements Initializable {
     @FXML private GridPane mainContent, mainWindow, root;
     @FXML private Pane mainContentLogo;
 
-    GUIController(DuplicateDetectorGUIApp app, GUIController prevController) {                                          // TODO: javadoc
-        this.prevController = prevController;
+    /**
+     * Create GUI controller object
+     * @param app the instance of the JavaFX application
+     */
+    GUIController(DuplicateDetectorGUIApp app) {
         this.app = app;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.model = app.getModel();
@@ -140,6 +146,14 @@ public abstract class GUIController implements Initializable {
     void setNextController(GUIController nextController) {
         this.nextController = nextController;
         setNextButtonOnAction();
+    }
+
+    /**
+     * Set the previous scene's controller. Control will transfer to this controller when the 'Back' button is pressed
+     * @param prev reference to previous controller
+     */
+    void setPrevController(GUIController prev) {
+        this.prevController = prev;
     }
 
     void setCancelButtonOnAction(EventHandler<ActionEvent> e) {

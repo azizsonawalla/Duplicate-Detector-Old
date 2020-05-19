@@ -47,7 +47,7 @@ public class RunScan extends GUIController {                                    
     private TaskProgressTracker tracker;
 
     RunScan(DuplicateDetectorGUIApp app) {
-        super(app, null);
+        super(app);
     }
 
     @Override

@@ -37,7 +37,7 @@ public class NewScan extends GUIController {
     private File chosenDirectory;
 
     public NewScan(DuplicateDetectorGUIApp app) {
-        super(app, null);                                                                                               // this is the first scene so prev scene is always null
+        super(app);
     }
 
     @Override
@@ -107,6 +107,8 @@ public class NewScan extends GUIController {
     private void prepareNextScene(File dir) {
         ScanController model = new ScanController(dir);
         app.setModel(model);
-        setNextController(new PrepareToScan(app, this));
+        PrepareToScan pts = new PrepareToScan(app);
+        pts.setPrevController(this);
+        setNextController(pts);
     }
 }

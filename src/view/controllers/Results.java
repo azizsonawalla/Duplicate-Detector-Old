@@ -41,7 +41,7 @@ public class Results extends GUIController {
     /* UI controls */
 
     public Results(DuplicateDetectorGUIApp app) {
-        super(app, null);
+        super(app);
     }
 
     @Override

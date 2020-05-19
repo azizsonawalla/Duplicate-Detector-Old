@@ -36,8 +36,8 @@ public class PrepareToScan extends GUIController {
     private ProgressBar progressBar;
     private TaskProgressTracker tracker;
 
-    PrepareToScan(DuplicateDetectorGUIApp app, GUIController prevController) {
-        super(app, prevController);
+    PrepareToScan(DuplicateDetectorGUIApp app) {
+        super(app);
     }
 
     @Override

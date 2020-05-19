@@ -27,7 +27,7 @@ public class ConfigureScan extends GUIController {
     private GridPane quickScan, fullScan, advScan;
 
     ConfigureScan(DuplicateDetectorGUIApp app) {
-        super(app, null);
+        super(app);
     }
 
     @Override
