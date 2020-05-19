@@ -44,7 +44,7 @@ public class MetadataStrategy implements ISearchStrategy {
             }
         }
 
-        return new Progress(done,-1,remaining, duplicatesCount, eta, -1, null, null);                                   // TODO: add support for remaining stats
+        return new Progress(done,-1,remaining, duplicatesCount, eta, null, null);                                       // TODO: add support for remaining stats
     }
 
     @Override

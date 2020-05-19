@@ -79,7 +79,7 @@ public class ScanController {
         }
         if (isPreSearchDone()) {
             try {
-                return new Progress(allFilesFuture.get().size(), 0, 0, 0, 0, 0, null, "Pre-Search Completed");             // TODO: change current task to current stage enum  // TODO: remove multiple calls to get() - save result on first call
+                return new Progress(allFilesFuture.get().size(), 0, 0, 0, 0, null, "Pre-Search Completed");             // TODO: change current task to current stage enum  // TODO: remove multiple calls to get() - save result on first call
             } catch (Exception e) {
                 throw new ScanException("Failed to get pre search results", e);
             }
@@ -89,7 +89,7 @@ public class ScanController {
         }
         if (isSearchDone()) {
             try {
-                return new Progress(allFilesFuture.get().size(), 0, 0, duplicatesFuture.get().size(), 0, 0, null, "Search Complete");   // TODO: change current task to current stage enum  // TODO: remove multiple calls to get() - save result on first call
+                return new Progress(allFilesFuture.get().size(), 0, 0, duplicatesFuture.get().size(), 0, null, "Search Complete");   // TODO: change current task to current stage enum  // TODO: remove multiple calls to get() - save result on first call
             } catch (Exception e) {
                 throw new ScanException("Failed to get pre search results", e);
             }
@@ -223,13 +223,8 @@ public class ScanController {
         if (!isPreSearchInProgress()) {
             throw new ScanException("Pre-search stage is not currently in progress. Cannot stop it.");
         }
-        try {
-            this.crawler.cancel();
-            setCurrentStage(ScanStage.STOPPED);
-        } catch (IOException e) {
-            setCurrentStage(ScanStage.ERROR);
-            throw new ScanException("AppError while trying to stop pre-search stage", e);
-        }
+        this.crawler.cancel();
+        setCurrentStage(ScanStage.STOPPED);
     }
 
     /**

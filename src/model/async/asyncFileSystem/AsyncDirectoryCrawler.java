@@ -4,8 +4,8 @@ import model.async.threadPool.AppThreadPool;
 import model.util.Progress;
 
 import java.io.File;
-import java.io.IOException;
 import java.security.InvalidParameterException;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -39,6 +39,7 @@ public class AsyncDirectoryCrawler implements Callable<List<File>> {
     public AsyncDirectoryCrawler(List<File> rootDirectories, List<String> validExtensions) {
         this.rootDirectories = rootDirectories;
         this.validExtensions = validExtensions;
+        this.validExtensions.forEach(AsyncDirectoryCrawler::cleanExtension);
     }
 
     /**
@@ -63,6 +64,7 @@ public class AsyncDirectoryCrawler implements Callable<List<File>> {
      */
     public void cancel() {
         this.interrupted = true;
+        currentStage = CrawlStage.CANCELLED;
     }
 
     /**
@@ -71,6 +73,8 @@ public class AsyncDirectoryCrawler implements Callable<List<File>> {
      */
     @Override
     public List<File> call() {
+        currentStage = CrawlStage.IN_PROGRESS;
+
         ConcurrentLinkedQueue<File> toVisit = new ConcurrentLinkedQueue<>(getDirectoriesOnly(this.rootDirectories));
         LinkedList<Future<File[]>> visitors = new LinkedList<>();
         allFiles = new ConcurrentLinkedQueue<>();
@@ -94,8 +98,8 @@ public class AsyncDirectoryCrawler implements Callable<List<File>> {
                     Future<File[]> visitor = visitors.get(i);
                     if (visitor.isDone()) {
                         try {
-                            parseVisitorResults(visitor, toVisit);
-                        } catch (IOException e) {
+                            parseVisitorResults(visitor, toVisit, allFiles);
+                        } catch (Exception e) {
                             errors.add(e);
                         }
                         visitors.remove(i);
@@ -104,23 +108,21 @@ public class AsyncDirectoryCrawler implements Callable<List<File>> {
                 }
             }
         }
+
+        currentStage = CrawlStage.DONE;
         return new LinkedList<>(allFiles);
     }
 
     /**
      * Gets and filters the results from a directory visitor. Adds valid files to allFiles and directories to toVisit
-     * @param visitor
-     * @param toVisit
-     * @throws IOException
+     * @param visitor the visitor with directory crawl results
+     * @param toVisit directories from results will be added to this
+     * @param allFiles valid files from results will be added to this
      */
-    private void parseVisitorResults(Future<File[]> visitor, ConcurrentLinkedQueue<File> toVisit) throws IOException {
+    private void parseVisitorResults(Future<File[]> visitor, Collection<File> toVisit,
+                                     Collection<File> allFiles) throws Exception {
         File[] results;
-        try {
-            results = visitor.get();
-        } catch (Exception e) {
-            e.printStackTrace();                                                                                        // TODO: error handling
-            throw new IOException("Error reading directory", e);
-        }
+        results = visitor.get();
 
         for (File file: results) {
             if (file.isDirectory()) {
@@ -131,13 +133,18 @@ public class AsyncDirectoryCrawler implements Callable<List<File>> {
         }
     }
 
+    /**
+     * Creates an asynchronously populated Future object the list of files within a directory
+     * @param dir directory to visit
+     * @return a Future object for the list of files within the directory
+     */
     private Future<File[]> createVisitor(File dir) {
         AsyncFileList loader = new AsyncFileList(dir);
         return AppThreadPool.getInstance().submit(loader);
     }
 
     /**
-     * Filters given list and keeps only directories
+     * Filters given list of files and returns the ones that are directories
      * @param files list to filter
      * @return directories from given list
      */
@@ -151,29 +158,47 @@ public class AsyncDirectoryCrawler implements Callable<List<File>> {
         return filtered;
     }
 
+    /**
+     * Checks if the given File object is a file (not directory) and has a valid extension
+     * @param file File object to inspect
+     * @return true if file is valid, false otherwise
+     */
     private boolean isValidFile(File file) {
         if (file.isFile()) {
             if (this.validExtensions.isEmpty()) {
-                System.err.println("empty");
                 return true;
             }
-            String ext = getFileExtension(file).toUpperCase();
-            if (this.validExtensions.contains(ext)) {
-                return true;
+            String ext = getCleanedFileExtension(file);
+            for (String vExt: this.validExtensions) {
+                if (vExt.equals(ext)) {
+                    return true;
+                }
             }
         }
         return false;
     }
 
     /**
-     * Returns the extension associated with the file without the dot. Returns empty string if file has no extension
+     * Extracts and cleans the file extension of the given File object
+     * @param file File object to get extension of
+     * @return a 'cleaned' version of the extension, or emptry string if file has no extension.
+     * See cleanExtension() for definition of 'cleaned'.
      */
-    private static String getFileExtension(File file) {
+    private static String getCleanedFileExtension(File file) {
         String name = file.getName();
         String[] parts = name.split("\\.");
         if (parts.length > 1) {
-            return parts[parts.length-1];
+            return cleanExtension(parts[parts.length-1]);
         }
         return "";
+    }
+
+    /**
+     * Cleans file extensions in a standardized way
+     * @param dExt extension to clean
+     * @return the given extension without the dot ('.') and in upper case
+     */
+    private static String cleanExtension(String dExt) {
+        return dExt.toUpperCase().replace("\\.", "").trim();
     }
 }
