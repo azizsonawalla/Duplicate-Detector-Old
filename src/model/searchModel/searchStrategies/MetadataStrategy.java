@@ -123,42 +123,79 @@ public class MetadataStrategy implements ISearchStrategy {
         };
     }
 
-    static class MetadataHasher implements Runnable {                                                                   // TODO: Javadoc
+    /**
+     * Asynchronously hashes files based on metadata and stores it into a results map
+     *
+     * Hash algorithm: {file name}_{file size in bytes}
+     */
+    static class MetadataHasher implements Runnable {
 
         private final File file;
-        private final LockableConcurrentHashMap<String, LinkedList<File>> duplicates;
+        private final LockableConcurrentHashMap<String, LinkedList<File>> results;
 
-        MetadataHasher(File file, LockableConcurrentHashMap<String, LinkedList<File>> duplicates) {
+        /**
+         * Create MetadataHasher object
+         * @param file file to hash
+         * @param results map to store results into
+         */
+        MetadataHasher(File file, LockableConcurrentHashMap<String, LinkedList<File>> results) {
             this.file = file;
-            this.duplicates = duplicates;
+            this.results = results;
         }
 
+        /**
+         * Hashes and inserts file into results map
+         */
         @Override
         public void run() {
             if (Thread.interrupted()) {
                 return;
             }
+
             String key = getNameSizeHash(this.file);
             try {
-                this.duplicates.lock();
-                if (this.duplicates.containsKey(key)) {
-                    LinkedList<File> existingSet = this.duplicates.get(key);
-                    existingSet.add(this.file);
-                    this.duplicates.put(key, existingSet);
-                } else {
-                    LinkedList<File> newFileSet = new LinkedList<>();
-                    newFileSet.add(this.file);
-                    this.duplicates.put(key, newFileSet);
-                }
+                this.results.lock();
+                insertFileIntoResults(key, this.file, this.results);
             } catch (Exception e) {
                 // TODO: exception handling
             } finally {
-                this.duplicates.unlock();
+                this.results.unlock();
             }
         }
 
         /**
+         * Inserts file into map with the given key. If key already has associated values, adds this file to the
+         * collection, else creates a new collection to add the file.
+         * @param key key associated with this file
+         * @param file file to insert
+         * @param results results map to insert into
+         */
+        private static void insertFileIntoResults(String key, File file,
+                                                  LockableConcurrentHashMap<String, LinkedList<File>> results) {
+            if (!results.containsKey(key)) {
+                results.put(key, new LinkedList<>());
+            }
+            addFileToExistingSet(key, file, results);
+        }
+
+        /**
+         * Adds given file into results map using the given key. Assumes that a collection already exists associated
+         * to the given key - will add the given file to the existing collection.
+         * @param key key associated with this file
+         * @param file file to insert
+         * @param results results map to insert into
+         */
+        private static void addFileToExistingSet(String key, File file,
+                                                 LockableConcurrentHashMap<String, LinkedList<File>> results) {
+            LinkedList<File> existingSet = results.get(key);
+            existingSet.add(file);
+            results.put(key, existingSet);
+        }
+
+        /**
          * Creates a hashcode for the file using its name and size
+         * @param file file to hash
+         * @return hash as a string
          */
         private static String getNameSizeHash(File file) {
             long nameHash = file.getName().hashCode();
