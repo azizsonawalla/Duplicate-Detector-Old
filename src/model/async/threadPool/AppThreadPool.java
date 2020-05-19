@@ -6,10 +6,20 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-public class AppThreadPool extends ThreadPoolExecutor {
+/**
+ * Singleton wrapper for ThreadPoolExecutor to be used across the application for background tasks.
+ *
+ * Saves memory/computational resources by not having to create/destroy threads for each background task, and allows
+ * easy management of parallelism and asynchronous tasks across the application.
+ */
+public class AppThreadPool extends ThreadPoolExecutor {                                                                 // TODO: Add a way to automatically close pool on closing application
 
     private static AppThreadPool instance = null;
 
+    /**
+     * Get the singleton instance of the worker pool
+     * @return inner ThreadPoolExecutor instance
+     */
     public static AppThreadPool getInstance() {
         if (instance == null) {
             instance = new AppThreadPool();
@@ -17,6 +27,9 @@ public class AppThreadPool extends ThreadPoolExecutor {
         return instance;
     }
 
+    /**
+     * Initializes inner thread pool based on Config values
+     */
     private AppThreadPool() {
         super(
                 Config.POOL_SIZE,
@@ -26,6 +39,4 @@ public class AppThreadPool extends ThreadPoolExecutor {
                 new LinkedBlockingQueue<>()
         );
     }
-
-    // TODO: Add a way to automatically close pool on closing application
 }
