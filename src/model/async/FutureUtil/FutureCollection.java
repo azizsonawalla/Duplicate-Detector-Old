@@ -7,8 +7,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 /**
- * A class to manage a collection of Future objects as one Future object
- * @param <T>
+ * A abstract class to manage a collection of Future objects as one Future object. Child classes must implement get()
+ * method based on how they wish to retrieve the result from the internal Future object collection.
+ * @param <T> the type of the result returned by get()
  */
 public abstract class FutureCollection<T> implements Future<T> {
 
@@ -64,18 +65,24 @@ public abstract class FutureCollection<T> implements Future<T> {
     }
 
     /**
-     * Calls FutureCollection.get(timeout, unit) with no timeout
+     * Calls FutureCollection.get(timeout, unit) with negative timeout
      */
     @Override
     public T get() throws InterruptedException, ExecutionException {
         try {
             return get(-1, null);
         } catch (TimeoutException e) {
-            throw new RuntimeException(e);                                                                              // TODO: change this behaviour of exception conversion?
+            throw new ExecutionException(e);
         }
     }
 
+    /**
+     * Get the result from the Future object.
+     * @param timeout time to wait for result. If negative, will wait indefinitely
+     * @param unit unit of time for timeout (may be null if timeout is negative)
+     * @return the result from the collection of Future objects
+     */
     @Override
     public abstract T get(long timeout, TimeUnit unit)
-            throws InterruptedException, ExecutionException, TimeoutException;                                          // TODO: javadoc
+            throws InterruptedException, ExecutionException, TimeoutException;
 }
