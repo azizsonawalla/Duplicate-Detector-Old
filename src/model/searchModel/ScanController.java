@@ -9,15 +9,17 @@ import model.util.ScanException;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Future;
 
 /**
- * A controller to manage file scan related tasks. This is a single-use object - once a scan is complete, or if any of
- * the stages are stopped/error-out midway, the scan cannot be restarted. Create a new instance of the controller
- * instead to restart a scan. Some search strategies may use caching mechanisms and so all progress may not be lost.
+ * A controller to manage file scan related tasks.
+ *
+ * This is a single-use object - once a scan is complete, or if any of the stages are stopped/error-out midway, the scan
+ * cannot be restarted. Create a new instance of the controller instead to restart a scan. Some search strategies may
+ * use caching mechanisms and so all progress may not be lost.
  */
 public class ScanController {
 
@@ -25,17 +27,27 @@ public class ScanController {
      * Constants to track current stage of the search
      */
     private enum ScanStage {
-        NOT_STARTED, PRE_SEARCH_IN_PROGRESS, PRE_SEARCH_DONE, SEARCH_IN_PROGRESS, SEARCH_DONE, STOPPED, ERROR
+        NOT_STARTED,
+        PRE_SEARCH_IN_PROGRESS,
+        PRE_SEARCH_DONE,
+        SEARCH_IN_PROGRESS,
+        SEARCH_DONE,
+        STOPPED,
+        ERRORED
     }
     private ScanStage currentStage = ScanStage.NOT_STARTED;
+
+    private List<Exception> errors;
 
     /* Pre-search objects */
     private List<File> rootDirectories;
     private AsyncDirectoryCrawler crawler;                                                                              // Async crawler for allFiles
     private Future<List<File>> allFilesFuture;                                                                          // Future object for allFiles
+    private List<File> allFiles;                                                                                        // Final pre search results
 
     /* Search objects */
     private Future<List<List<File>>> duplicatesFuture;                                                                  // Future object for sets of duplicate files
+    private List<List<File>> duplicates;                                                                                // Final search results
     private ISearchStrategy strategy;
 
 
@@ -47,6 +59,7 @@ public class ScanController {
     public ScanController(List<File> rootDirectories, ISearchStrategy strategy) {
         this.rootDirectories = rootDirectories;
         this.strategy = strategy;
+        this.errors = new LinkedList<>();
     }
 
     /**
@@ -59,12 +72,16 @@ public class ScanController {
 
     /**
      * Set the search strategy
-     * @param strategy search strategy to use
+     * @param strategy search strategy to be applied
      */
     public void setStrategy(ISearchStrategy strategy) {
         this.strategy = strategy;
     }
 
+    /**
+     * Get the applied search strategy. May be null if no strategy is set.
+     * @return currently applied search strategy (may be null)
+     */
     public ISearchStrategy getStrategy() {
         return strategy;
     }
@@ -78,21 +95,13 @@ public class ScanController {
             return this.getPreSearchProgress();
         }
         if (isPreSearchDone()) {
-            try {
-                return new Progress(allFilesFuture.get().size(), 0, 0, 0, 0, null, "Pre-Search Completed");             // TODO: change current task to current stage enum  // TODO: remove multiple calls to get() - save result on first call
-            } catch (Exception e) {
-                throw new ScanException("Failed to get pre search results", e);
-            }
+            return getPreSearchDoneProgressObject();
         }
         if (isSearchInProgress()) {
             return this.getSearchProgress();
         }
         if (isSearchDone()) {
-            try {
-                return new Progress(allFilesFuture.get().size(), 0, 0, duplicatesFuture.get().size(), 0, null, "Search Complete");   // TODO: change current task to current stage enum  // TODO: remove multiple calls to get() - save result on first call
-            } catch (Exception e) {
-                throw new ScanException("Failed to get pre search results", e);
-            }
+            return getSearchDoneProgressObject();
         }
         throw new ScanException("No stage is currently being executed");
     }
@@ -122,7 +131,6 @@ public class ScanController {
     /**
      * Execute the search stage asynchronously (returns immediately).
      * Must be called after completing the pre-search stage.
-     * If pre-search still in progress, will wait for it to complete.
      * @throws ScanException if there is a problem during the search stage, or pre-search hasn't completed.
      */
     public void startSearch() throws ScanException {
@@ -131,13 +139,6 @@ public class ScanController {
         }
         if (strategy == null) {
             throw new ScanException("No strategy set for search");
-        }
-        List<File> allFiles;
-        try {
-            allFiles = allFilesFuture.get();                                                                            // blocks until Future is ready
-        } catch (Exception e) {
-            setCurrentStage(ScanStage.ERROR);
-            throw new ScanException("Failed to read all files from Future", e);
         }
         setCurrentStage(ScanStage.SEARCH_IN_PROGRESS);
         this.duplicatesFuture = this.strategy.findDuplicates(allFiles);
@@ -164,18 +165,11 @@ public class ScanController {
      * @return a 2-D list where each inner list is a collection of File objects that are suspected duplicates
      * @throws ScanException if the search stage has not completed or there is an error retrieving results
      */
-    public List<List<File>> getResults() throws ScanException {                                                         // TODO: create new class called SearchResults
+    public List<List<File>> getResults() throws ScanException {
         if (!isSearchDone()) {
             throw new ScanException("Search stage not complete. Cannot return results.");
         }
-        List<List<File>> results;
-        try {
-            results = duplicatesFuture.get();
-        } catch (Exception e) {
-            setCurrentStage(ScanStage.ERROR);
-            throw new ScanException("AppError reading duplicates future object", e);
-        }
-        return results;
+        return this.duplicates;
     }
 
     /**
@@ -210,10 +204,33 @@ public class ScanController {
         return currentStage == ScanStage.SEARCH_DONE;
     }
 
+    /**
+     * @return the root directories that are being searched
+     */
     public List<File> getRootDirectories() {
         return rootDirectories;
     }
 
+
+    /**
+     * Creates Progress object for SEARCH_DONE stage
+     * @return Progress object for SEARCH_DONE stage
+     */
+    private Progress getSearchDoneProgressObject() {
+        long done = allFiles.size();
+        long positives = duplicates.size();
+        return new Progress(done, 0, 0, positives, 0, errors, currentStage.toString());
+    }
+
+    /**
+     * Creates Progress object for PRE_SEARCH_DONE stage
+     * @return Progress object for PRE_SEARCH_DONE stage
+     */
+    private Progress getPreSearchDoneProgressObject() {
+        long done = allFiles.size();
+        long positives = 0;
+        return new Progress(done, 0, 0, positives, 0, errors, currentStage.toString());
+    }
 
     /**
      * Stop the pre-search stage
@@ -239,8 +256,10 @@ public class ScanController {
             this.duplicatesFuture.cancel(true);
             setCurrentStage(ScanStage.STOPPED);
         } catch (Exception e) {
-            setCurrentStage(ScanStage.ERROR);
-            throw new ScanException("Error while trying to stop Search stage", e);
+            setCurrentStage(ScanStage.ERRORED);
+            ScanException scanException = new ScanException("Error while trying to stop Search stage", e);
+            errors.add(scanException);
+            throw scanException;
         }
     }
 
@@ -277,21 +296,46 @@ public class ScanController {
     }
 
     /**
-     * Refreshes the current stage flag. Only updates to PRE_SEARCH_DONE and SEARCH_DONE stages (i.e. stages that run
-     * asynchronously). Other stages are set synchronously by other methods.
+     * Refresh the current stage and extract results if ready
      */
-    private void refreshCurrentStage() {                                                                                // TODO: replace with a more elegant solution. This may break if start method impl. changes.
-        switch (currentStage) {
-            case PRE_SEARCH_IN_PROGRESS:
-                if (this.allFilesFuture != null && allFilesFuture.isDone()) {
-                    this.currentStage = ScanStage.PRE_SEARCH_DONE;
-                }
-                break;
-            case SEARCH_IN_PROGRESS:
-                if (this.duplicatesFuture != null && duplicatesFuture.isDone()) {
-                    this.currentStage = ScanStage.SEARCH_DONE;
-                }
-                break;
+    private void refreshCurrentStage() {                                                                                // TODO: pass callbacks to strategy object instead to update stage
+        if (this.currentStage == ScanStage.PRE_SEARCH_IN_PROGRESS
+                && this.allFilesFuture != null && allFilesFuture.isDone()) {
+
+            setCurrentStage(ScanStage.PRE_SEARCH_DONE);
+            extractPreSearchResults();
+            return;
+        }
+
+        if (this.currentStage == ScanStage.SEARCH_IN_PROGRESS
+                && this.duplicatesFuture != null && duplicatesFuture.isDone()) {
+
+            setCurrentStage(ScanStage.SEARCH_DONE);
+            extractSearchResults();
+        }
+    }
+
+    /**
+     * Extract pre search results
+     */
+    private void extractPreSearchResults() {
+        try {
+            this.allFiles = allFilesFuture.get();
+        } catch (Exception e) {
+            setCurrentStage(ScanStage.ERRORED);
+            errors.add(new ScanException("Failed to get pre search results", e));
+        }
+    }
+
+    /**
+     * Extract search results
+     */
+    private void extractSearchResults() {
+        try {
+            this.duplicates = duplicatesFuture.get();
+        } catch (Exception e) {
+            setCurrentStage(ScanStage.ERRORED);
+            errors.add(new ScanException("Failed to get search results", e));
         }
     }
 }

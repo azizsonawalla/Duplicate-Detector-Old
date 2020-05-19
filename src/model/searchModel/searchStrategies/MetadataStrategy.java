@@ -10,7 +10,6 @@ import java.io.File;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.*;
 
 /**
@@ -124,8 +123,7 @@ public class MetadataStrategy implements ISearchStrategy {
     }
 
     /**
-     * Asynchronously hashes files based on metadata and stores it into a results map
-     *
+     * Asynchronously hashes files based on metadata and stores it into a results map     *
      * Hash algorithm: {file name}_{file size in bytes}
      */
     static class MetadataHasher implements Runnable {
