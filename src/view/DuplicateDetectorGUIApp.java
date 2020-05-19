@@ -49,7 +49,7 @@ public class DuplicateDetectorGUIApp extends Application {
         this.model = model;
     }
 
-    public void switchScene(GUIController newController) {
+    public void switchScene(GUIController newController) {                                                              // TODO: FIX: window size resets on each scene change
         Scene newScene = null;
         try {
             newScene = loadDefaultScene(newController);

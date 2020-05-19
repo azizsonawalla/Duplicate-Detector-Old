@@ -1,5 +1,6 @@
 package model.async.FutureUtil;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -13,13 +14,13 @@ import java.util.concurrent.TimeoutException;
  */
 public abstract class FutureCollection<T> implements Future<T> {
 
-    protected List<Future> futures;
+    protected Collection<Future> futures;
 
     /**
      * Create a single Future object from a collection
      * @param futures a collection of future objects
      */
-    public FutureCollection(List<Future> futures) {
+    public FutureCollection(Collection<Future> futures) {
         this.futures = futures;
     }
 

@@ -7,4 +7,6 @@ package model.searchModel.searchStrategies;
  */
 public class RandomPixelStrategy {
 
+    // TODO: implement this
+
 }
