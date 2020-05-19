@@ -120,7 +120,7 @@ public class ScanController {
      * @throws ScanException if there is a problem starting the pre-search stage
      */
     public void startPreSearch() throws ScanException {
-        if (currentStage != ScanStage.NOT_STARTED) {
+        if (getCurrentStage() != ScanStage.NOT_STARTED) {
             throw new ScanException("A scan has already started. Cannot start pre-search stage");
         }
         this.crawler = new AsyncDirectoryCrawler(this.rootDirectories, Config.SUPPORTED_FILE_TYPES);
@@ -177,7 +177,7 @@ public class ScanController {
      */
     public boolean isPreSearchInProgress() {
         refreshCurrentStage();
-        return currentStage == ScanStage.PRE_SEARCH_IN_PROGRESS;
+        return getCurrentStage() == ScanStage.PRE_SEARCH_IN_PROGRESS;
     }
 
     /**
@@ -185,7 +185,7 @@ public class ScanController {
      */
     public boolean isPreSearchDone() {
         refreshCurrentStage();
-        return currentStage == ScanStage.PRE_SEARCH_DONE;
+        return getCurrentStage() == ScanStage.PRE_SEARCH_DONE;
     }
 
     /**
@@ -193,7 +193,7 @@ public class ScanController {
      */
     public boolean isSearchInProgress() {
         refreshCurrentStage();
-        return currentStage == ScanStage.SEARCH_IN_PROGRESS;
+        return getCurrentStage() == ScanStage.SEARCH_IN_PROGRESS;
     }
 
     /**
@@ -201,7 +201,7 @@ public class ScanController {
      */
     public boolean isSearchDone() {
         refreshCurrentStage();
-        return currentStage == ScanStage.SEARCH_DONE;
+        return getCurrentStage() == ScanStage.SEARCH_DONE;
     }
 
     /**
@@ -219,7 +219,7 @@ public class ScanController {
     private Progress getSearchDoneProgressObject() {
         long done = allFiles.size();
         long positives = duplicates.size();
-        return new Progress(done, 0, 0, positives, 0, errors, currentStage.toString());
+        return new Progress(done, 0, 0, positives, 0, errors, getCurrentStage().toString());
     }
 
     /**
@@ -229,7 +229,7 @@ public class ScanController {
     private Progress getPreSearchDoneProgressObject() {
         long done = allFiles.size();
         long positives = 0;
-        return new Progress(done, 0, 0, positives, 0, errors, currentStage.toString());
+        return new Progress(done, 0, 0, positives, 0, errors, getCurrentStage().toString());
     }
 
     /**
@@ -296,10 +296,17 @@ public class ScanController {
     }
 
     /**
+     * @return the current stage
+     */
+    private ScanStage getCurrentStage() {
+        return this.currentStage;
+    }
+
+    /**
      * Refresh the current stage and extract results if ready
      */
     private void refreshCurrentStage() {                                                                                // TODO: pass callbacks to strategy object instead to update stage
-        if (this.currentStage == ScanStage.PRE_SEARCH_IN_PROGRESS
+        if (getCurrentStage() == ScanStage.PRE_SEARCH_IN_PROGRESS
                 && this.allFilesFuture != null && allFilesFuture.isDone()) {
 
             setCurrentStage(ScanStage.PRE_SEARCH_DONE);
@@ -307,7 +314,7 @@ public class ScanController {
             return;
         }
 
-        if (this.currentStage == ScanStage.SEARCH_IN_PROGRESS
+        if (getCurrentStage() == ScanStage.SEARCH_IN_PROGRESS
                 && this.duplicatesFuture != null && duplicatesFuture.isDone()) {
 
             setCurrentStage(ScanStage.SEARCH_DONE);
