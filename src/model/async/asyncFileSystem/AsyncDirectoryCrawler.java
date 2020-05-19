@@ -139,7 +139,7 @@ public class AsyncDirectoryCrawler implements Callable<List<File>> {
      * @return a Future object for the list of files within the directory
      */
     private Future<File[]> createVisitor(File dir) {
-        AsyncFileList loader = new AsyncFileList(dir);
+        CallableFileList loader = new CallableFileList(dir);
         return AppThreadPool.getInstance().submit(loader);
     }
 

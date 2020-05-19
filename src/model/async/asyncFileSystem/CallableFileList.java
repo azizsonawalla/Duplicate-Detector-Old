@@ -8,14 +8,14 @@ import java.util.concurrent.Callable;
 /**
  * A callable file list loader. Implements Callable interface to be able to run this in a background thread.
  */
-class AsyncFileList implements Callable<File[]> {
+class CallableFileList implements Callable<File[]> {
     private File file;
 
     /**
      * Creates a file list loader
      * @param file file to read from
      */
-    AsyncFileList(File file) {
+    CallableFileList(File file) {
         this.file = file;
     }
 

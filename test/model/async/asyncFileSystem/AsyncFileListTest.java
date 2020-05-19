@@ -18,7 +18,7 @@ public class AsyncFileListTest {
     @Test
     public void testCall_SubFilesAndFolders() throws ExecutionException, InterruptedException {
         File testFile = TestFiles.DEPTH_1_DIR;
-        AsyncFileList afl = new AsyncFileList(testFile);
+        CallableFileList afl = new CallableFileList(testFile);
 
         Future<File[]> listFuture = AppThreadPool.getInstance().submit(afl);
         List<File> expectedList = TestFiles.DEPTH_1_DIR_LIST;
