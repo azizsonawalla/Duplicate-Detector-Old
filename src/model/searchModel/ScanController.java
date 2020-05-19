@@ -141,7 +141,7 @@ public class ScanController {
             throw new ScanException("No strategy set for search");
         }
         setCurrentStage(ScanStage.SEARCH_IN_PROGRESS);
-        this.duplicatesFuture = this.strategy.findDuplicates(allFiles);
+        this.duplicatesFuture = this.strategy.findDuplicates(getPreSearchResults());
     }
 
     /**
@@ -169,7 +169,7 @@ public class ScanController {
         if (!isSearchDone()) {
             throw new ScanException("Search stage not complete. Cannot return results.");
         }
-        return this.duplicates;
+        return getSearchResults();
     }
 
     /**
@@ -217,8 +217,8 @@ public class ScanController {
      * @return Progress object for SEARCH_DONE stage
      */
     private Progress getSearchDoneProgressObject() {
-        long done = allFiles.size();
-        long positives = duplicates.size();
+        long done = getPreSearchResults().size();
+        long positives = getSearchResults().size();
         return new Progress(done, 0, 0, positives, 0, errors, getCurrentStage().toString());
     }
 
@@ -227,7 +227,7 @@ public class ScanController {
      * @return Progress object for PRE_SEARCH_DONE stage
      */
     private Progress getPreSearchDoneProgressObject() {
-        long done = allFiles.size();
+        long done = getPreSearchResults().size();
         long positives = 0;
         return new Progress(done, 0, 0, positives, 0, errors, getCurrentStage().toString());
     }
@@ -308,41 +308,45 @@ public class ScanController {
     private void refreshCurrentStage() {                                                                                // TODO: pass callbacks to strategy object instead to update stage
         if (getCurrentStage() == ScanStage.PRE_SEARCH_IN_PROGRESS
                 && this.allFilesFuture != null && allFilesFuture.isDone()) {
-
             setCurrentStage(ScanStage.PRE_SEARCH_DONE);
-            extractPreSearchResults();
+            getPreSearchResults();
             return;
         }
 
         if (getCurrentStage() == ScanStage.SEARCH_IN_PROGRESS
                 && this.duplicatesFuture != null && duplicatesFuture.isDone()) {
-
             setCurrentStage(ScanStage.SEARCH_DONE);
-            extractSearchResults();
+            getSearchResults();
         }
     }
 
     /**
      * Extract pre search results
      */
-    private void extractPreSearchResults() {
-        try {
-            this.allFiles = allFilesFuture.get();
-        } catch (Exception e) {
-            setCurrentStage(ScanStage.ERRORED);
-            errors.add(new ScanException("Failed to get pre search results", e));
+    private List<File> getPreSearchResults() {
+        if (this.allFiles == null) {
+            try {
+                this.allFiles = allFilesFuture.get();
+            } catch (Exception e) {
+                setCurrentStage(ScanStage.ERRORED);
+                errors.add(new ScanException("Failed to get pre search results", e));
+            }
         }
+        return this.allFiles;
     }
 
     /**
      * Extract search results
      */
-    private void extractSearchResults() {
-        try {
-            this.duplicates = duplicatesFuture.get();
-        } catch (Exception e) {
-            setCurrentStage(ScanStage.ERRORED);
-            errors.add(new ScanException("Failed to get search results", e));
+    private List<List<File>> getSearchResults() {
+        if (this.duplicates == null) {
+            try {
+                this.duplicates = duplicatesFuture.get();
+            } catch (Exception e) {
+                setCurrentStage(ScanStage.ERRORED);
+                errors.add(new ScanException("Failed to get search results", e));
+            }
         }
+        return this.duplicates;
     }
 }
