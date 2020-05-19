@@ -181,7 +181,7 @@ public class AsyncDirectoryCrawler implements Callable<List<File>> {
     /**
      * Extracts and cleans the file extension of the given File object
      * @param file File object to get extension of
-     * @return a 'cleaned' version of the extension, or emptry string if file has no extension.
+     * @return a 'cleaned' version of the extension, or empty string if file has no extension.
      * See cleanExtension() for definition of 'cleaned'.
      */
     private static String getCleanedFileExtension(File file) {
