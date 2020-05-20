@@ -42,6 +42,7 @@ public class AsyncDirectoryCrawler implements Callable<List<File>> {
         this.rootDirectories = rootDirectories;
         this.validExtensions = validExtensions;
         this.validExtensions.forEach(AsyncDirectoryCrawler::cleanExtension);
+        this.allFiles = new ConcurrentLinkedQueue<>();
     }
 
     /**
@@ -79,7 +80,6 @@ public class AsyncDirectoryCrawler implements Callable<List<File>> {
 
         ConcurrentLinkedQueue<File> toVisit = new ConcurrentLinkedQueue<>(getDirectoriesOnly(this.rootDirectories));
         LinkedList<Future<File[]>> visitors = new LinkedList<>();
-        allFiles = new ConcurrentLinkedQueue<>();
 
         if (toVisit.size() != this.rootDirectories.size()) {
             errors.add(new InvalidParameterException("Some files given are not directories"));

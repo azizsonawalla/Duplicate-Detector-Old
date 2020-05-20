@@ -15,7 +15,7 @@ public class Config {
         private final String uiName;
         private final String desc;
 
-        public SearchStrategyDescription(Class<? extends ISearchStrategy> strategy, String uiName, String desc) {
+        SearchStrategyDescription(Class<? extends ISearchStrategy> strategy, String uiName, String desc) {
             this.strategy = strategy;
             this.uiName = uiName;
             this.desc = desc; 
@@ -40,7 +40,7 @@ public class Config {
 
     /* Model */
     public static List<String> SUPPORTED_FILE_TYPES = Arrays.asList("JPEG", "JPG", "PNG");                              // TODO: Add list of supported file types  // TODO: move this to individual strategies
-    public static Integer POOL_SIZE = 3;                                                                                // TODO: calculate based on available vCPUs. Maybe let user configure
+    public static Integer POOL_SIZE = 3;                                                                               // TODO: calculate based on available vCPUs. Maybe let user configure
 
     /* UI */
     public static double SCENE_WIDTH = 1536;

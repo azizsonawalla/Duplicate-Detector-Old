@@ -51,7 +51,9 @@ public class ImageUtil {
         Pair<String, String> nameParts = splitFileName(originalFile);
         String basename = nameParts.getKey();
         String ext = nameParts.getValue();
-        return File.createTempFile("000_" + basename, ext);
+        File tmp =  File.createTempFile("000_" + basename, ext);
+        tmp.deleteOnExit();
+        return tmp;
     }
 
     /**

@@ -7,6 +7,7 @@ import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -32,13 +33,12 @@ public class Results extends GUIController {
     private String NEXT_BUTTON_TEXT = "Next";
     private String SUMMARY_BAR_HEADER_DEFAULT = "Results for";
     private String SUMMARY_BAR_SUBTITLE_TEMPLATE = "Found %d duplicate sets";
-    private String LOAD_BUTTON_TEXT = "Load more results";
+    private String LOAD_BUTTON_TEXT = "Load more results";                                                              // TODO: use this
 
     /* UI controls */
     private GridPane resultsPane;
     private Button loadMore;
-    private Map<File, Pane> imagePreviewPanes = new HashMap<>();
-    private int renderedResults = 0;
+    private int nextResultIdxToRender = 0;
 
     /* Model data */
     private List<List<File>> results;
@@ -111,21 +111,28 @@ public class Results extends GUIController {
     }
 
     private void loadNextSetOfResults() {
-        int startIdx = renderedResults;
-        int endIdx = Math.min(renderedResults + RESULT_GROUP_SIZE, results.size()-1);
-        addResultsToResultsPane(results, resultsPane, startIdx, endIdx);
+        int startIdx = nextResultIdxToRender;
+        int endIdx = Math.min(nextResultIdxToRender + RESULT_GROUP_SIZE-1, results.size()-1);
+
+        Map<File, Pane> imagePreviewPanes = addResultsToResultsPane(results, resultsPane, startIdx, endIdx);
         loadImagePreviews(imagePreviewPanes);
-        renderedResults += RESULT_GROUP_SIZE;
-        GridPane.setRowIndex(loadMore, renderedResults);
+        nextResultIdxToRender += endIdx + 1;
+
+        if (nextResultIdxToRender < results.size()) {
+            GridPane.setRowIndex(loadMore, nextResultIdxToRender);
+        } else {
+            loadMore.setVisible(false);                                                                                 // TODO: show end of results message
+        }
     }
 
-    private void addResultsToResultsPane(List<List<File>> results, GridPane resultsPane, int startIdx, int endIdx) {
+    private Map<File, Pane> addResultsToResultsPane(List<List<File>> results, GridPane resPane, int start, int end) {
 
-        int numOfResultsToAdd = endIdx - startIdx + 1;
-        addResultsPaneRowConstraints(numOfResultsToAdd, resultsPane);
+        HashMap<File, Pane> imagePreviewPanes = new HashMap<>();
+        int numOfResultsToAdd = end - start;
+        addResultsPaneRowConstraints(numOfResultsToAdd, resPane);
 
-        ObservableList<Node> children = resultsPane.getChildren();
-        for (int i = startIdx; i <= endIdx; i++) {
+        ObservableList<Node> children = resPane.getChildren();
+        for (int i = start; i <= end; i++) {
             int colIdx = 0;
 
             Label setNumPane = createSetNumberPane(i+1);
@@ -135,13 +142,15 @@ public class Results extends GUIController {
             colIdx++;
 
             for (File file: results.get(i)) {
-                GridPane previewPane = createFilePreviewPane(file);
-                GridPane.setColumnIndex(previewPane, colIdx);
-                GridPane.setRowIndex(previewPane, i);
-                children.add(previewPane);
+                GridPane filePreviewPane = createFilePreviewPane(file, imagePreviewPanes);
+                GridPane.setColumnIndex(filePreviewPane, colIdx);
+                GridPane.setRowIndex(filePreviewPane, i);
+                children.add(filePreviewPane);
                 colIdx++;
             }
         }
+
+        return imagePreviewPanes;
     }
 
     private void loadImagePreviews(Map<File, Pane> previewPanes) {
@@ -149,6 +158,7 @@ public class Results extends GUIController {
         for (Map.Entry<File, Pane> entry: previewPanes.entrySet()) {
             AppThreadPool.getInstance().submit(new LoadImagePreviews(entry.getKey(), entry.getValue()));
         }
+        previewPanes.clear();
         log.debug("Done creating preview loading threads");
     }
 
@@ -177,7 +187,7 @@ public class Results extends GUIController {
         return l;                                                                                                       // TODO: col and row index set by caller
     }
 
-    private GridPane createFilePreviewPane(File file) {                                                                 // TODO: move all constants to config
+    private GridPane createFilePreviewPane(File file, Map<File,Pane> imagePreviewPanes) {                               // TODO: move all constants to config
 
         if (!file.isFile()) {
             throw new InvalidParameterException("File is invalid");                                                     // TODO: error handling
@@ -213,7 +223,8 @@ public class Results extends GUIController {
         labels.get(0).getStyleClass().clear();
         labels.get(0).getStyleClass().add("body");
 
-        Pane imagePane = createImagePreviewPane(file);
+        Pane imagePane = createImagePreviewPane();
+        imagePreviewPanes.put(file, imagePane);
         GridPane.setRowIndex(imagePane, 0);
         children.add(0, imagePane);
 
@@ -234,10 +245,10 @@ public class Results extends GUIController {
         );
     }
 
-    private Pane createImagePreviewPane(File file) {
+    private Pane createImagePreviewPane() {
         Pane p = new Pane();
+        p.getStyleClass().add("defaultImagePreview");
         GridPane.setRowIndex(p, 0);
-        imagePreviewPanes.put(file, p);
         return p;
     }
 
@@ -269,6 +280,7 @@ public class Results extends GUIController {
                 String fileURI = temp.toURI().toString();
                 String css = String.format("-fx-background-image: url(\"%s\");", fileURI);
                 css += "-fx-background-position: center; -fx-background-size: cover;";
+                pane.getStyleClass().clear();
                 pane.setStyle(css);
             } catch (Exception e) {
                 e.printStackTrace();

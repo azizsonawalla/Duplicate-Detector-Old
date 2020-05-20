@@ -8,6 +8,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.geometry.Insets?>
 <GridPane GridPane.halignment="CENTER" GridPane.valignment="CENTER" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
 <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" percentWidth="100.0" />
@@ -33,7 +34,11 @@
                 </rowConstraints>
                 <children>
                     <!-- Dynamically generated gridpane goes here -->
-                    <Button id="loadMoreButton" text="Load more results" GridPane.columnIndex="1" GridPane.valignment="CENTER" GridPane.halignment="LEFT"/>
+                    <Button id="loadMoreButton" text="Load more results" GridPane.columnIndex="1" GridPane.valignment="CENTER" GridPane.halignment="LEFT">
+                        <GridPane.margin>
+                            <Insets top="50" bottom="50"/>
+                        </GridPane.margin>
+                    </Button>
                 </children>
             </GridPane>
         </content>
