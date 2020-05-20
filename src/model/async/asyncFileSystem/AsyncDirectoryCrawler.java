@@ -12,6 +12,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Future;
 
+import static model.util.FileSystemUtil.getFileExtension;
+
 /**
  * An asynchronous directory crawler. Recursively lists all files in the given directories, and filters for valid file
  * extensions. Implements the Callable interface to be able to run the crawl in a background thread.
@@ -168,7 +170,7 @@ public class AsyncDirectoryCrawler implements Callable<List<File>> {
             if (this.validExtensions.isEmpty()) {
                 return true;
             }
-            String ext = getCleanedFileExtension(file);
+            String ext = cleanExtension(getFileExtension(file));
             for (String vExt: this.validExtensions) {
                 if (vExt.equals(ext)) {
                     return true;
@@ -176,21 +178,6 @@ public class AsyncDirectoryCrawler implements Callable<List<File>> {
             }
         }
         return false;
-    }
-
-    /**
-     * Extracts and cleans the file extension of the given File object
-     * @param file File object to get extension of
-     * @return a 'cleaned' version of the extension, or empty string if file has no extension.
-     * See cleanExtension() for definition of 'cleaned'.
-     */
-    private static String getCleanedFileExtension(File file) {
-        String name = file.getName();
-        String[] parts = name.split("\\.");
-        if (parts.length > 1) {
-            return cleanExtension(parts[parts.length-1]);
-        }
-        return "";
     }
 
     /**

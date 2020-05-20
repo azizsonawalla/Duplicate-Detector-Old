@@ -1,5 +1,6 @@
 package model.util;
 
+import javafx.util.Pair;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.imageio.ImageIO;
@@ -7,6 +8,9 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+
+import static model.util.FileSystemUtil.copyFile;
+import static model.util.FileSystemUtil.splitFileName;
 
 public class ImageUtil {
 
@@ -25,29 +29,46 @@ public class ImageUtil {
      * @throws IOException if cannot read the given file
      */
     public static File createLowResTemp(File imageFile, int newWidth, int newHeight) throws IOException {
-        if (newWidth < 0 && newHeight < 0) {
-            // save to temp folder as-is
-            // return
-        }
-        if (newWidth < 0) {
-            // calculate newWidth
-        }
-        if (newHeight < 0) {
-            // calculate newHeight
-        }
-
         BufferedImage img = ImageIO.read(imageFile);
         int oldWidth = img.getWidth();
         int oldHeight = img.getHeight();
 
-        if (newHeight >= oldHeight || newWidth >= oldWidth) {
-            // save to temp folder as-is
+        File tmp = createTempImageFile(imageFile);
+        if ((newWidth < 0 && newHeight < 0) || newHeight >= oldHeight || newWidth >= oldWidth) {
+            return copyFile(imageFile, tmp);
         }
 
         Image downscaled = img.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
-        // save downscaled image
+        return saveImage(downscaled, tmp);
+    }
 
-        // TODO:
-        throw new NotImplementedException();
+    private static File saveImage(Image img, File file) throws IOException {
+        BufferedImage buffImg = getBufferedImage(img);
+        ImageIO.write(buffImg, "PNG", file);
+        return file;
+    }
+
+    private static File createTempImageFile(File originalFile) throws IOException {
+        Pair<String, String> nameParts = splitFileName(originalFile);
+        String basename = nameParts.getKey();
+        String ext = nameParts.getValue();
+        return File.createTempFile("000_" + basename, ext);
+    }
+
+    /**
+     * Converts java.awt image to Buffered Image
+     * @param img original AWT image
+     * @return converted Buffered Image
+     */
+    private static BufferedImage getBufferedImage(Image img) {
+        int width = img.getWidth(null);
+        int height = img.getHeight(null);
+
+        BufferedImage buffImg = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        Graphics g = buffImg.getGraphics();
+        g.drawImage(img, 0, 0, null);
+        g.dispose();
+
+        return buffImg;
     }
 }

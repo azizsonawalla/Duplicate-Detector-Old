@@ -12,7 +12,9 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.RowConstraints;
+import model.async.threadPool.AppThreadPool;
 import model.searchModel.searchStrategies.MetadataStrategy;
+import model.util.ImageUtil;
 import org.jetbrains.annotations.NotNull;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import view.DuplicateDetectorGUIApp;
@@ -22,11 +24,9 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.security.InvalidParameterException;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
+import static model.util.ImageUtil.createLowResTemp;
 import static view.util.FormatConverter.milliSecondsToTime;
 import static view.util.FormatConverter.sensibleDiskSpaceValue;
 
@@ -39,6 +39,7 @@ public class Results extends GUIController {
     private String SUMMARY_BAR_SUBTITLE_TEMPLATE = "Found %d duplicate sets";
 
     /* UI controls */
+    private Map<File, Pane> imagePreviewPanes = new HashMap<>();
 
     public Results(DuplicateDetectorGUIApp app) {
         super(app);
@@ -84,6 +85,9 @@ public class Results extends GUIController {
             GridPane.setColumnIndex(results, 1);
             g.getChildren().add(results);
 
+            for (Map.Entry<File, Pane> entry: imagePreviewPanes.entrySet()) {
+                AppThreadPool.getInstance().submit(new LoadImagePreviews(entry.getKey(), entry.getValue()));
+            }
             return root;
         } catch (Exception e) {
             e.printStackTrace();                                                                                        // TODO: error handling
@@ -204,7 +208,7 @@ public class Results extends GUIController {
         labels.get(0).getStyleClass().clear();
         labels.get(0).getStyleClass().add("body");
 
-        Pane imagePane = createImagePreviewPane(file.toURI().toString());
+        Pane imagePane = createImagePreviewPane(file);
         GridPane.setRowIndex(imagePane, 0);
         children.add(0, imagePane);
 
@@ -225,11 +229,10 @@ public class Results extends GUIController {
         );
     }
 
-    private Pane createImagePreviewPane(String fileURI) {                                                               // TODO: create low res preview temp file
+    private Pane createImagePreviewPane(File file) {
         Pane p = new Pane();
         GridPane.setRowIndex(p, 0);
-        String bgCss = String.format("-fx-background-image: url(\"%s\");", fileURI);                                     // TODO: might have to be relative path  // TODO: might have to be async
-        p.setStyle(bgCss + "-fx-background-position: center; -fx-background-size: cover;");
+        imagePreviewPanes.put(file, p);
         return p;
     }
 
@@ -237,5 +240,30 @@ public class Results extends GUIController {
         String template = "Modified: %s ago";
         String time = milliSecondsToTime(System.currentTimeMillis() - lastModified);
         return String.format(template, time);
+    }
+
+    private class LoadImagePreviews implements Runnable {
+
+        private Pane pane;
+        private File file;
+
+        LoadImagePreviews(File file, Pane pane) {
+            this.pane = pane;
+            this.file = file;
+        }
+
+        @Override
+        public void run() {
+            try {
+                File temp = createLowResTemp(file, -1, 450);
+                String fileURI = temp.toURI().toString();
+                String css = String.format("-fx-background-image: url(\"%s\");", fileURI);
+                css += "-fx-background-position: center; -fx-background-size: cover;";
+                pane.setStyle(css);
+            } catch (Exception e) {
+                e.printStackTrace();
+                // TODO:
+            }
+        }
     }
 }
