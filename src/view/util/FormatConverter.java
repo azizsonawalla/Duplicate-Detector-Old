@@ -21,7 +21,7 @@ public class FormatConverter {
         String strDays = days > 0 ? days + " days " : "";
         String strHours = hours > 0 ? hours + "h " : "";
         String strMins = mins > 0 ? mins + "m " : "";
-        String strSecs = seconds > 0 ? seconds + "s " : "";
+        String strSecs = seconds + "s ";
 
         return (strYears + strWeeks + strDays + strHours + strMins + strSecs).trim();
     }
