@@ -323,6 +323,29 @@
     -fx-background-color: #222222;
 }
 
+#loadMoreButton {
+    -fx-background-color: #009ad5;
+    -fx-border-radius: 50px;
+    -fx-background-radius: 50px;
+    -fx-border-width: 0px;
+    -fx-min-width: 200px;
+    -fx-padding: 10;
+    -fx-border-insets: 10;
+    -fx-font-size: 14pt;
+    -fx-font-family: 'Helvetica Neue LT Com 45 Light';
+    -fx-font-smoothing-type: lcd;
+    -fx-text-fill: #FFFFFF;
+    -fx-cursor: hand;
+}
+
+#loadMoreButton:hover {
+    -fx-background-color: #008dd3;
+}
+
+#loadMoreButton:pressed {
+    -fx-background-color: rgba(0,0,0, 0.8);
+}
+
 /* Debug Only */
 GridPane {
     -fx-grid-lines-visible: false;

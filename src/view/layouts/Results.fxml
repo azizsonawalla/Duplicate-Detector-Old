@@ -33,6 +33,7 @@
                 </rowConstraints>
                 <children>
                     <!-- Dynamically generated gridpane goes here -->
+                    <Button id="loadMoreButton" text="Load more results" GridPane.columnIndex="1" GridPane.valignment="CENTER" GridPane.halignment="LEFT"/>
                 </children>
             </GridPane>
         </content>

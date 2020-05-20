@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.ColumnConstraints;
@@ -35,23 +36,26 @@ public class Results extends GUIController {
 
     /* UI controls */
     private GridPane resultsPane;
+    private Button loadMore;
     private Map<File, Pane> imagePreviewPanes = new HashMap<>();
     private int renderedResults = 0;
 
     /* Model data */
     private List<List<File>> results;
 
-    public Results(DuplicateDetectorGUIApp app) {
+    /* Other Constants */
+    private int RESULT_GROUP_SIZE = 10;
+
+    Results(DuplicateDetectorGUIApp app) {
         super(app);
-        resultsPane = new GridPane();
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         super.initialize(location, resources);
         results = model.getResults();
+        resultsPane = createResultsPane(results);
         setMainWindow(loadMainWindow());
-        loadImagePreviews(imagePreviewPanes);
     }
 
     @Override
@@ -71,6 +75,18 @@ public class Results extends GUIController {
         setSummaryBarSubtitle(String.format(SUMMARY_BAR_SUBTITLE_TEMPLATE, duplicateCount));
     }
 
+    private GridPane createResultsPane(List<List<File>> results) {
+        GridPane resultsPane = new GridPane();
+
+        int maxDupsInASet = 0;
+        for (List<File> set: results) {
+            maxDupsInASet = Math.max(maxDupsInASet, set.size());
+        }
+
+        addResultsPaneColumnConstraints(maxDupsInASet, resultsPane);
+        return resultsPane;
+    }
+
     private Node loadMainWindow() {
         try {
             GridPane root = FXMLLoader.load(getClass().getResource("../layouts/Results.fxml"));                         // TODO: replace with static config reference
@@ -78,18 +94,54 @@ public class Results extends GUIController {
 
             ScrollPane s = (ScrollPane) rootChildren.get(1);                                                            // TODO: replace all FXML child access from index to id
             GridPane g = (GridPane) s.getContent();
+            loadMore = (Button) g.getChildren().get(0);
+            loadMore.setOnAction(event -> loadNextSetOfResults());                                                      // TODO: move this to configure controls (needs to be called after loadMainWindow though)
 
             GridPane.setRowIndex(resultsPane, 0);
             GridPane.setColumnIndex(resultsPane, 1);
             g.getChildren().add(resultsPane);
 
-            addResultsToResultsPane(model.getResults(), resultsPane, 10);
-            // TODO: update render count
+            loadNextSetOfResults();
+
             return root;
         } catch (Exception e) {
             e.printStackTrace();                                                                                        // TODO: error handling
         }
         return new Label("Error loading content");
+    }
+
+    private void loadNextSetOfResults() {
+        int startIdx = renderedResults;
+        int endIdx = Math.min(renderedResults + RESULT_GROUP_SIZE, results.size()-1);
+        addResultsToResultsPane(results, resultsPane, startIdx, endIdx);
+        loadImagePreviews(imagePreviewPanes);
+        renderedResults += RESULT_GROUP_SIZE;
+        GridPane.setRowIndex(loadMore, renderedResults);
+    }
+
+    private void addResultsToResultsPane(List<List<File>> results, GridPane resultsPane, int startIdx, int endIdx) {
+
+        int numOfResultsToAdd = endIdx - startIdx + 1;
+        addResultsPaneRowConstraints(numOfResultsToAdd, resultsPane);
+
+        ObservableList<Node> children = resultsPane.getChildren();
+        for (int i = startIdx; i <= endIdx; i++) {
+            int colIdx = 0;
+
+            Label setNumPane = createSetNumberPane(i+1);
+            GridPane.setRowIndex(setNumPane, i);
+            GridPane.setColumnIndex(setNumPane, colIdx);
+            children.add(setNumPane);
+            colIdx++;
+
+            for (File file: results.get(i)) {
+                GridPane previewPane = createFilePreviewPane(file);
+                GridPane.setColumnIndex(previewPane, colIdx);
+                GridPane.setRowIndex(previewPane, i);
+                children.add(previewPane);
+                colIdx++;
+            }
+        }
     }
 
     private void loadImagePreviews(Map<File, Pane> previewPanes) {
@@ -100,47 +152,18 @@ public class Results extends GUIController {
         log.debug("Done creating preview loading threads");
     }
 
-    private void addResultsToResultsPane(List<List<File>> duplicateSets, GridPane resultsPane, int limit) {
-        int maxDupsInASet = 0;
-        for (List<File> set: duplicateSets) {
-            maxDupsInASet = Math.max(maxDupsInASet, set.size());
-        }
-
-        addResultsPaneColumnConstraints(maxDupsInASet, resultsPane);
-        addResultsPaneRowConstraints(Math.min(duplicateSets.size(), limit), resultsPane);
-
-        ObservableList<Node> children = resultsPane.getChildren();
-        for (int i = 0; i < Math.min(duplicateSets.size(), limit); i++) {
-            int colIdx = 0;
-
-            Label setNumPane = createSetNumberPane(i+1);
-            GridPane.setRowIndex(setNumPane, i);
-            GridPane.setColumnIndex(setNumPane, colIdx);
-            children.add(setNumPane);
-            colIdx++;
-
-            for (File file: duplicateSets.get(i)) {
-                GridPane previewPane = createFilePreviewPane(file);
-                GridPane.setColumnIndex(previewPane, colIdx);
-                GridPane.setRowIndex(previewPane, i);
-                children.add(previewPane);
-                colIdx++;
-            }
-        }
-    }
-
-    private void addResultsPaneColumnConstraints(int maxDupsInASet, @NotNull GridPane g) {
+    private void addResultsPaneColumnConstraints(int maxSetSize, @NotNull GridPane g) {
         // add constraint for number pane
         g.getColumnConstraints().add(new ColumnConstraints(100,100,100));
 
         // add preview column constraints
-        for (int i = 0; i < maxDupsInASet; i++) {
+        for (int i = 0; i < maxSetSize; i++) {
             g.getColumnConstraints().add(new ColumnConstraints(300,300,300));
         }
     }
 
-    private void addResultsPaneRowConstraints(int numOfDupSets, @NotNull GridPane g) {
-        for (int i = 0; i < numOfDupSets; i++) {
+    private void addResultsPaneRowConstraints(int numOfRows, @NotNull GridPane g) {
+        for (int i = 0; i < numOfRows; i++) {
             g.getRowConstraints().add(new RowConstraints(450, 450, 450));
         }
     }
