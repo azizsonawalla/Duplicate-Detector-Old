@@ -85,9 +85,12 @@ public class Results extends GUIController {
             GridPane.setColumnIndex(results, 1);
             g.getChildren().add(results);
 
+            log.debug("Creating preview loading threads");
             for (Map.Entry<File, Pane> entry: imagePreviewPanes.entrySet()) {
                 AppThreadPool.getInstance().submit(new LoadImagePreviews(entry.getKey(), entry.getValue()));
             }
+            log.debug("Done creating preview loading threads");
+
             return root;
         } catch (Exception e) {
             e.printStackTrace();                                                                                        // TODO: error handling

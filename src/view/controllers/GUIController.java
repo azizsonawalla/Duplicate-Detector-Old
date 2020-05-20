@@ -13,6 +13,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import model.searchModel.ScanController;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import util.Logger;
 import view.DuplicateDetectorGUIApp;
 
 import java.net.URL;
@@ -23,6 +24,7 @@ import java.util.ResourceBundle;
  */
 public abstract class GUIController implements Initializable {
 
+    final Logger log;
     final DuplicateDetectorGUIApp app;
     ScanController model;
     private GUIController prevController;
@@ -40,6 +42,7 @@ public abstract class GUIController implements Initializable {
      */
     GUIController(DuplicateDetectorGUIApp app) {
         this.app = app;
+        this.log = new Logger(this.getClass());
     }
 
     /**

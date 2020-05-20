@@ -2,8 +2,8 @@ package config;
 
 import model.searchModel.searchStrategies.ISearchStrategy;
 import model.searchModel.searchStrategies.MetadataStrategy;
+import util.Logger;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -34,6 +34,9 @@ public class Config {
         }
 
     }
+
+    /* General */
+    public static Logger.Level LOG_LEVEL = Logger.Level.DEBUG;
 
     /* Model */
     public static List<String> SUPPORTED_FILE_TYPES = Arrays.asList("JPEG", "JPG", "PNG");                              // TODO: Add list of supported file types  // TODO: move this to individual strategies
