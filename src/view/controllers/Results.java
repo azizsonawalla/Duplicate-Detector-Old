@@ -31,19 +31,27 @@ public class Results extends GUIController {
     private String NEXT_BUTTON_TEXT = "Next";
     private String SUMMARY_BAR_HEADER_DEFAULT = "Results for";
     private String SUMMARY_BAR_SUBTITLE_TEMPLATE = "Found %d duplicate sets";
+    private String LOAD_BUTTON_TEXT = "Load more results";
 
     /* UI controls */
+    private GridPane resultsPane;
     private Map<File, Pane> imagePreviewPanes = new HashMap<>();
+    private int renderedResults = 0;
+
+    /* Model data */
+    private List<List<File>> results;
 
     public Results(DuplicateDetectorGUIApp app) {
         super(app);
+        resultsPane = new GridPane();
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         super.initialize(location, resources);
+        results = model.getResults();
         setMainWindow(loadMainWindow());
-        beginLoadingImages();
+        loadImagePreviews(imagePreviewPanes);
     }
 
     @Override
@@ -63,11 +71,6 @@ public class Results extends GUIController {
         setSummaryBarSubtitle(String.format(SUMMARY_BAR_SUBTITLE_TEMPLATE, duplicateCount));
     }
 
-    @Override
-    protected void cleanupSelf() {
-        // TODO:
-    }
-
     private Node loadMainWindow() {
         try {
             GridPane root = FXMLLoader.load(getClass().getResource("../layouts/Results.fxml"));                         // TODO: replace with static config reference
@@ -75,10 +78,13 @@ public class Results extends GUIController {
 
             ScrollPane s = (ScrollPane) rootChildren.get(1);                                                            // TODO: replace all FXML child access from index to id
             GridPane g = (GridPane) s.getContent();
-            GridPane results = createResultsPane(model.getResults());
-            GridPane.setRowIndex(results, 0);
-            GridPane.setColumnIndex(results, 1);
-            g.getChildren().add(results);
+
+            GridPane.setRowIndex(resultsPane, 0);
+            GridPane.setColumnIndex(resultsPane, 1);
+            g.getChildren().add(resultsPane);
+
+            addResultsToResultsPane(model.getResults(), resultsPane, 10);
+            // TODO: update render count
             return root;
         } catch (Exception e) {
             e.printStackTrace();                                                                                        // TODO: error handling
@@ -86,42 +92,25 @@ public class Results extends GUIController {
         return new Label("Error loading content");
     }
 
-    private void beginLoadingImages() {
+    private void loadImagePreviews(Map<File, Pane> previewPanes) {
         log.debug("Creating preview loading threads");
-        for (Map.Entry<File, Pane> entry: imagePreviewPanes.entrySet()) {
+        for (Map.Entry<File, Pane> entry: previewPanes.entrySet()) {
             AppThreadPool.getInstance().submit(new LoadImagePreviews(entry.getKey(), entry.getValue()));
         }
         log.debug("Done creating preview loading threads");
     }
 
-    private List<List<File>> getDummyResults() {                                                                        // TODO: remove this
-        List<List<File>> res = new LinkedList<>();
-        File f = new File("D:\\Coding Projects\\Duplicate-Detector\\src\\view\\assets\\sample_image.jpeg");
-
-        for (int i=0; i < 5; i++) {
-            List<File> innerRes = new LinkedList<>();
-            for (int j = 0; j < 5; j++) {
-                innerRes.add(f);
-            }
-            res.add(innerRes);
-        }
-
-        return res;
-    }
-
-    private GridPane createResultsPane(List<List<File>> duplicateSets) {
-        GridPane g = new GridPane();
-
+    private void addResultsToResultsPane(List<List<File>> duplicateSets, GridPane resultsPane, int limit) {
         int maxDupsInASet = 0;
         for (List<File> set: duplicateSets) {
             maxDupsInASet = Math.max(maxDupsInASet, set.size());
         }
 
-        g = addColumnConstraints(maxDupsInASet, g);
-        g = addRowConstraints(duplicateSets.size(), g);
+        addResultsPaneColumnConstraints(maxDupsInASet, resultsPane);
+        addResultsPaneRowConstraints(Math.min(duplicateSets.size(), limit), resultsPane);
 
-        ObservableList<Node> children = g.getChildren();
-        for (int i = 0; i < duplicateSets.size(); i++) {
+        ObservableList<Node> children = resultsPane.getChildren();
+        for (int i = 0; i < Math.min(duplicateSets.size(), limit); i++) {
             int colIdx = 0;
 
             Label setNumPane = createSetNumberPane(i+1);
@@ -138,11 +127,9 @@ public class Results extends GUIController {
                 colIdx++;
             }
         }
-
-        return g;
     }
 
-    private GridPane addColumnConstraints(int maxDupsInASet, @NotNull GridPane g) {
+    private void addResultsPaneColumnConstraints(int maxDupsInASet, @NotNull GridPane g) {
         // add constraint for number pane
         g.getColumnConstraints().add(new ColumnConstraints(100,100,100));
 
@@ -150,16 +137,12 @@ public class Results extends GUIController {
         for (int i = 0; i < maxDupsInASet; i++) {
             g.getColumnConstraints().add(new ColumnConstraints(300,300,300));
         }
-
-        return g;
-
     }
 
-    private GridPane addRowConstraints(int numOfDupSets, @NotNull GridPane g) {
+    private void addResultsPaneRowConstraints(int numOfDupSets, @NotNull GridPane g) {
         for (int i = 0; i < numOfDupSets; i++) {
             g.getRowConstraints().add(new RowConstraints(450, 450, 450));
         }
-        return g;
     }
 
     private Label createSetNumberPane(int setNo) {
@@ -239,6 +222,11 @@ public class Results extends GUIController {
         String template = "Modified: %s ago";
         String time = milliSecondsToTime(System.currentTimeMillis() - lastModified);
         return String.format(template, time);
+    }
+
+    @Override
+    protected void cleanupSelf() {
+        // TODO:
     }
 
     private class LoadImagePreviews implements Runnable {
