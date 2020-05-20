@@ -1,7 +1,5 @@
 package util;
 
-import javafx.util.Pair;
-
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -9,8 +7,10 @@ import java.io.File;
 import java.io.IOException;
 
 import static util.FileSystemUtil.copyFile;
-import static util.FileSystemUtil.splitFileName;
 
+/**
+ * Util methods to work with image data
+ */
 public class ImageUtil {
 
     /**
@@ -32,7 +32,7 @@ public class ImageUtil {
         int oldWidth = img.getWidth();
         int oldHeight = img.getHeight();
 
-        File tmp = createTempImageFile(imageFile);
+        File tmp = FileSystemUtil.createTempFileReference(imageFile);
         if ((newWidth < 0 && newHeight < 0) || newHeight >= oldHeight || newWidth >= oldWidth) {
             return copyFile(imageFile, tmp);
         }
@@ -41,19 +41,17 @@ public class ImageUtil {
         return saveImage(downscaled, tmp);
     }
 
-    private static File saveImage(Image img, File file) throws IOException {
+    /**
+     * Save an image to disk
+     * @param img image data
+     * @param dest destination file object
+     * @return file reference to destination after image data has been written
+     * @throws IOException if there is an error saving the image to disk
+     */
+    private static File saveImage(Image img, File dest) throws IOException {
         BufferedImage buffImg = getBufferedImage(img);
-        ImageIO.write(buffImg, "PNG", file);
-        return file;
-    }
-
-    private static File createTempImageFile(File originalFile) throws IOException {
-        Pair<String, String> nameParts = splitFileName(originalFile);
-        String basename = nameParts.getKey();
-        String ext = nameParts.getValue();
-        File tmp =  File.createTempFile("000_" + basename, ext);
-        tmp.deleteOnExit();
-        return tmp;
+        ImageIO.write(buffImg, "PNG", dest);
+        return dest;
     }
 
     /**

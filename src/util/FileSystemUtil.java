@@ -1,10 +1,12 @@
 package util;
 
 import javafx.util.Pair;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.*;
 
+/**
+ * Util methods to interact with the file system
+ */
 public class FileSystemUtil {
 
     /**
@@ -51,5 +53,20 @@ public class FileSystemUtil {
             out.flush();
         }
         return dest;
+    }
+
+    /**
+     * Create a temporary file based on a source file's name. This method *does not* copy over the data
+     * @param originalFile source file
+     * @return File object of the temporary file
+     * @throws IOException if there is an error reading the source
+     */
+    static File createTempFileReference(File originalFile) throws IOException {
+        Pair<String, String> nameParts = splitFileName(originalFile);
+        String basename = nameParts.getKey();
+        String ext = nameParts.getValue();
+        File tmp =  File.createTempFile("000_" + basename, ext);
+        tmp.deleteOnExit();
+        return tmp;
     }
 }
