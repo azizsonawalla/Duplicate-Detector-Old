@@ -1,7 +1,6 @@
-package model.util;
+package util;
 
 import javafx.util.Pair;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -9,8 +8,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-import static model.util.FileSystemUtil.copyFile;
-import static model.util.FileSystemUtil.splitFileName;
+import static util.FileSystemUtil.copyFile;
+import static util.FileSystemUtil.splitFileName;
 
 public class ImageUtil {
 

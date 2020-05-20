@@ -1,6 +1,5 @@
 package view.controllers;
 
-import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -10,8 +9,7 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import model.async.threadPool.AppThreadPool;
-import model.searchModel.ScanController;
-import model.util.Progress;
+import util.Progress;
 import view.DuplicateDetectorGUIApp;
 import view.util.TaskProgressTracker;
 

@@ -7,26 +7,20 @@ import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.RowConstraints;
 import model.async.threadPool.AppThreadPool;
-import model.searchModel.searchStrategies.MetadataStrategy;
-import model.util.ImageUtil;
 import org.jetbrains.annotations.NotNull;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import view.DuplicateDetectorGUIApp;
-import view.util.FormatConverter;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.security.InvalidParameterException;
 import java.util.*;
 
-import static model.util.ImageUtil.createLowResTemp;
+import static util.ImageUtil.createLowResTemp;
 import static view.util.FormatConverter.milliSecondsToTime;
 import static view.util.FormatConverter.sensibleDiskSpaceValue;
 
@@ -49,6 +43,7 @@ public class Results extends GUIController {
     public void initialize(URL location, ResourceBundle resources) {
         super.initialize(location, resources);
         setMainWindow(loadMainWindow());
+        beginLoadingImages();
     }
 
     @Override
@@ -84,18 +79,19 @@ public class Results extends GUIController {
             GridPane.setRowIndex(results, 0);
             GridPane.setColumnIndex(results, 1);
             g.getChildren().add(results);
-
-            log.debug("Creating preview loading threads");
-            for (Map.Entry<File, Pane> entry: imagePreviewPanes.entrySet()) {
-                AppThreadPool.getInstance().submit(new LoadImagePreviews(entry.getKey(), entry.getValue()));
-            }
-            log.debug("Done creating preview loading threads");
-
             return root;
         } catch (Exception e) {
             e.printStackTrace();                                                                                        // TODO: error handling
         }
         return new Label("Error loading content");
+    }
+
+    private void beginLoadingImages() {
+        log.debug("Creating preview loading threads");
+        for (Map.Entry<File, Pane> entry: imagePreviewPanes.entrySet()) {
+            AppThreadPool.getInstance().submit(new LoadImagePreviews(entry.getKey(), entry.getValue()));
+        }
+        log.debug("Done creating preview loading threads");
     }
 
     private List<List<File>> getDummyResults() {                                                                        // TODO: remove this

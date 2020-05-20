@@ -3,8 +3,8 @@ package model.searchModel.searchStrategies;
 import model.async.FutureUtil.FutureCollection;
 import model.async.lockableDataStructures.LockableConcurrentHashMap;
 import model.async.threadPool.AppThreadPool;
-import model.util.Progress;
-import model.util.ScanException;
+import util.Progress;
+import util.ScanException;
 
 import java.io.File;
 import java.util.Collection;

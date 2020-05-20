@@ -1,7 +1,7 @@
 package model.searchModel.searchStrategies;
 
-import model.util.Progress;
-import model.util.ScanException;
+import util.Progress;
+import util.ScanException;
 
 import java.io.File;
 import java.util.List;

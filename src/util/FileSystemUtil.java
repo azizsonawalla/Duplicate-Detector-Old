@@ -1,4 +1,4 @@
-package model.util;
+package util;
 
 import javafx.util.Pair;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;

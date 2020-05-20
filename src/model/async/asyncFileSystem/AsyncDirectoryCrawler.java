@@ -1,7 +1,7 @@
 package model.async.asyncFileSystem;
 
 import model.async.threadPool.AppThreadPool;
-import model.util.Progress;
+import util.Progress;
 
 import java.io.File;
 import java.security.InvalidParameterException;
@@ -12,7 +12,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Future;
 
-import static model.util.FileSystemUtil.getFileExtension;
+import static util.FileSystemUtil.getFileExtension;
 
 /**
  * An asynchronous directory crawler. Recursively lists all files in the given directories, and filters for valid file

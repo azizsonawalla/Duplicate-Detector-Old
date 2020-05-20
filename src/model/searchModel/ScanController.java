@@ -4,8 +4,8 @@ import config.Config;
 import model.async.asyncFileSystem.AsyncDirectoryCrawler;
 import model.async.threadPool.AppThreadPool;
 import model.searchModel.searchStrategies.ISearchStrategy;
-import model.util.Progress;
-import model.util.ScanException;
+import util.Progress;
+import util.ScanException;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.File;

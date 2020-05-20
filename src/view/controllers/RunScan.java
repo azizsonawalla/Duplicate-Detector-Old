@@ -1,7 +1,6 @@
 package view.controllers;
 
 import config.Config;
-import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -12,15 +11,11 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import model.async.threadPool.AppThreadPool;
-import model.searchModel.ScanController;
-import model.util.Progress;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import util.Progress;
 import view.DuplicateDetectorGUIApp;
 import view.util.TaskProgressTracker;
 
 import java.io.IOException;
-import java.util.concurrent.Callable;
-import java.util.concurrent.TimeoutException;
 
 import static view.util.FormatConverter.milliSecondsToTime;
 

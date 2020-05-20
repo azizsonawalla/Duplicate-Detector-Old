@@ -1,4 +1,4 @@
-package model.util;
+package util;
 
 public class ScanException extends RuntimeException {                                                                   // TODO: change this to regular Exception
 
