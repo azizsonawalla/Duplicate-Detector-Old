@@ -11,18 +11,16 @@ import javafx.scene.layout.*;
 
 import java.io.File;
 import java.security.InvalidParameterException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static view.util.FormatConverter.milliSecondsToTime;
 import static view.util.FormatConverter.sensibleDiskSpaceValue;
 
 public class ResultsRenderer {
-    public static Map<File, Pane> addResultsToResultsPane(List<List<File>> results, GridPane resPane, int start, int end) {
+    public static List<RenderedResult> addResultsToResultsPane(List<List<File>> results, GridPane resPane, int start, int end) {
 
-        HashMap<File, Pane> imagePreviewPanes = new HashMap<>();
+        List<RenderedResult> renderedResults = new LinkedList<>();
+
         int numOfResultsToAdd = end - start;
         for (int i = 0; i < numOfResultsToAdd; i++) {
             resPane.getRowConstraints().add(new RowConstraints(450, 450, 450));
@@ -39,15 +37,21 @@ public class ResultsRenderer {
             colIdx++;
 
             for (File file: results.get(i)) {
-                GridPane filePreviewPane = createFilePreviewPane(file, imagePreviewPanes);
+                CheckBox checkBox = createImageCheckBox();
+                StackPane imgPreviewPane = createImagePreviewPane(checkBox);
+                GridPane filePreviewPane = createFilePreviewPane(file, imgPreviewPane);
+
                 GridPane.setColumnIndex(filePreviewPane, colIdx);
                 GridPane.setRowIndex(filePreviewPane, i);
+
                 children.add(filePreviewPane);
                 colIdx++;
+
+                renderedResults.add(new RenderedResult(file, imgPreviewPane, checkBox));
             }
         }
 
-        return imagePreviewPanes;
+        return renderedResults;
     }
 
     private static Label createSetNumberPane(int setNo) {
@@ -59,7 +63,7 @@ public class ResultsRenderer {
         return l;                                                                                                       // TODO: col and row index set by caller
     }
 
-    private static GridPane createFilePreviewPane(File file, Map<File,Pane> imagePreviewPanes) {                               // TODO: move all constants to config
+    private static GridPane createFilePreviewPane(File file, StackPane imagePane) {                                     // TODO: move all constants to config
 
         if (!file.isFile()) {
             throw new InvalidParameterException("File is invalid");                                                     // TODO: error handling
@@ -95,8 +99,6 @@ public class ResultsRenderer {
         labels.get(0).getStyleClass().clear();
         labels.get(0).getStyleClass().add("body");
 
-        Pane imagePane = createImagePreviewPane();
-        imagePreviewPanes.put(file, imagePane);
         GridPane.setRowIndex(imagePane, 0);
         children.add(0, imagePane);
 
@@ -117,9 +119,8 @@ public class ResultsRenderer {
         );
     }
 
-    private static Pane createImagePreviewPane() {
+    private static StackPane createImagePreviewPane(CheckBox cb) {
         StackPane sp = new StackPane();
-        CheckBox cb = createImageCheckBox();
         sp.getChildren().add(cb);
         sp.getStyleClass().add("defaultImagePreview");
         GridPane.setRowIndex(sp, 0);

@@ -8,10 +8,12 @@ import javafx.scene.layout.*;
 import model.async.threadPool.AppThreadPool;
 import view.DuplicateDetectorGUIApp;
 import view.controllers.helpers.ImagePreviewLoader;
-import view.controllers.helpers.ResultsRenderer;
+import view.controllers.helpers.RenderedResult;
 
 import java.io.File;
 import java.util.*;
+
+import static view.controllers.helpers.ResultsRenderer.addResultsToResultsPane;
 
 public class Results extends GUIController {
 
@@ -24,14 +26,16 @@ public class Results extends GUIController {
 
     /* UI controls */
     private GridPane resultsPane;
-    private Button loadMore;
-    private int nextResultIdxToRender = 0;
+    private Button loadMoreButton;
+    private int nextResultIdxToRender = 0;                                                                              // TODO: remove this
+    private List<RenderedResult> renderedResults;
 
     /* Other Constants */
     private int RESULT_GROUP_SIZE = 10;
 
     Results(DuplicateDetectorGUIApp app) {
         super(app);
+        renderedResults = new LinkedList<>();
     }
 
     @Override
@@ -39,7 +43,7 @@ public class Results extends GUIController {
         hideNextButton();
         hideCancelButton();
         removeMainWindowLogo();
-        loadMore.setOnAction(event -> loadNextSetOfResults());
+        loadMoreButton.setOnAction(event -> loadNextSetOfResults());
     }
 
     @Override
@@ -62,7 +66,7 @@ public class Results extends GUIController {
 
             ScrollPane s = (ScrollPane) rootChildren.get(1);                                                            // TODO: replace all FXML child access from index to id
             GridPane g = (GridPane) s.getContent();
-            loadMore = (Button) g.getChildren().get(0);
+            loadMoreButton = (Button) g.getChildren().get(0);
 
             GridPane.setRowIndex(resultsPane, 0);
             GridPane.setColumnIndex(resultsPane, 1);
@@ -82,14 +86,15 @@ public class Results extends GUIController {
         int startIdx = nextResultIdxToRender;
         int endIdx = Math.min(nextResultIdxToRender + RESULT_GROUP_SIZE-1, results.size()-1);
 
-        Map<File, Pane> imagePreviewPanes = ResultsRenderer.addResultsToResultsPane(results, resultsPane, startIdx, endIdx);
-        loadImagePreviews(imagePreviewPanes);
+        List<RenderedResult> newRenderedResults = addResultsToResultsPane(results, resultsPane, startIdx, endIdx);
+        loadImagePreviews(newRenderedResults);
         nextResultIdxToRender += endIdx + 1;
+        renderedResults.addAll(newRenderedResults);
 
         if (nextResultIdxToRender < results.size()) {
-            GridPane.setRowIndex(loadMore, nextResultIdxToRender);
+            GridPane.setRowIndex(loadMoreButton, nextResultIdxToRender);
         } else {
-            loadMore.setVisible(false);                                                                                 // TODO: show end of results message
+            loadMoreButton.setVisible(false);                                                                                 // TODO: show end of results message
         }
     }
 
@@ -108,12 +113,11 @@ public class Results extends GUIController {
         return resultsPane;
     }
 
-    private void loadImagePreviews(Map<File, Pane> previewPanes) {
+    private void loadImagePreviews(List<RenderedResult> newRenderedResults) {
         log.debug("Creating preview loading threads");
-        for (Map.Entry<File, Pane> entry: previewPanes.entrySet()) {
-            AppThreadPool.getInstance().submit(new ImagePreviewLoader(entry.getKey(), entry.getValue()));
+        for (RenderedResult rr: newRenderedResults) {
+            AppThreadPool.getInstance().submit(new ImagePreviewLoader(rr.getFile(), rr.getPreviewPane()));
         }
-        previewPanes.clear();
         log.debug("Done creating preview loading threads");
     }
 
