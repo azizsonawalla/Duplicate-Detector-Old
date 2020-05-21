@@ -40,9 +40,6 @@ public class Results extends GUIController {
     private Button loadMore;
     private int nextResultIdxToRender = 0;
 
-    /* Model data */
-    private List<List<File>> results;
-
     /* Other Constants */
     private int RESULT_GROUP_SIZE = 10;
 
@@ -51,18 +48,11 @@ public class Results extends GUIController {
     }
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        super.initialize(location, resources);
-        results = model.getResults();
-        resultsPane = createResultsPane(results);
-        setMainWindow(loadMainWindow());
-    }
-
-    @Override
     void configureControls() {
         hideNextButton();
         hideCancelButton();
         removeMainWindowLogo();
+        loadMore.setOnAction(event -> loadNextSetOfResults());
     }
 
     @Override
@@ -75,27 +65,17 @@ public class Results extends GUIController {
         setSummaryBarSubtitle(String.format(SUMMARY_BAR_SUBTITLE_TEMPLATE, duplicateCount));
     }
 
-    private GridPane createResultsPane(List<List<File>> results) {
-        GridPane resultsPane = new GridPane();
-
-        int maxDupsInASet = 0;
-        for (List<File> set: results) {
-            maxDupsInASet = Math.max(maxDupsInASet, set.size());
-        }
-
-        addResultsPaneColumnConstraints(maxDupsInASet, resultsPane);
-        return resultsPane;
-    }
-
-    private Node loadMainWindow() {
+    @Override
+    Node loadMainWindow() {
         try {
+            resultsPane = createResultsPane(model.getResults());
+
             GridPane root = FXMLLoader.load(getClass().getResource("../layouts/Results.fxml"));                         // TODO: replace with static config reference
             ObservableList<Node> rootChildren = root.getChildren();
 
             ScrollPane s = (ScrollPane) rootChildren.get(1);                                                            // TODO: replace all FXML child access from index to id
             GridPane g = (GridPane) s.getContent();
             loadMore = (Button) g.getChildren().get(0);
-            loadMore.setOnAction(event -> loadNextSetOfResults());                                                      // TODO: move this to configure controls (needs to be called after loadMainWindow though)
 
             GridPane.setRowIndex(resultsPane, 0);
             GridPane.setColumnIndex(resultsPane, 1);
@@ -110,7 +90,20 @@ public class Results extends GUIController {
         return new Label("Error loading content");
     }
 
+    private GridPane createResultsPane(List<List<File>> results) {
+        GridPane resultsPane = new GridPane();
+
+        int maxDupsInASet = 0;
+        for (List<File> set: results) {
+            maxDupsInASet = Math.max(maxDupsInASet, set.size());
+        }
+
+        addResultsPaneColumnConstraints(maxDupsInASet, resultsPane);
+        return resultsPane;
+    }
+
     private void loadNextSetOfResults() {
+        List<List<File>> results = model.getResults();
         int startIdx = nextResultIdxToRender;
         int endIdx = Math.min(nextResultIdxToRender + RESULT_GROUP_SIZE-1, results.size()-1);
 

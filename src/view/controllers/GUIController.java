@@ -54,7 +54,16 @@ public abstract class GUIController implements Initializable {
         loadFonts();
         setBackButtonOnAction();
 
-        setMainContent(loadMainContent());
+        Node mainWindow = loadMainWindow();
+        if (mainWindow != null) {
+            setMainWindow(mainWindow);
+        }
+
+        Node mainContent = loadMainContent();
+        if (mainContent != null) {
+            setMainContent(mainContent);
+        }
+
         initCopy();
         configureControls();
     }
@@ -245,7 +254,16 @@ public abstract class GUIController implements Initializable {
      * @return Node holding main content
      */
     Node loadMainContent() {
-        return new Label("No content available");                                                                       // sub-classes are expected to override this or replace main window entirely
+        return null;                                                                                                    // sub-classes are expected to override this
+    }
+
+
+    /**
+     * Load the main window for this scene
+     * @return Node holding main window
+     */
+    Node loadMainWindow() {
+        return null;                                                                                                    // sub-classes are expected to override this
     }
 
     protected abstract void cleanupSelf();
