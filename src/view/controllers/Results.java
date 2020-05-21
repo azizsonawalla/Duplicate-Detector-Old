@@ -27,7 +27,6 @@ public class Results extends GUIController {
     /* UI controls */
     private GridPane resultsPane;
     private Button loadMoreButton;
-    private int nextResultIdxToRender = 0;                                                                              // TODO: remove this
     private List<RenderedResult> renderedResults;
 
     /* Other Constants */
@@ -83,16 +82,15 @@ public class Results extends GUIController {
 
     private void loadNextSetOfResults() {
         List<List<File>> results = model.getResults();
-        int startIdx = nextResultIdxToRender;
-        int endIdx = Math.min(nextResultIdxToRender + RESULT_GROUP_SIZE-1, results.size()-1);
+        int startIdx = renderedResults.size();
+        int endIdx = Math.min(startIdx + RESULT_GROUP_SIZE-1, results.size()-1);
 
         List<RenderedResult> newRenderedResults = addResultsToResultsPane(results, resultsPane, startIdx, endIdx);
         loadImagePreviews(newRenderedResults);
-        nextResultIdxToRender += endIdx + 1;
         renderedResults.addAll(newRenderedResults);
 
-        if (nextResultIdxToRender < results.size()) {
-            GridPane.setRowIndex(loadMoreButton, nextResultIdxToRender);
+        if (renderedResults.size() < results.size()) {
+            GridPane.setRowIndex(loadMoreButton, renderedResults.size());
         } else {
             loadMoreButton.setVisible(false);                                                                                 // TODO: show end of results message
         }
