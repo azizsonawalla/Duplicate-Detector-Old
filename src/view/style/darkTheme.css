@@ -354,6 +354,21 @@
     -fx-background-color: rgba(0,0,0, 0.8);
 }
 
+.resultsCheckBox .box {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.8), 10, 0, 0, 0);
+    -fx-width: 10;
+    -fx-height: 10;
+    -fx-background-color: white;
+    -fx-border-width: 0;
+}
+
+.resultsCheckBox:selected .mark {
+    -fx-background-color: gray;
+}
+
+.resultsCheckBox:selected .box {
+}
+
 /* Debug Only */
 GridPane {
     -fx-grid-lines-visible: false;

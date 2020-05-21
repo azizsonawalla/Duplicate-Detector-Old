@@ -3,16 +3,12 @@ package view.controllers;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressIndicator;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.RowConstraints;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
 import model.async.threadPool.AppThreadPool;
 import org.jetbrains.annotations.NotNull;
 import view.DuplicateDetectorGUIApp;
@@ -239,10 +235,20 @@ public class Results extends GUIController {
     }
 
     private Pane createImagePreviewPane() {
-        Pane p = new Pane();
-        p.getStyleClass().add("defaultImagePreview");
-        GridPane.setRowIndex(p, 0);
-        return p;
+        StackPane sp = new StackPane();
+        CheckBox cb = createImageCheckBox();
+        sp.getChildren().add(cb);
+        sp.getStyleClass().add("defaultImagePreview");
+        GridPane.setRowIndex(sp, 0);
+        return sp;
+    }
+
+    private CheckBox createImageCheckBox() {
+        CheckBox cb = new CheckBox();
+        cb.setSelected(false);
+        cb.getStyleClass().add("resultsCheckBox");
+        StackPane.setAlignment(cb, Pos.TOP_RIGHT);
+        return cb;
     }
 
     private String createLastModifiedString(long lastModified) {
