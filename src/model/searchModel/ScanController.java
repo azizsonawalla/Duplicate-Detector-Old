@@ -305,7 +305,7 @@ public class ScanController {
     /**
      * Refresh the current stage and extract results if ready
      */
-    private void refreshCurrentStage() {                                                                                // TODO: pass callbacks to strategy object instead to update stage
+    private void refreshCurrentStage() {
         if (getCurrentStage() == ScanStage.PRE_SEARCH_IN_PROGRESS
                 && this.allFilesFuture != null && allFilesFuture.isDone()) {
             setCurrentStage(ScanStage.PRE_SEARCH_DONE);

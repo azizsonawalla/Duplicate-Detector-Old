@@ -59,7 +59,7 @@ public class AsyncDirectoryCrawler implements Callable<List<File>> {
         if (currentStage == CrawlStage.DONE) {
             return new Progress(allFiles.size(),0,0,-1,0, errors, currentStage.toString());
         }
-        return new Progress(allFiles.size(),-1,-1,-1,-1, errors, currentStage.toString());                              // TODO: add more info. Can estimate eta by calculating size differences
+        return new Progress(allFiles.size(),-1,-1,-1,-1, errors, currentStage.toString());
     }
 
     /**

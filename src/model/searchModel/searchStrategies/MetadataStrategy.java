@@ -39,7 +39,7 @@ public class MetadataStrategy implements ISearchStrategy {
         long eta = calculateEta(done, remaining, this.startTime);
         long duplicatesCount = countValuesWithMultipleItems(this.duplicates.values());
 
-        return new Progress(done,-1,remaining, duplicatesCount, eta, null, null);                                       // TODO: add support for remaining stats
+        return new Progress(done,-1,remaining, duplicatesCount, eta, null, null);
     }
 
     /**
@@ -91,7 +91,7 @@ public class MetadataStrategy implements ISearchStrategy {
      * {@inheritDoc}
      */
     @Override
-    public Future<List<List<File>>> findDuplicates(List<File> allFiles) {                                               // TODO: javadoc
+    public Future<List<List<File>>> findDuplicates(List<File> allFiles) {
         duplicates = new LockableConcurrentHashMap<>();
         this.taskFutures = new ConcurrentLinkedQueue<>();
         this.totalInitialFileCount = allFiles.size();
@@ -123,7 +123,7 @@ public class MetadataStrategy implements ISearchStrategy {
     }
 
     /**
-     * Asynchronously hashes files based on metadata and stores it into a results map     *
+     * Asynchronously hashes files based on metadata and stores it into a results map
      * Hash algorithm: {file name}_{file size in bytes}
      */
     static class MetadataHasher implements Runnable {

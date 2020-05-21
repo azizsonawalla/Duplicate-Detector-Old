@@ -1,5 +1,7 @@
 package model.searchModel.searchStrategies;
 
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 /**
  * Finds duplicate files by matching randomly selected pixels from the images.
  * Note: This implementation will mark images with identical content but different formats as clones (i.e. jpeg and raw
@@ -7,6 +9,8 @@ package model.searchModel.searchStrategies;
  */
 public class RandomPixelStrategy {
 
-    // TODO: implement this
+    public RandomPixelStrategy() {
+        throw new NotImplementedException();
+    }
 
 }

@@ -1,5 +1,7 @@
 package model.searchModel.searchStrategies;
 
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 /**
  * Finds images that are highly similar using machine learning algorithms.
  * Note: This implementation differs from other Duplicate Finders in that it looks for variations of the same image
@@ -8,5 +10,7 @@ package model.searchModel.searchStrategies;
  */
 public class SimilarityStrategy {
 
-    // TODO: implement this
+    public SimilarityStrategy() {
+        throw new NotImplementedException();
+    }
 }

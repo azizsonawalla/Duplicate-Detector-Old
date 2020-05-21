@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
  * Saves memory/computational resources by not having to create/destroy threads for each background task, and allows
  * easy management of parallelism and asynchronous tasks across the application.
  */
-public class AppThreadPool extends ThreadPoolExecutor {                                                                 // TODO: Add a way to automatically close pool on closing application
+public class AppThreadPool extends ThreadPoolExecutor {
 
     private static AppThreadPool instance = null;
 
