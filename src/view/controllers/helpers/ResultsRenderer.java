@@ -1,5 +1,6 @@
 package view.controllers.helpers;
 
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
@@ -56,6 +57,12 @@ public class ResultsRenderer {
         }
 
         return renderedResults;
+    }
+
+    public static void disableResultPanes(List<RenderedResult> results) {
+        for (RenderedResult res: results) {
+            res.getPreviewPane().setDisable(true);
+        }
     }
 
     private static Label createSetNumberPane(int setNo) {

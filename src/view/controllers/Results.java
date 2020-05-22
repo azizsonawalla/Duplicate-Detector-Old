@@ -10,6 +10,7 @@ import model.async.threadPool.AppThreadPool;
 import view.DuplicateDetectorGUIApp;
 import view.controllers.helpers.ImagePreviewLoader;
 import view.controllers.helpers.RenderedResult;
+import view.controllers.helpers.ResultsRenderer;
 import view.util.AppConfirmationDialogue;
 
 import java.io.File;
@@ -243,7 +244,7 @@ public class Results extends GUIController {
         }
 
         onClearSelection(null);
-        disableResults(selectedResults);
+        ResultsRenderer.disableResultPanes(selectedResults);
     }
 
     private boolean actionConfirmed(Action a) {
@@ -253,12 +254,6 @@ public class Results extends GUIController {
             CONFIRMATION_DIALOG_MSG
         );
         return dialogue.getConfirmation();
-    }
-
-    private void disableResults(List<RenderedResult> results) {
-        for (RenderedResult res: results) {
-            res.getPreviewPane().setDisable(true);
-        }
     }
 
     private List<RenderedResult> getSelectedResults() {
