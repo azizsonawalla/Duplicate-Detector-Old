@@ -2,11 +2,14 @@ package util;
 
 import javafx.util.Pair;
 
+import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Util methods to interact with the file system
@@ -76,8 +79,12 @@ public class FileSystemUtil {
         return tmp;
     }
 
-    public static void deleteFiles(List<File> files) throws IOException {
-        log.info("Deleting the following files: " + getFileNamesAsString(files));
+    public static Map<File, Boolean> deleteFiles(List<File> files) {
+        HashMap<File, Boolean> results = new HashMap<>();
+        for (File file: files) {
+            results.put(file, file.delete());
+        }
+        return results;
     }
 
     private static String getFileNamesAsString(List<File> files) {

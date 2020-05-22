@@ -29,9 +29,9 @@ public class RunScan extends GUIController {                                    
     private String MAIN_CONTENT_TITLE_BEFORE_START = "Ready to Scan";
     private String NEXT_BUTTON_TEXT_WITH_RESULTS = "View Results";
     private String NEXT_BUTTON_TEXT_NO_RESULTS = "New Scan";
-    private String CANCEL_BUTTON_TEXT_NO_RESULTS = "Exit";
     private String SUMMARY_BAR_SUBTITLE_TEMPLATE = "%d files will be scanned";
     private String SUMMARY_BAR_SUBTITLE_COMPLETE = "Scan complete. Click next to view results.";
+    private String SUMMARY_BAR_SUBTITLE_NO_RESULTS = "Scan complete. No duplicates found.";
     private String SUMMARY_BAR_HEADER_DEFAULT = "Scanning";
     private String STATS_DEFAULT = "Not started";
     private String FILE_COUNT_TEMPLATE = "%d (%6.2f%%)";
@@ -196,18 +196,23 @@ public class RunScan extends GUIController {                                    
         enableNextButton();
 
         if (model.getResults().size() == 0) {
-            setNextButtonText(NEXT_BUTTON_TEXT_NO_RESULTS);
-            setCancelButtonText(CANCEL_BUTTON_TEXT_NO_RESULTS);
-            setNextController(new NewScan(app));
-            setCancelButtonOnAction(event -> Platform.exit());
-            enableCancelButton();
-            AppInformationDialogue dialogue = new AppInformationDialogue(
-                    "No Duplicates Found",
-                    "No duplicates were found during the scan!",
-                    "You may choose to perform a new scan or exit the application."
-            );
-            dialogue.getConfirmation();
+            setUIToNoResultsMode();
         }
+    }
+
+    private void setUIToNoResultsMode() {
+        setNextButtonText(NEXT_BUTTON_TEXT_NO_RESULTS);
+        setNextController(new NewScan(app));
+        enableNextButton();
+        swapCancelButtonForExitButton();
+        enableCancelButton();
+        setSummaryBarSubtitle(SUMMARY_BAR_SUBTITLE_NO_RESULTS);
+        AppInformationDialogue dialogue = new AppInformationDialogue(
+                "No Duplicates Found",
+                "No duplicates were found during the scan!",
+                "You may choose to perform a new scan or exit the application."
+        );
+        dialogue.getConfirmation();
     }
 
     private void getAndSetProgressStats() {

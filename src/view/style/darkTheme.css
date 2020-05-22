@@ -311,7 +311,7 @@
 }
 
 .previewPane: disabled {
-    -fx-effect: innerShadow(gaussian, rgba(0,0,0,0.7), 200, 200,0,0);
+    -fx-effect: innerShadow(gaussian, rgba(0,0,0,0.7), 500, 200,0,0);
 }
 
 #actionBarBG {

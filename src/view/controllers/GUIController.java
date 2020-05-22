@@ -1,5 +1,6 @@
 package view.controllers;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -174,6 +175,11 @@ public abstract class GUIController implements Initializable {
 
     void setCancelButtonText(String text) {
         cancelButton.setText(text);
+    }
+
+    void swapCancelButtonForExitButton() {
+        setCancelButtonText("Exit");
+        setCancelButtonOnAction(event -> Platform.exit());
     }
 
     /**

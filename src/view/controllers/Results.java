@@ -234,11 +234,7 @@ public class Results extends GUIController {
 
         switch (action) {
             case DELETE:
-                try {
-                    deleteFiles(selectedFiles);
-                } catch (IOException e) {
-                    // TODO: error handling
-                }
+                deleteFiles(selectedFiles);
                 break;
             default:
                 log.error("Couldn't identify selected action: " + action.toString());
