@@ -1,6 +1,7 @@
 package view.controllers;
 
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -14,6 +15,7 @@ import java.io.File;
 import java.util.*;
 
 import static view.controllers.helpers.ResultsRenderer.addResultsToResultsPane;
+import static view.util.FXMLUtils.getChildWithId;
 
 public class Results extends GUIController {
 
@@ -22,12 +24,25 @@ public class Results extends GUIController {
     private String NEXT_BUTTON_TEXT = "Next";
     private String SUMMARY_BAR_HEADER_DEFAULT = "Results for";
     private String SUMMARY_BAR_SUBTITLE_TEMPLATE = "Found %d duplicate sets";
-    private String LOAD_BUTTON_TEXT = "Load more results";                                                              // TODO: use this
+    private String LOAD_BUTTON_TEXT = "Load more results";
+    private String SELECTED_COUNT_TEMPLATE = "%d images selected";
+
+    /* Action items for the Bulk Action menu */
+    private enum Action {
+        DELETE("Delete");
+
+        String label;
+        Action(String label)  { this.label = label; }
+    }
+
 
     /* UI controls */
     private GridPane resultsPane;
     private Button loadMoreButton;
+    private Label selectedCountLabel;
     private List<RenderedResult> renderedResults;
+    private long selectedCount = 0;
+    private ComboBox<String> actionMenu;
 
     /* Other Constants */
     private int RESULT_GROUP_SIZE = 10;
@@ -50,9 +65,15 @@ public class Results extends GUIController {
         setNextButtonText(NEXT_BUTTON_TEXT);
         setNavBarTitle(NAV_BAR_TITLE);
         setSummaryBarHeadWithFilePath(SUMMARY_BAR_HEADER_DEFAULT);
+        loadMoreButton.setText(LOAD_BUTTON_TEXT);
+        updateSelectedCountLabelValue(0);
 
         long duplicateCount = model.getProgress().getPositives();
         setSummaryBarSubtitle(String.format(SUMMARY_BAR_SUBTITLE_TEMPLATE, duplicateCount));
+
+        for (Action a: Action.values()) {
+            actionMenu.getItems().add(a.label);
+        }
     }
 
     @Override
@@ -63,7 +84,10 @@ public class Results extends GUIController {
             GridPane root = FXMLLoader.load(getClass().getResource("../layouts/Results.fxml"));                         // TODO: replace with static config reference
             ObservableList<Node> rootChildren = root.getChildren();
 
-            ScrollPane s = (ScrollPane) rootChildren.get(1);                                                            // TODO: replace all FXML child access from index to id
+            selectedCountLabel = (Label) getChildWithId(root, "selectedCount");
+            actionMenu = (ComboBox<String>) getChildWithId(root, "actionMenu");
+
+            ScrollPane s = (ScrollPane) rootChildren.get(2);                                                            // TODO: replace all FXML child access from index to id
             GridPane g = (GridPane) s.getContent();
             loadMoreButton = (Button) g.getChildren().get(0);
 
@@ -87,8 +111,12 @@ public class Results extends GUIController {
 
         List<RenderedResult> newRenderedResults = addResultsToResultsPane(results, resultsPane, startIdx, endIdx);
         loadImagePreviews(newRenderedResults);
-        renderedResults.addAll(newRenderedResults);
 
+        for (RenderedResult res: newRenderedResults) {
+            res.getCheckBox().setOnAction(this::onCheckBoxToggle);
+        }
+
+        renderedResults.addAll(newRenderedResults);
         if (renderedResults.size() < results.size()) {
             GridPane.setRowIndex(loadMoreButton, renderedResults.size());
         } else {
@@ -117,6 +145,20 @@ public class Results extends GUIController {
             AppThreadPool.getInstance().submit(new ImagePreviewLoader(rr.getFile(), rr.getPreviewPane()));
         }
         log.debug("Done creating preview loading threads");
+    }
+
+    private void updateSelectedCountLabelValue(long value) {
+        selectedCountLabel.setText(String.format(SELECTED_COUNT_TEMPLATE, value));
+    }
+
+    private void onCheckBoxToggle(ActionEvent event) {
+        CheckBox source = (CheckBox) event.getSource();
+        if (source.isSelected()) {
+            selectedCount++;
+        } else {
+            selectedCount--;
+        }
+        updateSelectedCountLabelValue(selectedCount);
     }
 
     @Override

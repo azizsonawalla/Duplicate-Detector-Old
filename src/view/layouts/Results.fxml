@@ -9,6 +9,8 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ComboBox?>
 <GridPane GridPane.halignment="CENTER" GridPane.valignment="CENTER" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
 <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" percentWidth="100.0" />
@@ -19,6 +21,25 @@
 </rowConstraints>
 <children>
     <Pane id="actionBarBG" GridPane.rowIndex="0" />
+    <GridPane id="actionBar" GridPane.rowIndex="0">
+        <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="50" prefWidth="50" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="50" prefWidth="50" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="100" prefWidth="800" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="200" prefWidth="600" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="210" prefWidth="200" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="50" prefWidth="50" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="50" prefWidth="50" />
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints minHeight="0" percentHeight="100" vgrow="SOMETIMES" />
+        </rowConstraints>
+        <children>
+            <Label id="selectedCount" styleClass="body" GridPane.halignment="LEFT" GridPane.valignment="CENTER" GridPane.columnIndex="2"/>
+            <Label text="Bulk Action:" styleClass="body" GridPane.columnIndex="3" GridPane.valignment="CENTER" GridPane.halignment="RIGHT"/>
+            <ComboBox id="actionMenu" minWidth="200" GridPane.columnIndex="4" GridPane.valignment="CENTER" GridPane.halignment="RIGHT"/>
+        </children>
+    </GridPane>
 
     <ScrollPane id="resultsScrollWindow" GridPane.rowIndex="1">
         <content>
