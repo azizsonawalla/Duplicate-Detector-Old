@@ -51,12 +51,12 @@ public class DuplicateDetectorGUIApp extends Application {
         this.model = model;
     }
 
-    public void switchScene(GUIController newController) {                                                              // TODO: FIX: window size resets on each scene change
+    public void switchScene(GUIController newController) {
         Cursor ogCursor = stage.getScene().getCursor();
         Platform.runLater(() -> stage.getScene().setCursor(Cursor.WAIT));
         Scene newScene = null;
         try {
-            newScene = loadDefaultScene(newController);
+            newScene = loadSceneOfSameSize(this.stage.getScene(), newController);
         } catch (IOException e) {
             e.printStackTrace();
             AppError.showError("An error occurred while loading the next page. Please restart the application.");
@@ -68,6 +68,12 @@ public class DuplicateDetectorGUIApp extends Application {
     @Override
     public void stop() {
         AppThreadPool.getInstance().shutdownNow();
+    }
+
+    private Scene loadSceneOfSameSize(Scene s, GUIController c) throws IOException {
+        double width = s.getWidth();
+        double height = s.getHeight();
+        return loadScene(c, Config.PARENT_FRAME, Config.DARK_THEME_CSS, width, height);
     }
 
     private Scene loadDefaultScene(GUIController c) throws IOException {
