@@ -2,7 +2,9 @@ package view;
 
 import config.Config;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -50,6 +52,8 @@ public class DuplicateDetectorGUIApp extends Application {
     }
 
     public void switchScene(GUIController newController) {                                                              // TODO: FIX: window size resets on each scene change
+        Cursor ogCursor = stage.getScene().getCursor();
+        Platform.runLater(() -> stage.getScene().setCursor(Cursor.WAIT));
         Scene newScene = null;
         try {
             newScene = loadDefaultScene(newController);
@@ -58,6 +62,7 @@ public class DuplicateDetectorGUIApp extends Application {
             AppError.showError("An error occurred while loading the next page. Please restart the application.");
         }
         this.stage.setScene(newScene);
+        Platform.runLater(() -> stage.getScene().setCursor(ogCursor));
     }
 
     @Override

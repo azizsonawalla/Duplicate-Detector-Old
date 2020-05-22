@@ -32,7 +32,25 @@ public class Results extends GUIController {
         DELETE("Delete");
 
         String label;
+
         Action(String label)  { this.label = label; }
+
+        static List<String> getLabels() {
+            List<String> labels = new LinkedList<>();
+            for (Action a: Action.values()) {
+                labels.add(a.label);
+            }
+            return labels;
+        }
+
+        static Action getActionFromLabel(String label) {
+            for (Action a: Action.values()) {
+                if (a.label.equals(label)) {
+                    return a;
+                }
+            }
+            return null;
+        }
     }
 
     /* UI controls */
@@ -64,6 +82,7 @@ public class Results extends GUIController {
         loadMoreButton.setOnAction(event -> loadNextSetOfResults());
         actionApplyButton.setDisable(true);
         clearSelectionButton.setOnAction(this::onClearSelection);
+        actionMenu.setOnAction(this::onActionSelection);
     }
 
     @Override
@@ -77,9 +96,7 @@ public class Results extends GUIController {
         long duplicateCount = model.getProgress().getPositives();
         setSummaryBarSubtitle(String.format(SUMMARY_BAR_SUBTITLE_TEMPLATE, duplicateCount));
 
-        for (Action a: Action.values()) {
-            actionMenu.getItems().add(a.label);
-        }
+        actionMenu.getItems().addAll(Action.getLabels());
     }
 
     @Override
@@ -172,6 +189,11 @@ public class Results extends GUIController {
         }
         this.selectedCount = 0;
         updateSelectedCountLabelValue(selectedCount);
+    }
+
+    private void onActionSelection(ActionEvent event) {
+        String selected = actionMenu.getSelectionModel().getSelectedItem();
+        actionApplyButton.setDisable(Action.getActionFromLabel(selected) == null);
     }
 
     @Override
