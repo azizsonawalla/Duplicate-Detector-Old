@@ -372,7 +372,35 @@
 #actionMenu {
 }
 
+#actionBar Button {
+    -fx-background-color: rgba(0,0,0, 0.8);
+    -fx-border-radius: 50px;
+    -fx-background-radius: 50px;
+    -fx-border-width: 0px;
+    -fx-min-width: 80px;
+    -fx-font-size: 11pt;
+    -fx-font-family: 'Helvetica Neue LT Com 45 Light';
+    -fx-font-smoothing-type: lcd;
+    -fx-text-fill: #FFFFFF;
+    -fx-cursor: hand;
+}
+
+#actionBar Button:hover {
+    -fx-background-color: rgba(0,0,0, 0.7);
+}
+
+#actionBar Button:pressed {
+    -fx-background-color: rgba(0,0,0, 0.6);
+}
+
+#actionBar Button:disabled {
+    -fx-background-color: transparent;
+    -fx-border-color: rgba(255,255,255,0.8);
+    -fx-border-width: 2px;
+    -fx-text-fill: rgba(255,255,255,0.8);
+}
+
 /* Debug Only */
 GridPane {
-    -fx-grid-lines-visible: true;
+    -fx-grid-lines-visible: false;
 }

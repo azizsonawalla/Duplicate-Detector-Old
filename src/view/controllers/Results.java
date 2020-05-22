@@ -43,6 +43,7 @@ public class Results extends GUIController {
     private List<RenderedResult> renderedResults;
     private long selectedCount = 0;
     private ComboBox<String> actionMenu;
+    private Button actionApplyButton;
 
     /* Other Constants */
     private int RESULT_GROUP_SIZE = 10;
@@ -58,6 +59,7 @@ public class Results extends GUIController {
         hideCancelButton();
         removeMainWindowLogo();
         loadMoreButton.setOnAction(event -> loadNextSetOfResults());
+        actionApplyButton.setDisable(true);
     }
 
     @Override
@@ -86,6 +88,7 @@ public class Results extends GUIController {
 
             selectedCountLabel = (Label) getChildWithId(root, "selectedCount");
             actionMenu = (ComboBox<String>) getChildWithId(root, "actionMenu");
+            actionApplyButton = (Button) getChildWithId(root, "actionApplyButton");
 
             ScrollPane s = (ScrollPane) rootChildren.get(2);                                                            // TODO: replace all FXML child access from index to id
             GridPane g = (GridPane) s.getContent();
