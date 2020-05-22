@@ -7,7 +7,6 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import model.async.threadPool.AppThreadPool;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import view.DuplicateDetectorGUIApp;
 import view.controllers.helpers.ImagePreviewLoader;
 import view.controllers.helpers.RenderedResult;
@@ -65,7 +64,7 @@ public class Results extends GUIController {
     private GridPane resultsPane;
     private Button loadMoreButton, actionApplyButton, clearSelectionButton;
     private Label selectedCountLabel;
-    private List<RenderedResult> renderedResults;
+    private List<List<RenderedResult>> renderedResults;
     private long selectedCount = 0;
     private ComboBox<String> actionMenu;
 
@@ -73,7 +72,7 @@ public class Results extends GUIController {
     private List<List<File>> results;
 
     /* Other Constants */
-    private int RESULT_GROUP_SIZE = 10;
+    private int RESULT_SETS_PER_LOAD = 10;
 
     Results(DuplicateDetectorGUIApp app, List<List<File>> results) {
         super(app);
@@ -135,13 +134,15 @@ public class Results extends GUIController {
 
     private void loadNextSetOfResults() {
         int startIdx = renderedResults.size();
-        int endIdx = Math.min(startIdx + RESULT_GROUP_SIZE-1, results.size()-1);
+        int endIdx = Math.min(startIdx + RESULT_SETS_PER_LOAD -1, results.size()-1);
 
-        List<RenderedResult> newRenderedResults = addResultsToResultsPane(results, resultsPane, startIdx, endIdx);
+        List<List<RenderedResult>> newRenderedResults = addResultsToResultsPane(results, resultsPane, startIdx, endIdx);
         loadImagePreviews(newRenderedResults);
 
-        for (RenderedResult res: newRenderedResults) {
-            res.getCheckBox().setOnAction(this::onCheckBoxToggle);
+        for (List<RenderedResult> resultSet: newRenderedResults) {
+            for (RenderedResult res: resultSet) {
+                res.getCheckBox().setOnAction(this::onCheckBoxToggle);
+            }
         }
 
         renderedResults.addAll(newRenderedResults);
@@ -170,12 +171,12 @@ public class Results extends GUIController {
         return resultsPane;
     }
 
-    private void loadImagePreviews(List<RenderedResult> newRenderedResults) {
-        log.debug("Creating preview loading threads");
-        for (RenderedResult rr: newRenderedResults) {
-            AppThreadPool.getInstance().submit(new ImagePreviewLoader(rr.getFile(), rr.getPreviewPane()));
+    private void loadImagePreviews(List<List<RenderedResult>> newRenderedResults) {
+        for (List<RenderedResult> resultSet: newRenderedResults) {
+            for (RenderedResult rr: resultSet) {
+                AppThreadPool.getInstance().submit(new ImagePreviewLoader(rr.getFile(), rr.getPreviewPane()));
+            }
         }
-        log.debug("Done creating preview loading threads");
     }
 
     private void updateSelectedCountLabel() {
@@ -193,8 +194,10 @@ public class Results extends GUIController {
     }
 
     private void onClearSelection(ActionEvent event) {
-        for (RenderedResult res: renderedResults) {
-            res.getCheckBox().setSelected(false);
+        for (List<RenderedResult> resultSet: renderedResults) {
+            for (RenderedResult res: resultSet) {
+                res.getCheckBox().setSelected(false);
+            }
         }
         this.selectedCount = 0;
         updateSelectedCountLabel();
@@ -260,9 +263,11 @@ public class Results extends GUIController {
 
     private List<RenderedResult> getSelectedResults() {
         List<RenderedResult> selectedResults = new LinkedList<>();
-        for (RenderedResult res: renderedResults) {
-            if (res.getCheckBox().isSelected()) {
-                selectedResults.add(res);
+        for (List<RenderedResult> resultSet: renderedResults) {
+            for (RenderedResult res: resultSet) {
+                if (res.getCheckBox().isSelected()) {
+                    selectedResults.add(res);
+                }
             }
         }
         return selectedResults;

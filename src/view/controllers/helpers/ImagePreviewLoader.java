@@ -1,5 +1,6 @@
 package view.controllers.helpers;
 
+import javafx.application.Platform;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 
@@ -32,7 +33,7 @@ public class ImagePreviewLoader implements Runnable {
             pane.getStyleClass().add("erroredImagePreview");
             Label failedMessage = new Label("Failed to load preview");
             failedMessage.getStyleClass().add("body");
-            pane.getChildren().add(failedMessage);
+            Platform.runLater(() -> pane.getChildren().add(failedMessage));
         }
     }
 }

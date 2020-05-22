@@ -461,5 +461,5 @@
 
 /* Debug Only */
 GridPane {
-    -fx-grid-lines-visible: false;
+    -fx-grid-lines-visible: true;
 }

@@ -8,6 +8,7 @@ import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
+import util.Logger;
 
 import java.io.File;
 import java.security.InvalidParameterException;
@@ -17,17 +18,18 @@ import static view.util.FormatConverter.milliSecondsToTime;
 import static view.util.FormatConverter.sensibleDiskSpaceValue;
 
 public class ResultsRenderer {
-    public static List<RenderedResult> addResultsToResultsPane(List<List<File>> results, GridPane resPane, int start, int end) {
 
-        List<RenderedResult> renderedResults = new LinkedList<>();
+    private static Logger log = new Logger(ResultsRenderer.class);
 
-        int numOfResultsToAdd = end - start;
-        for (int i = 0; i < numOfResultsToAdd; i++) {
-            resPane.getRowConstraints().add(new RowConstraints(450, 450, 450));
-        }
+    public static List<List<RenderedResult>> addResultsToResultsPane(List<List<File>> results, GridPane resPane, int start, int end) {
+
+        List<List<RenderedResult>> renderedResults = new LinkedList<>();
 
         ObservableList<Node> children = resPane.getChildren();
+        ObservableList<RowConstraints> rConstraints = resPane.getRowConstraints();
         for (int i = start; i <= end; i++) {
+
+            rConstraints.add(new RowConstraints(450, 450, 450));
             int colIdx = 0;
 
             Label setNumPane = createSetNumberPane(i+1);
@@ -36,6 +38,7 @@ public class ResultsRenderer {
             children.add(setNumPane);
             colIdx++;
 
+            List<RenderedResult> resultSet = new LinkedList<>();
             for (File file: results.get(i)) {
                 CheckBox checkBox = createImageCheckBox();
                 StackPane imgPreviewPane = createImagePreviewPane(checkBox);
@@ -47,8 +50,9 @@ public class ResultsRenderer {
                 children.add(filePreviewPane);
                 colIdx++;
 
-                renderedResults.add(new RenderedResult(file, imgPreviewPane, checkBox));
+                resultSet.add(new RenderedResult(file, imgPreviewPane, checkBox));
             }
+            renderedResults.add(resultSet);
         }
 
         return renderedResults;
