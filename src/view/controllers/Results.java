@@ -12,7 +12,7 @@ import view.DuplicateDetectorGUIApp;
 import view.controllers.helpers.ImagePreviewLoader;
 import view.controllers.helpers.RenderedResult;
 import view.controllers.helpers.ResultsRenderer;
-import view.util.AppConfirmationDialogue;
+import view.util.dialogues.AppConfirmationDialogue;
 
 import java.io.File;
 import java.io.IOException;

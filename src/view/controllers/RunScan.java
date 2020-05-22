@@ -1,6 +1,7 @@
 package view.controllers;
 
 import config.Config;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -13,7 +14,9 @@ import javafx.scene.layout.StackPane;
 import model.async.threadPool.AppThreadPool;
 import util.Progress;
 import view.DuplicateDetectorGUIApp;
+import view.util.dialogues.AppConfirmationDialogue;
 import view.util.TaskProgressTracker;
+import view.util.dialogues.AppInformationDialogue;
 
 import java.io.IOException;
 
@@ -24,7 +27,9 @@ public class RunScan extends GUIController {                                    
     /* UI copy */
     private String NAV_BAR_TITLE = "Run scan";
     private String MAIN_CONTENT_TITLE_BEFORE_START = "Ready to Scan";
-    private String NEXT_BUTTON_TEXT = "View Results";
+    private String NEXT_BUTTON_TEXT_WITH_RESULTS = "View Results";
+    private String NEXT_BUTTON_TEXT_NO_RESULTS = "New Scan";
+    private String CANCEL_BUTTON_TEXT_NO_RESULTS = "Exit";
     private String SUMMARY_BAR_SUBTITLE_TEMPLATE = "%d files will be scanned";
     private String SUMMARY_BAR_SUBTITLE_COMPLETE = "Scan complete. Click next to view results.";
     private String SUMMARY_BAR_HEADER_DEFAULT = "Scanning";
@@ -71,7 +76,7 @@ public class RunScan extends GUIController {                                    
             setContentTitle(MAIN_CONTENT_TITLE_BEFORE_START);
         }
 
-        setNextButtonText(NEXT_BUTTON_TEXT);
+        setNextButtonText(NEXT_BUTTON_TEXT_WITH_RESULTS);
         setNavBarTitle(NAV_BAR_TITLE);
         long totalFilesToBeScanned = model.getProgress().getDone();
         setSummaryBarSubtitle(String.format(SUMMARY_BAR_SUBTITLE_TEMPLATE, totalFilesToBeScanned));
@@ -189,6 +194,20 @@ public class RunScan extends GUIController {                                    
         disableCancelButton();
         createAndSetNextController();
         enableNextButton();
+
+        if (model.getResults().size() == 0) {
+            setNextButtonText(NEXT_BUTTON_TEXT_NO_RESULTS);
+            setCancelButtonText(CANCEL_BUTTON_TEXT_NO_RESULTS);
+            setNextController(new NewScan(app));
+            setCancelButtonOnAction(event -> Platform.exit());
+            enableCancelButton();
+            AppInformationDialogue dialogue = new AppInformationDialogue(
+                    "No Duplicates Found",
+                    "No duplicates were found during the scan!",
+                    "You may choose to perform a new scan or exit the application."
+            );
+            dialogue.getConfirmation();
+        }
     }
 
     private void getAndSetProgressStats() {

@@ -31,7 +31,7 @@ public class ImagePreviewLoader implements Runnable {
             // TODO: log errors
             pane.getStyleClass().clear();
             pane.getStyleClass().addAll("erroredImagePreview", "previewPane");
-            Label failedMessage = new Label("Failed to load preview");
+            Label failedMessage = new Label("Preview unavailable");
             failedMessage.getStyleClass().add("body");
             Platform.runLater(() -> pane.getChildren().add(failedMessage));
         }

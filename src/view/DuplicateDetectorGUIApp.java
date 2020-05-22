@@ -12,7 +12,7 @@ import model.async.threadPool.AppThreadPool;
 import model.searchModel.ScanController;
 import view.controllers.GUIController;
 import view.controllers.NewScan;
-import view.util.AppError;
+import view.util.dialogues.AppErrorDialogue;
 
 import java.io.IOException;
 
@@ -59,7 +59,7 @@ public class DuplicateDetectorGUIApp extends Application {
             newScene = loadSceneOfSameSize(this.stage.getScene(), newController);
         } catch (IOException e) {
             e.printStackTrace();
-            AppError.showError("An error occurred while loading the next page. Please restart the application.");
+            AppErrorDialogue.showError("An error occurred while loading the next page. Please restart the application.");
         }
         this.stage.setScene(newScene);
         Platform.runLater(() -> stage.getScene().setCursor(ogCursor));

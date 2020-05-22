@@ -1,9 +1,9 @@
-package view.util;
+package view.util.dialogues;
 
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 
-public class AppError {
+public class AppErrorDialogue {
 
     public static void showError(String msg) {
         AppAlert a = new AppAlert();

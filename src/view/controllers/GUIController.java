@@ -64,7 +64,6 @@ public abstract class GUIController implements Initializable {
             setMainContent(mainContent);
         }
 
-        configureParentControls();
         initCopy();
         configureControls();
     }
@@ -173,6 +172,10 @@ public abstract class GUIController implements Initializable {
         cancelButton.setOnAction(e);
     }
 
+    void setCancelButtonText(String text) {
+        cancelButton.setText(text);
+    }
+
     /**
      * Replaces the main window with the given node
      * @param content content to be inserted
@@ -210,10 +213,6 @@ public abstract class GUIController implements Initializable {
     void reset() {
         cleanupSelf();
         goToFirstScene();
-    }
-
-    private void configureParentControls() {
-        nextButtonLoadingOverlay.setVisible(false);
     }
 
     private void goToFirstScene() {
