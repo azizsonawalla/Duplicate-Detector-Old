@@ -298,7 +298,7 @@
     -fx-background-size: 50px;
     -fx-background-repeat: no-repeat;
     -fx-background-position: center;
-    -fx-background-color: rgba(255,255,255,0.5);
+    -fx-background-color: black;
 }
 
 .erroredImagePreview {
@@ -307,7 +307,9 @@
 
 .previewPane {
     -fx-background-position: center;
-    -fx-background-size: cover;
+    -fx-background-size: contain;
+    -fx-background-repeat: no-repeat;
+    -fx-background-color: black;
 }
 
 .previewPane: disabled {

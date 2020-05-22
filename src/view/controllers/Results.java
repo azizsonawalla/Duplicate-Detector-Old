@@ -86,8 +86,9 @@ public class Results extends GUIController {
 
     @Override
     void configureControls() {
-        hideNextButton();
-        hideCancelButton();
+        setNextButtonText("Export Results");
+        disableNextButton();                                                                                            // TODO: enable when export feature is complete
+        swapCancelButtonForExitButton();
         removeMainWindowLogo();
         loadMoreButton.setOnAction(event -> loadNextSetOfResults());
         actionApplyButton.setDisable(true);
