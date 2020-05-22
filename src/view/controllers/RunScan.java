@@ -179,7 +179,7 @@ public class RunScan extends GUIController {                                    
     }                                                                                                                   // TODO: call this on back button press too
 
     private void createAndSetNextController() {
-        Results r = new Results(app);
+        Results r = new Results(app, model.getResults());
         setNextController(r);
     }
 

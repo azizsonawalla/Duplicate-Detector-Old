@@ -372,7 +372,7 @@
 #actionMenu {
 }
 
-#actionBar Button {
+#actionApplyButton Button {
     -fx-background-color: rgba(0,0,0, 0.8);
     -fx-border-radius: 50px;
     -fx-background-radius: 50px;
@@ -385,19 +385,47 @@
     -fx-cursor: hand;
 }
 
-#actionBar Button:hover {
+#actionApplyButton:hover {
     -fx-background-color: rgba(0,0,0, 0.7);
 }
 
-#actionBar Button:pressed {
+#actionApplyButton:pressed {
     -fx-background-color: rgba(0,0,0, 0.6);
 }
 
-#actionBar Button:disabled {
+#actionApplyButton:disabled {
     -fx-background-color: transparent;
     -fx-border-color: rgba(255,255,255,0.8);
     -fx-border-width: 2px;
+    -fx-border-radius: 50px;
     -fx-text-fill: rgba(255,255,255,0.8);
+    -fx-min-width: 80px;
+    -fx-font-size: 11pt;
+    -fx-font-family: 'Helvetica Neue LT Com 45 Light';
+    -fx-font-smoothing-type: lcd;
+    -fx-text-fill: #FFFFFF;
+}
+
+#clearSelectionButton {
+    -fx-background-color: transparent;
+    -fx-border-radius: 50px;
+    -fx-background-radius: 50px;
+    -fx-border-width: 2px;
+    -fx-border-color: white;
+    -fx-min-width: 100px;
+    -fx-font-size: 11pt;
+    -fx-font-family: 'Helvetica Neue LT Com 45 Light';
+    -fx-font-smoothing-type: lcd;
+    -fx-text-fill: white;
+    -fx-cursor: hand;
+}
+
+#clearSelectionButton:hover {
+    -fx-background-color: rgba(255,255,255, 0.2);
+}
+
+#clearSelectionButton:pressed {
+    -fx-background-color: rgba(255,255,255, 0.4);
 }
 
 /* Debug Only */

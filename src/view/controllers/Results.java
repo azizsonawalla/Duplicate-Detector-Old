@@ -35,22 +35,25 @@ public class Results extends GUIController {
         Action(String label)  { this.label = label; }
     }
 
-
     /* UI controls */
     private GridPane resultsPane;
-    private Button loadMoreButton;
+    private Button loadMoreButton, actionApplyButton, clearSelectionButton;
     private Label selectedCountLabel;
     private List<RenderedResult> renderedResults;
     private long selectedCount = 0;
     private ComboBox<String> actionMenu;
-    private Button actionApplyButton;
+
+    /* Model data */
+    private List<List<File>> results;
 
     /* Other Constants */
     private int RESULT_GROUP_SIZE = 10;
 
-    Results(DuplicateDetectorGUIApp app) {
+    Results(DuplicateDetectorGUIApp app, List<List<File>> results) {
         super(app);
         renderedResults = new LinkedList<>();
+        this.results = results;
+        resultsPane = createResultsPane(results);
     }
 
     @Override
@@ -60,6 +63,7 @@ public class Results extends GUIController {
         removeMainWindowLogo();
         loadMoreButton.setOnAction(event -> loadNextSetOfResults());
         actionApplyButton.setDisable(true);
+        clearSelectionButton.setOnAction(this::onClearSelection);
     }
 
     @Override
@@ -81,21 +85,17 @@ public class Results extends GUIController {
     @Override
     Node loadMainWindow() {
         try {
-            resultsPane = createResultsPane(model.getResults());
-
             GridPane root = FXMLLoader.load(getClass().getResource("../layouts/Results.fxml"));                         // TODO: replace with static config reference
             ObservableList<Node> rootChildren = root.getChildren();
 
             selectedCountLabel = (Label) getChildWithId(root, "selectedCount");
             actionMenu = (ComboBox<String>) getChildWithId(root, "actionMenu");
             actionApplyButton = (Button) getChildWithId(root, "actionApplyButton");
+            clearSelectionButton = (Button) getChildWithId(root, "clearSelectionButton");
 
             ScrollPane s = (ScrollPane) rootChildren.get(2);                                                            // TODO: replace all FXML child access from index to id
             GridPane g = (GridPane) s.getContent();
             loadMoreButton = (Button) g.getChildren().get(0);
-
-            GridPane.setRowIndex(resultsPane, 0);
-            GridPane.setColumnIndex(resultsPane, 1);
             g.getChildren().add(resultsPane);
 
             loadNextSetOfResults();
@@ -108,7 +108,6 @@ public class Results extends GUIController {
     }
 
     private void loadNextSetOfResults() {
-        List<List<File>> results = model.getResults();
         int startIdx = renderedResults.size();
         int endIdx = Math.min(startIdx + RESULT_GROUP_SIZE-1, results.size()-1);
 
@@ -139,6 +138,9 @@ public class Results extends GUIController {
         for (int i = 0; i < maxSetSize; i++) {
             resultsPane.getColumnConstraints().add(new ColumnConstraints(300,300,300));
         }
+
+        GridPane.setRowIndex(resultsPane, 0);
+        GridPane.setColumnIndex(resultsPane, 1);
         return resultsPane;
     }
 
@@ -161,6 +163,14 @@ public class Results extends GUIController {
         } else {
             selectedCount--;
         }
+        updateSelectedCountLabelValue(selectedCount);
+    }
+
+    private void onClearSelection(ActionEvent event) {
+        for (RenderedResult res: renderedResults) {
+            res.getCheckBox().setSelected(false);
+        }
+        this.selectedCount = 0;
         updateSelectedCountLabelValue(selectedCount);
     }
 
