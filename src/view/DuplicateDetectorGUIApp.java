@@ -10,8 +10,8 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import model.async.threadPool.AppThreadPool;
 import model.searchModel.ScanController;
-import view.controllers.NewScan;
 import view.controllers.GUIController;
+import view.controllers.NewScan;
 import view.util.AppError;
 
 import java.io.IOException;

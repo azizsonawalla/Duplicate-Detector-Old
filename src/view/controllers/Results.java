@@ -5,7 +5,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.layout.*;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
 import model.async.threadPool.AppThreadPool;
 import view.DuplicateDetectorGUIApp;
 import view.controllers.helpers.ImagePreviewLoader;
@@ -15,7 +16,8 @@ import view.util.AppConfirmationDialogue;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
 
 import static util.FileSystemUtil.deleteFiles;
 import static view.controllers.helpers.ResultsRenderer.addResultsToResultsPane;

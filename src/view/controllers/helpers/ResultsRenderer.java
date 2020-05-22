@@ -1,6 +1,5 @@
 package view.controllers.helpers;
 
-import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
@@ -8,12 +7,17 @@ import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
-import javafx.scene.layout.*;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.StackPane;
 import util.Logger;
 
 import java.io.File;
 import java.security.InvalidParameterException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 import static view.util.FormatConverter.milliSecondsToTime;
 import static view.util.FormatConverter.sensibleDiskSpaceValue;
