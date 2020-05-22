@@ -158,10 +158,21 @@
     -fx-border-width: 0px;
 }
 
+#nextButtonLoadingOverlay {
+    -fx-background-image: url("../assets/loading.gif");
+    -fx-background-size: 40px;
+    -fx-min-width: 50;
+    -fx-min-height: 50;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+    -fx-background-color: transparent;
+}
+
 /* Main Window */
 
 #mainWindowBG {
      -fx-background-color: #222222;
+     -fx-effect: innerShadow(gaussian, rgba(0,0,0,0.7), 400, 0,0,0);
 }
 
 #mainContentLogo {
@@ -294,10 +305,12 @@
     -fx-background-color: #999999;
 }
 
-#resultsScrollWindow .scroll-pane {
+.scroll-pane {
     -fx-background-color: #222222;
     -fx-border-width: 0;
     -fx-border-color: #222222;
+    -fx-focus-color: transparent;
+    -fx-background-insets: -1.4, 0, 1, 2;
 }
 
 #resultsScrollWindow .scroll-bar:horizontal, #resultsScrollWindow .scroll-bar:vertical{
@@ -320,6 +333,11 @@
 #resultsScrollWindow .scroll-bar:vertical .thumb {
     -fx-background-color: #999999;
     -fx-background-radius: 5em;
+}
+
+.scroll-pane: focused {
+    -fx-focus-color: transparent;
+    -fx-background-insets: -1.4, 0, 1, 2;
 }
 
 .scroll-pane > .corner {

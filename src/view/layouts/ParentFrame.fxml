@@ -132,6 +132,7 @@
                     <children>
                         <Button fx:id="cancelButton" id="cancelButton" text="Cancel" GridPane.columnIndex="1" GridPane.halignment="LEFT" />
                         <Button fx:id="nextButton" id="nextButton" text="Next" GridPane.columnIndex="2" GridPane.halignment="RIGHT"/>
+                        <Pane fx:id="nextButtonLoadingOverlay" id="nextButtonLoadingOverlay" GridPane.columnIndex="3" GridPane.valignment="CENTER" GridPane.halignment="CENTER"/>
                     </children>
                 </GridPane>
             </children>

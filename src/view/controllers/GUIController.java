@@ -1,5 +1,6 @@
 package view.controllers;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -34,7 +35,7 @@ public abstract class GUIController implements Initializable {
     @FXML private Label navBarTitle, summaryBarSubtitle, mainContentTitle;
     @FXML private Text summaryBarTitleHead, summaryBarTitlePrev;
     @FXML private GridPane mainContent, mainWindow, root;
-    @FXML private Pane mainContentLogo;
+    @FXML private Pane mainContentLogo, nextButtonLoadingOverlay;
 
     /**
      * Create GUI controller object
@@ -64,6 +65,7 @@ public abstract class GUIController implements Initializable {
             setMainContent(mainContent);
         }
 
+        configureParentControls();
         initCopy();
         configureControls();
     }
@@ -203,16 +205,20 @@ public abstract class GUIController implements Initializable {
         app.switchScene(prevController);
     }
 
-    private void goToFirstScene() {
-        app.switchScene(new NewScan(app));
-    }
-
     /**
      * Cleans-up and goes back to the previous scene
      */
     void reset() {
         cleanupSelf();
         goToFirstScene();
+    }
+
+    private void configureParentControls() {
+        nextButtonLoadingOverlay.setVisible(false);
+    }
+
+    private void goToFirstScene() {
+        app.switchScene(new NewScan(app));
     }
 
     /**
