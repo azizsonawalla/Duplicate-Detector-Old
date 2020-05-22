@@ -3,11 +3,14 @@ package util;
 import javafx.util.Pair;
 
 import java.io.*;
+import java.util.List;
 
 /**
  * Util methods to interact with the file system
  */
 public class FileSystemUtil {
+
+    private static Logger log = new Logger(FileSystemUtil.class);
 
     /**
      * Get the extension of a file
@@ -68,5 +71,17 @@ public class FileSystemUtil {
         File tmp =  File.createTempFile("000_" + basename, ext);
         tmp.deleteOnExit();
         return tmp;
+    }
+
+    public static void deleteFiles(List<File> files) throws IOException {
+        log.info("Deleting the following files: " + getFileNamesAsString(files));
+    }
+
+    private static String getFileNamesAsString(List<File> files) {
+        StringBuilder names = new StringBuilder();
+        for (File file: files) {
+            names.append(file.getName()).append("; ");
+        }
+        return names.toString();
     }
 }

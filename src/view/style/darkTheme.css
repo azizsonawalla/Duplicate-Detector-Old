@@ -301,6 +301,19 @@
     -fx-background-color: rgba(255,255,255,0.5);
 }
 
+.erroredImagePreview {
+    -fx-background-color: #eb4559;
+}
+
+.previewPane {
+    -fx-background-position: center;
+    -fx-background-size: cover;
+}
+
+.previewPane: disabled {
+    -fx-background-image-opacity: 0.5;
+}
+
 #actionBarBG {
     -fx-background-color: #999999;
 }

@@ -36,7 +36,7 @@ public class Logger {
      * @param msg message to print
      */
     public void debug(String msg) {
-        if (level == Level.DEBUG || level == Level.INFO || level == Level.ERROR) {
+        if (level == Level.DEBUG) {
             print("DEBUG: " + msg);
         }
     }
@@ -46,7 +46,7 @@ public class Logger {
      * @param msg message to print
      */
     public void info(String msg) {
-        if (level == Level.INFO || level == Level.ERROR) {
+        if (level == Level.DEBUG || level == Level.INFO) {
             print("INFO: " + msg);
         }
     }
@@ -56,7 +56,7 @@ public class Logger {
      * @param msg message to print
      */
     public void error(String msg) {
-        if (level == Level.ERROR) {
+        if (level == Level.ERROR || level == Level.DEBUG || level == Level.INFO) {
             print("ERROR: " + msg);
         }
     }

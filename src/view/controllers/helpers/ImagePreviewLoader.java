@@ -1,5 +1,6 @@
 package view.controllers.helpers;
 
+import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 
 import java.io.File;
@@ -22,12 +23,16 @@ public class ImagePreviewLoader implements Runnable {
             File temp = createLowResTemp(file, -1, 450);
             String fileURI = temp.toURI().toString();
             String css = String.format("-fx-background-image: url(\"%s\");", fileURI);
-            css += "-fx-background-position: center; -fx-background-size: cover;";
             pane.getStyleClass().clear();
             pane.setStyle(css);
+            pane.getStyleClass().add("previewPane");
         } catch (Exception e) {
-            e.printStackTrace();
-            // TODO:
+            // TODO: log errors
+            pane.getStyleClass().clear();
+            pane.getStyleClass().add("erroredImagePreview");
+            Label failedMessage = new Label("Failed to load preview");
+            failedMessage.getStyleClass().add("body");
+            pane.getChildren().add(failedMessage);
         }
     }
 }

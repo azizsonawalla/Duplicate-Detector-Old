@@ -7,13 +7,17 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import model.async.threadPool.AppThreadPool;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import view.DuplicateDetectorGUIApp;
 import view.controllers.helpers.ImagePreviewLoader;
 import view.controllers.helpers.RenderedResult;
+import view.util.AppConfirmationDialogue;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
+import static util.FileSystemUtil.deleteFiles;
 import static view.controllers.helpers.ResultsRenderer.addResultsToResultsPane;
 import static view.util.FXMLUtils.getChildWithId;
 
@@ -26,6 +30,10 @@ public class Results extends GUIController {
     private String SUMMARY_BAR_SUBTITLE_TEMPLATE = "Found %d duplicate sets";
     private String LOAD_BUTTON_TEXT = "Load more results";
     private String SELECTED_COUNT_TEMPLATE = "%d images selected";
+    private String CONFIRMATION_DIALOG_TITLE_TEMPLATE = "Confirm %s";
+    private String CONFIRMATION_DIALOG_HEADER_TEMPLATE = "Are you sure you want to %s %d file(s)?";
+    private String CONFIRMATION_DIALOG_MSG = "Click Ok to continue or Cancel to go back.";
+
 
     /* Action items for the Bulk Action menu */
     private enum Action {
@@ -83,6 +91,7 @@ public class Results extends GUIController {
         actionApplyButton.setDisable(true);
         clearSelectionButton.setOnAction(this::onClearSelection);
         actionMenu.setOnAction(this::onActionSelection);
+        actionApplyButton.setOnAction(this::onActionApply);
     }
 
     @Override
@@ -91,7 +100,7 @@ public class Results extends GUIController {
         setNavBarTitle(NAV_BAR_TITLE);
         setSummaryBarHeadWithFilePath(SUMMARY_BAR_HEADER_DEFAULT);
         loadMoreButton.setText(LOAD_BUTTON_TEXT);
-        updateSelectedCountLabelValue(0);
+        updateSelectedCountLabel();
 
         long duplicateCount = model.getProgress().getPositives();
         setSummaryBarSubtitle(String.format(SUMMARY_BAR_SUBTITLE_TEMPLATE, duplicateCount));
@@ -169,8 +178,8 @@ public class Results extends GUIController {
         log.debug("Done creating preview loading threads");
     }
 
-    private void updateSelectedCountLabelValue(long value) {
-        selectedCountLabel.setText(String.format(SELECTED_COUNT_TEMPLATE, value));
+    private void updateSelectedCountLabel() {
+        selectedCountLabel.setText(String.format(SELECTED_COUNT_TEMPLATE, selectedCount));
     }
 
     private void onCheckBoxToggle(ActionEvent event) {
@@ -180,7 +189,7 @@ public class Results extends GUIController {
         } else {
             selectedCount--;
         }
-        updateSelectedCountLabelValue(selectedCount);
+        updateSelectedCountLabel();
     }
 
     private void onClearSelection(ActionEvent event) {
@@ -188,12 +197,83 @@ public class Results extends GUIController {
             res.getCheckBox().setSelected(false);
         }
         this.selectedCount = 0;
-        updateSelectedCountLabelValue(selectedCount);
+        updateSelectedCountLabel();
     }
 
     private void onActionSelection(ActionEvent event) {
         String selected = actionMenu.getSelectionModel().getSelectedItem();
         actionApplyButton.setDisable(Action.getActionFromLabel(selected) == null);
+    }
+
+    private void onActionApply(ActionEvent event) {
+
+        if (selectedCount == 0) {
+            log.debug("No results selected");
+            return;
+        }
+
+        String selectedAction = actionMenu.getSelectionModel().getSelectedItem();
+        Action action = Action.getActionFromLabel(selectedAction);
+        if (action == null) {
+            log.error("No action selected");
+            // TODO: error handling
+        }
+
+        if (!actionConfirmed(action)) {
+            return;
+        }
+
+        List<RenderedResult> selectedResults = getSelectedResults();
+        List<File> selectedFiles = extractFiles(selectedResults);
+
+        switch (action) {
+            case DELETE:
+                try {
+                    deleteFiles(selectedFiles);
+                } catch (IOException e) {
+                    // TODO: error handling
+                }
+                break;
+            default:
+                log.error("Couldn't identify selected action: " + action.toString());
+                // TODO: error handling
+        }
+
+        onClearSelection(null);
+        disableResults(selectedResults);
+    }
+
+    private boolean actionConfirmed(Action a) {
+        AppConfirmationDialogue dialogue = new AppConfirmationDialogue (
+            String.format(CONFIRMATION_DIALOG_TITLE_TEMPLATE, a.label),
+            String.format(CONFIRMATION_DIALOG_HEADER_TEMPLATE, a.label.toLowerCase(), selectedCount),
+            CONFIRMATION_DIALOG_MSG
+        );
+        return dialogue.getConfirmation();
+    }
+
+    private void disableResults(List<RenderedResult> results) {
+        for (RenderedResult res: results) {
+            res.getPreviewPane().setDisable(true);
+        }
+    }
+
+    private List<RenderedResult> getSelectedResults() {
+        List<RenderedResult> selectedResults = new LinkedList<>();
+        for (RenderedResult res: renderedResults) {
+            if (res.getCheckBox().isSelected()) {
+                selectedResults.add(res);
+            }
+        }
+        return selectedResults;
+    }
+
+    private List<File> extractFiles(List<RenderedResult> results) {
+        List<File> selectedFiles = new LinkedList<>();
+        for (RenderedResult res: results) {
+            selectedFiles.add(res.getFile());
+        }
+        return selectedFiles;
     }
 
     @Override
