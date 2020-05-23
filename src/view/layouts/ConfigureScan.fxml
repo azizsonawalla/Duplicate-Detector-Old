@@ -14,7 +14,7 @@
         <RowConstraints minHeight="50.0" percentHeight="32.0" vgrow="SOMETIMES" />
     </rowConstraints>
    <children>
-       <GridPane styleClass="strategyButton" maxHeight="80" maxWidth="700" prefWidth="700" GridPane.rowIndex="1" GridPane.valignment="TOP" GridPane.halignment="CENTER">
+       <GridPane id="QuickScanButton" styleClass="strategyButton" maxHeight="80" maxWidth="700" prefWidth="700" GridPane.rowIndex="1" GridPane.valignment="TOP" GridPane.halignment="CENTER">
            <columnConstraints>
                <ColumnConstraints hgrow="SOMETIMES" percentWidth="95.0" />
                <ColumnConstraints hgrow="SOMETIMES" percentWidth="5.0" />
@@ -32,7 +32,7 @@
            </children>
        </GridPane>
 
-       <GridPane disable="true" styleClass="strategyButton" maxHeight="80" maxWidth="700" prefWidth="700" GridPane.rowIndex="2" GridPane.valignment="TOP" GridPane.halignment="CENTER">
+       <GridPane id="FullScanButton" disable="true" styleClass="strategyButton" maxHeight="80" maxWidth="700" prefWidth="700" GridPane.rowIndex="2" GridPane.valignment="TOP" GridPane.halignment="CENTER">
            <columnConstraints>
                <ColumnConstraints hgrow="SOMETIMES" percentWidth="95.0" />
                <ColumnConstraints hgrow="SOMETIMES" percentWidth="5.0" />
@@ -50,7 +50,7 @@
            </children>
        </GridPane>
 
-       <GridPane disable="true" styleClass="strategyButton" maxHeight="80" maxWidth="700" prefWidth="700" GridPane.rowIndex="3" GridPane.valignment="BOTTOM" GridPane.halignment="CENTER">
+       <GridPane id="AdvancedScanButton" disable="true" styleClass="strategyButton" maxHeight="80" maxWidth="700" prefWidth="700" GridPane.rowIndex="3" GridPane.valignment="BOTTOM" GridPane.halignment="CENTER">
            <columnConstraints>
                <ColumnConstraints hgrow="SOMETIMES" percentWidth="95.0" />
                <ColumnConstraints hgrow="SOMETIMES" percentWidth="5.0" />

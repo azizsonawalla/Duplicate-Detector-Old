@@ -1,9 +1,9 @@
 package view.controllers;
 
+import config.Config;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -12,35 +12,31 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.DirectoryChooser;
 import model.searchModel.ScanController;
 import view.DuplicateDetectorGUIApp;
+import view.textBindings.NewScanText;
 
 import java.io.File;
-import java.io.IOException;
 
+/**
+ * UI Controller for the NewScan scene
+ */
 public class NewScan extends GUIController {
-
-    /* UI copy */
-    private String NAV_BAR_TITLE = "Start a new scan";
-    private String MAIN_CONTENT_TITLE = "Choose a folder to scan:";
-    private String NEXT_BUTTON_TEXT = "Next";
-
-    private String SUMMARY_BAR_TITLE_HEADER_DEFAULT = "No folder selected";
-    private String FILE_PATH_DEFAULT = SUMMARY_BAR_TITLE_HEADER_DEFAULT;
-    private String SUMMARY_BAR_TITLE_PREVIEW_DEFAULT = "";
-    private String SUMMARY_BAR_SUBTITLE_DEFAULT = "Choose a folder to begin a scan";
-
-    private String SUMMARY_BAR_TITLE_HEADER_SELECTED = "Chosen Folder";
-    private String SUMMARY_BAR_SUBTITLE_SELECTED = "Click next to begin pre-scan checks.";
 
     /* UI controls */
     private Label filePathLabel;
     private Button browseButton;
-
     private File chosenDirectory;
 
+    /**
+     * Create an instance of the NewScan controller
+     * @param app instance of the JavaFX application associated with this controller
+     */
     public NewScan(DuplicateDetectorGUIApp app) {
         super(app);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     void configureControls() {
         hideBackButton();
@@ -49,42 +45,50 @@ public class NewScan extends GUIController {
         browseButton.setOnAction(this::openFileChooserAndDisplaySelectedPath);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     void initCopy() {
-        setContentTitle(MAIN_CONTENT_TITLE);
-        setNextButtonText(NEXT_BUTTON_TEXT);
-        setNavBarTitle(NAV_BAR_TITLE);
+        setContentTitle(NewScanText.MAIN_CONTENT_TITLE);
+        setNextButtonText(NewScanText.NEXT_BUTTON_TEXT);
+        setNavBarTitle(NewScanText.NAV_BAR_TITLE);
 
         if (chosenDirectory != null) {
             setChosenDirectory(this.chosenDirectory);
         } else {
-            setSummaryBarTitle(SUMMARY_BAR_TITLE_HEADER_DEFAULT, SUMMARY_BAR_TITLE_PREVIEW_DEFAULT, false, false);
-            setSummaryBarSubtitle(SUMMARY_BAR_SUBTITLE_DEFAULT);
-            filePathLabel.setText(FILE_PATH_DEFAULT);
+            setSummaryBarTitle(NewScanText.SUMMARY_BAR_TITLE_HEADER_DEFAULT, NewScanText.SUMMARY_BAR_TITLE_PREVIEW_DEFAULT, false, false);
+            setSummaryBarSubtitle(NewScanText.SUMMARY_BAR_SUBTITLE_DEFAULT);
+            filePathLabel.setText(NewScanText.FILE_PATH_DEFAULT);
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    Node loadMainContent() {
-        try {
-            GridPane root = FXMLLoader.load(getClass().getResource("../layouts/NewScan.fxml"));              // TODO: replace with static config reference
-            ObservableList<Node> rootChildren = root.getChildren();
-            AnchorPane filePathBox = (AnchorPane) rootChildren.get(0);
-            ObservableList<Node> filePathBoxChildren = filePathBox.getChildren();
-            this.filePathLabel = (Label) filePathBoxChildren.get(0);                                                    // save references to UI elements
-            this.browseButton = (Button) filePathBoxChildren.get(1);
-            return root;
-        } catch (IOException e) {
-            e.printStackTrace();                                                                                        // TODO: error handling
-        }
-        return new Label("Error loading content");
+    Node loadMainContent() throws Exception {
+        GridPane root = FXMLLoader.load(getClass().getResource(Config.LAYOUTS_NEW_SCAN_FXML));
+        ObservableList<Node> rootChildren = root.getChildren();
+        AnchorPane filePathBox = (AnchorPane) rootChildren.get(0);
+        ObservableList<Node> filePathBoxChildren = filePathBox.getChildren();
+        this.filePathLabel = (Label) filePathBoxChildren.get(0);
+        this.browseButton = (Button) filePathBoxChildren.get(1);
+        return root;
     }
 
     @Override
     protected void cleanupSelf() {
-        // TODO:
+        super.cleanupSelf();
+        filePathLabel = null;
+        browseButton = null;
+        chosenDirectory = null;
     }
 
+    /**
+     * Let's the user select a directory and updates the UI with the selection
+     * @param e action event from user input
+     */
     private void openFileChooserAndDisplaySelectedPath(ActionEvent e) {
         DirectoryChooser directoryChooser = new DirectoryChooser();
         if (this.chosenDirectory != null) {
@@ -99,18 +103,35 @@ public class NewScan extends GUIController {
         });
     }
 
+    /**
+     * Update the UI to show the given directory as the user-selected directory
+     * @param dir directory selected by the user
+     */
     private void setChosenDirectory(File dir) {
         String path = dir.getAbsolutePath();
         filePathLabel.setText(path);
-        setSummaryBarTitle(SUMMARY_BAR_TITLE_HEADER_SELECTED, dir.getAbsolutePath(), true, true);
-        setSummaryBarSubtitle(SUMMARY_BAR_SUBTITLE_SELECTED);
-        prepareNextScene(dir);
+        setSummaryBarTitle(NewScanText.SUMMARY_BAR_TITLE_HEADER_SELECTED, dir.getAbsolutePath(), true, true);
+        setSummaryBarSubtitle(NewScanText.SUMMARY_BAR_SUBTITLE_SELECTED);
+
+        updateModel(dir);
+        createAndSetNextController();
         enableNextButton();
     }
 
-    private void prepareNextScene(File dir) {
+
+    /**
+     * Update the model with the user selection
+     * @param dir directory selected by user
+     */
+    private void updateModel(File dir) {
         ScanController model = new ScanController(dir);
         app.setModel(model);
+    }
+
+    /**
+     * Instantiate the controller for the next scene
+     */
+    private void createAndSetNextController() {
         PrepareToScan pts = new PrepareToScan(app);
         pts.setPrevController(this);
         setNextController(pts);

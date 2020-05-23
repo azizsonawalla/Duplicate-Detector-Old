@@ -20,6 +20,8 @@ import view.DuplicateDetectorGUIApp;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import static view.textBindings.GUIControllerText.*;
+
 /**
  * An abstract controller for the GUI. Implements methods to help control UI elements common to most scenes
  */
@@ -55,12 +57,12 @@ public abstract class GUIController implements Initializable {
         loadFonts();
         setBackButtonOnAction();
 
-        Node mainWindow = loadMainWindow();
+        Node mainWindow = app.tryWithFatalAppError(this::loadMainWindow,FAILED_TO_LOAD_MAIN_CONTENT_MSG);
         if (mainWindow != null) {
             setMainWindow(mainWindow);
         }
 
-        Node mainContent = loadMainContent();
+        Node mainContent = app.tryWithFatalAppError(this::loadMainContent,FAILED_TO_LOAD_MAIN_CONTENT_MSG);
         if (mainContent != null) {
             setMainContent(mainContent);
         }
@@ -263,7 +265,7 @@ public abstract class GUIController implements Initializable {
      * Load the main content for this scene
      * @return Node holding main content
      */
-    Node loadMainContent() {
+    Node loadMainContent() throws Exception {
         return null;                                                                                                    // sub-classes are expected to override this
     }
 
@@ -272,9 +274,11 @@ public abstract class GUIController implements Initializable {
      * Load the main window for this scene
      * @return Node holding main window
      */
-    Node loadMainWindow() {
+    Node loadMainWindow() throws Exception {
         return null;                                                                                                    // sub-classes are expected to override this
     }
 
-    protected abstract void cleanupSelf();
+    void cleanupSelf() {
+        // TODO
+    }
 }

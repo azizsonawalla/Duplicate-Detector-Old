@@ -10,11 +10,14 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import model.async.threadPool.AppThreadPool;
 import model.searchModel.ScanController;
+import util.Logger;
 import view.controllers.GUIController;
 import view.controllers.NewScan;
 import view.util.dialogues.AppErrorDialogue;
 
 import java.io.IOException;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
 
 
 /**
@@ -24,6 +27,7 @@ public class DuplicateDetectorGUIApp extends Application {
 
     private Stage stage;
     private ScanController model;
+    private Logger log = new Logger(this.getClass());
 
     /**
      * Launches the application
@@ -91,11 +95,22 @@ public class DuplicateDetectorGUIApp extends Application {
         });
     }
 
-    public void runWithWaitCursor(Runnable func) {
+    public void runWithWaitCursor(Runnable func) {                                                                      // TODO: javadoc
         Cursor ogCursor = stage.getScene().getCursor();
         Platform.runLater(() -> stage.getScene().setCursor(Cursor.WAIT));
         Platform.runLater(func);
         Platform.runLater(() -> stage.getScene().setCursor(ogCursor));
+    }
+
+    public <T> T tryWithFatalAppError(Callable<T> task, String errorMsg) {
+        try {
+            return task.call();
+        } catch (Exception e) {
+            AppErrorDialogue.showError(errorMsg + " Please restart the application.");
+            log.error("Error while performing task. User was shown error dialogue: " + errorMsg);
+            Platform.exit();
+        }
+        return null;
     }
 
     /**

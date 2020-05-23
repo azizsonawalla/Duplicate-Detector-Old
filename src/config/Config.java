@@ -11,8 +11,8 @@ import java.util.List;
  * Program configuration constants
  */
 public class Config {
-    
-    public static class SearchStrategyDescription {
+
+    public static final class SearchStrategyDescription {
 
         private final Class<? extends ISearchStrategy> strategy;
         private final String uiName;
@@ -39,25 +39,28 @@ public class Config {
     }
 
     /* General */
-    public static Logger.Level LOG_LEVEL = Logger.Level.DEBUG;
+    public static final Logger.Level LOG_LEVEL = Logger.Level.DEBUG;
 
     /* Model */
-    public static List<String> SUPPORTED_FILE_TYPES = Arrays.asList("JPEG", "JPG", "PNG");
-    public static Integer POOL_SIZE = 3;
+    public static final List<String> SUPPORTED_FILE_TYPES = Arrays.asList("JPEG", "JPG", "PNG");
+    public static final Integer POOL_SIZE = 3;
 
     /* UI */
-    public static double SCENE_WIDTH = 1536;
-    public static double SCENE_HEIGHT = 864;
+    public static final double SCENE_WIDTH = 1536;
+    public static final double SCENE_HEIGHT = 864;
 
-    public static double STAGE_MIN_WIDTH = 400;
-    public static double STAGE_MIN_HEIGHT = 400;
-    public static String STAGE_TITLE = "Duplicate Detector";
+    public static final double STAGE_MIN_WIDTH = 400;
+    public static final double STAGE_MIN_HEIGHT = 400;
+    public static final String STAGE_TITLE = "Duplicate Detector";
 
     /* File Paths */
-    public static String PARENT_FRAME = "layouts/ParentFrame.fxml";
-    public static String DARK_THEME_CSS = "style/darkTheme.css";
+    public static final String PARENT_FRAME = "layouts/ParentFrame.fxml";                                               // TODO: create file objects from rel paths and then get abs path
+    public static final String DARK_THEME_CSS = "style/darkTheme.css";
+    public static final String LAYOUTS_CONFIGURE_SCAN_FXML = "../layouts/ConfigureScan.fxml";
+    public static final String LAYOUTS_PREPARE_TO_SCAN_FXML = "../layouts/PrepareToScan.fxml";
+    public static final String LAYOUTS_NEW_SCAN_FXML = "../layouts/NewScan.fxml";
     
     /* Search Strategies */
-    public static SearchStrategyDescription quick = new SearchStrategyDescription(MetadataStrategy.class,
+    public static final SearchStrategyDescription quick = new SearchStrategyDescription(MetadataStrategy.class,
             "Quick Scan", "Finds photos with the same name and size.");
 }

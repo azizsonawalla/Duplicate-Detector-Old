@@ -1,5 +1,6 @@
 package view.controllers;
 
+import config.Config;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -11,6 +12,7 @@ import javafx.scene.layout.StackPane;
 import model.async.threadPool.AppThreadPool;
 import util.Progress;
 import view.DuplicateDetectorGUIApp;
+import view.textBindings.PrepareToScanText;
 import view.util.TaskProgressTracker;
 
 import java.io.IOException;
@@ -19,17 +21,6 @@ import java.util.ResourceBundle;
 
 public class PrepareToScan extends GUIController {
 
-    /* UI copy */
-    private String NAV_BAR_TITLE = "Preparing to scan";
-    private String MAIN_CONTENT_TITLE = "Pre-scan Analysis";
-    private String NEXT_BUTTON_TEXT = "Next";
-    private String SUMMARY_BAR_SUBTITLE_DEFAULT = "Analyses in progress";
-    private String SUMMARY_BAR_SUBTITLE_COMPLETE = "Analyses complete. Click next to configure the scan.";
-    private String SUMMARY_BAR_HEADER_DEFAULT = "Analyzing";
-    private String FILE_COUNT_TEMPLATE = "Files found: %d";
-    private String CANCELLED_TEXT_ON_BAR = "Cancelling analysis...";
-
-    /* UI controls */
     private Label filePathLabel, completeLabel, fileCountLabel;
     private ProgressBar progressBar;
     private TaskProgressTracker tracker;
@@ -54,35 +45,30 @@ public class PrepareToScan extends GUIController {
 
     @Override
     void initCopy() {
-        setContentTitle(MAIN_CONTENT_TITLE);
-        setNextButtonText(NEXT_BUTTON_TEXT);
-        setNavBarTitle(NAV_BAR_TITLE);
-        setSummaryBarSubtitle(SUMMARY_BAR_SUBTITLE_DEFAULT);
+        setContentTitle(PrepareToScanText.MAIN_CONTENT_TITLE);
+        setNextButtonText(PrepareToScanText.NEXT_BUTTON_TEXT);
+        setNavBarTitle(PrepareToScanText.NAV_BAR_TITLE);
+        setSummaryBarSubtitle(PrepareToScanText.SUMMARY_BAR_SUBTITLE_DEFAULT);
 
-        setSummaryBarHeadWithFilePath(SUMMARY_BAR_HEADER_DEFAULT);
+        setSummaryBarHeadWithFilePath(PrepareToScanText.SUMMARY_BAR_HEADER_DEFAULT);
         filePathLabel.setText(getPathToCurrentRootDir());
         setFileCount(0);
     }
 
     @Override
-    Node loadMainContent() {
-        try {
-            GridPane root = FXMLLoader.load(getClass().getResource("../layouts/PrepareToScan.fxml"));                   // TODO: replace with static config reference
+    Node loadMainContent() throws Exception {
+        GridPane root = FXMLLoader.load(getClass().getResource(Config.LAYOUTS_PREPARE_TO_SCAN_FXML));
 
-            ObservableList<Node> rootChildren = root.getChildren();
-            this.filePathLabel = (Label) rootChildren.get(0);
-            this.fileCountLabel = (Label) rootChildren.get(2);
+        ObservableList<Node> rootChildren = root.getChildren();
+        this.filePathLabel = (Label) rootChildren.get(0);
+        this.fileCountLabel = (Label) rootChildren.get(2);
 
-            StackPane stackPane = (StackPane) rootChildren.get(1);
-            ObservableList<Node> stackPaneChildren = stackPane.getChildren();
-            this.progressBar = (ProgressBar) stackPaneChildren.get(0);
-            this.completeLabel = (Label) stackPaneChildren.get(1);
+        StackPane stackPane = (StackPane) rootChildren.get(1);
+        ObservableList<Node> stackPaneChildren = stackPane.getChildren();
+        this.progressBar = (ProgressBar) stackPaneChildren.get(0);
+        this.completeLabel = (Label) stackPaneChildren.get(1);
 
-            return root;
-        } catch (IOException e) {
-            e.printStackTrace();                                                                                        // TODO: error handling
-        }
-        return new Label("Error loading content");
+        return root;
     }
 
     @Override
@@ -107,7 +93,7 @@ public class PrepareToScan extends GUIController {
     }
 
     private void setFileCount(long i) {
-        fileCountLabel.setText(String.format(FILE_COUNT_TEMPLATE, i));                                                  // TODO: javadoc
+        fileCountLabel.setText(String.format(PrepareToScanText.FILE_COUNT_TEMPLATE, i));                                                  // TODO: javadoc
     }
 
     private void setProgressBarLevel(double p) {
@@ -121,7 +107,7 @@ public class PrepareToScan extends GUIController {
     private void setUIToCancelledMode() {
         setProgressBarLevel(1.0);
         progressBar.getStyleClass().add("cancelled-progress-bar");
-        completeLabel.setText(CANCELLED_TEXT_ON_BAR);
+        completeLabel.setText(PrepareToScanText.CANCELLED_TEXT_ON_BAR);
         setCompleteLabelVisible();
     }
 
@@ -153,7 +139,7 @@ public class PrepareToScan extends GUIController {
         setProgressBarLevel(1.0);
         setCompleteLabelVisible();
         createAndSetNextController();
-        setSummaryBarSubtitle(SUMMARY_BAR_SUBTITLE_COMPLETE);
+        setSummaryBarSubtitle(PrepareToScanText.SUMMARY_BAR_SUBTITLE_COMPLETE);
         enableNextButton();
         disableCancelButton();
     }
