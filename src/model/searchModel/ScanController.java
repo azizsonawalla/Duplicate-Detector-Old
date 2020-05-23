@@ -110,7 +110,7 @@ public class ScanController {
      * Executes all stages of the scan asynchronously (returns immediately)
      * @throws ScanException if there is a problem during any stage of the scan
      */
-    public void start() throws ScanException {                                                                          // TODO: implement this
+    public void start() throws ScanException {
         throw new NotImplementedException();
     }
 

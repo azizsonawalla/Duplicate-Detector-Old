@@ -17,15 +17,25 @@ import view.util.dialogues.AppErrorDialogue;
 import java.io.IOException;
 
 
+/**
+ * GUI application entrypoint for Duplicate Detector
+ */
 public class DuplicateDetectorGUIApp extends Application {
 
     private Stage stage;
     private ScanController model;
 
+    /**
+     * Launches the application
+     * @param args arguments
+     */
     public static void main(String[] args) {
         launch(args);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void start(Stage stage) {
         GUIController controller = new NewScan(this);
@@ -39,18 +49,35 @@ public class DuplicateDetectorGUIApp extends Application {
         }
     }
 
+    /**
+     * Get the application stage
+     * @return the primary stage
+     */
     public Stage getStage() {
         return stage;
     }
 
+    /**
+     * Get the underlying model
+     * @return ScanController model instance
+     */
     public ScanController getModel() {
         return model;
     }
 
+    /**
+     * Set the underlying application model
+     * @param model a ScanController instance
+     */
     public void setModel(ScanController model) {
         this.model = model;
     }
 
+    /**
+     * Switch from the current scene to another scene. Will initialize a scene with the parent layout and pass the given
+     * controller to it.
+     * @param newController controller for the new scene
+     */
     public void switchScene(GUIController newController) {
         Cursor ogCursor = stage.getScene().getCursor();
         Platform.runLater(() -> stage.getScene().setCursor(Cursor.WAIT));
@@ -65,11 +92,22 @@ public class DuplicateDetectorGUIApp extends Application {
         Platform.runLater(() -> stage.getScene().setCursor(ogCursor));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void stop() {
         AppThreadPool.getInstance().shutdownNow();
     }
 
+
+    /**
+     * Same as loadDefaultScene() except the dimensions of the new scene are taken from the given scene.
+     * @param s scene to use for dimensions
+     * @param c controller for new scene
+     * @return a new scene with the same dimensions as s
+     * @throws IOException if an error occurs while creating the scene
+     */
     private Scene loadSceneOfSameSize(Scene s, GUIController c) throws IOException {
         double width = s.getWidth();
         double height = s.getHeight();

@@ -1,6 +1,6 @@
 package util;
 
-public class ScanException extends RuntimeException {
+public class ScanException extends Exception {
 
     public ScanException() {
         super();

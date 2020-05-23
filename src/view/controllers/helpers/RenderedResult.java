@@ -14,7 +14,13 @@ public class RenderedResult {
     private StackPane previewPane;
     private CheckBox checkBox;
 
-    public RenderedResult(File file, StackPane previewPane, CheckBox checkBox) {
+    /**
+     * Create a reference to a rendered result
+     * @param file file associated with result
+     * @param previewPane the image preview pane for the rendered result
+     * @param checkBox the checkbox associated with the rendered result
+     */
+    RenderedResult(File file, StackPane previewPane, CheckBox checkBox) {
         this.file = file;
         this.previewPane = previewPane;
         this.checkBox = checkBox;

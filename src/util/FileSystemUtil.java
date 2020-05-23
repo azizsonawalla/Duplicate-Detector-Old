@@ -2,7 +2,6 @@ package util;
 
 import javafx.util.Pair;
 
-import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -79,6 +78,12 @@ public class FileSystemUtil {
         return tmp;
     }
 
+    /**
+     * Delete all files in a collection. This permanently deletes files (as opposed to moving to trash/recycle bin)
+     * @param files a collection of files to delete.
+     * @return a map with the original File object and a boolean value - true = successfully deleted,
+     * false = error while deleting
+     */
     public static Map<File, Boolean> deleteFiles(List<File> files) {
         HashMap<File, Boolean> results = new HashMap<>();
         for (File file: files) {
@@ -87,6 +92,11 @@ public class FileSystemUtil {
         return results;
     }
 
+    /**
+     * Concetenate the names of a collection of files into a single string
+     * @param files a collection of files
+     * @return a single string with file names, delimited by a colon (;)
+     */
     private static String getFileNamesAsString(List<File> files) {
         StringBuilder names = new StringBuilder();
         for (File file: files) {

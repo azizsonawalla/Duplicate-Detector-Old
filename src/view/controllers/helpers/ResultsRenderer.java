@@ -20,6 +20,9 @@ import java.util.List;
 import static view.util.FormatConverter.milliSecondsToTime;
 import static view.util.FormatConverter.sensibleDiskSpaceValue;
 
+/**
+ * Renders search results into an FXML format
+ */
 public class ResultsRenderer {
 
     private static Logger log = new Logger(ResultsRenderer.class);

@@ -33,4 +33,28 @@ public class FXMLUtils {
         // TODO
         throw new NotImplementedException();
     }
+
+    /**
+     * Adds css styling and css styleClasses to an FXML node
+     * @param css string css to add to given node
+     * @param styleClass style classes to add to given node
+     * @param node node to add style to
+     * @param clearOldStyles if true, previous css styling/styleClasses will be cleared
+     */
+    public static void addStyling(String css, List<String> styleClass, Node node, boolean clearOldStyles) {
+        if (clearOldStyles) {
+            node.getStyleClass().clear();
+            node.setStyle("");
+        }
+        if (css != null && css.length() > 0) {
+            String oldStyle = node.getStyle();
+            String lastChar = oldStyle.substring(oldStyle.length()-1);
+            oldStyle = lastChar.equals(";") ? oldStyle : oldStyle + ";";
+            String combinedCss = oldStyle.concat(css);
+            node.setStyle(combinedCss);
+        }
+        if (styleClass != null && styleClass.size() > 0) {
+            node.getStyleClass().addAll(styleClass);
+        }
+    }
 }
