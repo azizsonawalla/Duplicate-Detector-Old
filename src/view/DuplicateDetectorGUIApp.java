@@ -79,16 +79,22 @@ public class DuplicateDetectorGUIApp extends Application {
      * @param newController controller for the new scene
      */
     public void switchScene(GUIController newController) {
+        runWithWaitCursor(() -> {
+            Scene newScene = null;
+            try {
+                newScene = loadSceneOfSameSize(this.stage.getScene(), newController);
+            } catch (IOException e) {
+                e.printStackTrace();
+                AppErrorDialogue.showError("An error occurred while loading the next page. Please restart the application.");
+            }
+            this.stage.setScene(newScene);
+        });
+    }
+
+    public void runWithWaitCursor(Runnable func) {
         Cursor ogCursor = stage.getScene().getCursor();
         Platform.runLater(() -> stage.getScene().setCursor(Cursor.WAIT));
-        Scene newScene = null;
-        try {
-            newScene = loadSceneOfSameSize(this.stage.getScene(), newController);
-        } catch (IOException e) {
-            e.printStackTrace();
-            AppErrorDialogue.showError("An error occurred while loading the next page. Please restart the application.");
-        }
-        this.stage.setScene(newScene);
+        Platform.runLater(func);
         Platform.runLater(() -> stage.getScene().setCursor(ogCursor));
     }
 

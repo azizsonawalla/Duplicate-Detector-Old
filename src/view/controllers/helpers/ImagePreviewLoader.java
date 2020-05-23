@@ -44,7 +44,7 @@ public class ImagePreviewLoader implements Runnable {
             String css = String.format(BACKGROUND_CSS_TEMPLATE, fileURI);
             FXMLUtils.addStyling(css, CSS_CLASSES_FOR_SUCCESSFUL_LOAD, pane, true);
         } catch (Exception e) {
-            log.error("Failed to load image preview for " + file.getAbsolutePath());
+            log.error("Failed to load image preview for " + file.getAbsolutePath() + ": " + e.getMessage());
             FXMLUtils.addStyling("", CSS_CLASSES_FOR_FAILED_LOAD, pane, true);
             Platform.runLater(() -> pane.getChildren().add(getLabelForFailedLoad()));
         }

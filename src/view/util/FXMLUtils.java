@@ -48,10 +48,13 @@ public class FXMLUtils {
         }
         if (css != null && css.length() > 0) {
             String oldStyle = node.getStyle();
-            String lastChar = oldStyle.substring(oldStyle.length()-1);
-            oldStyle = lastChar.equals(";") ? oldStyle : oldStyle + ";";
-            String combinedCss = oldStyle.concat(css);
-            node.setStyle(combinedCss);
+            if (oldStyle.length() > 0) {
+                String lastChar = oldStyle.substring(oldStyle.length()-1);
+                oldStyle = lastChar.equals(";") ? oldStyle : oldStyle + ";";
+                String combinedCss = oldStyle.concat(css);
+                node.setStyle(combinedCss);
+            }
+            node.setStyle(css);
         }
         if (styleClass != null && styleClass.size() > 0) {
             node.getStyleClass().addAll(styleClass);

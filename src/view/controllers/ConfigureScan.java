@@ -7,6 +7,7 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import model.searchModel.searchStrategies.MetadataStrategy;
+import util.ScanException;
 import view.DuplicateDetectorGUIApp;
 
 import java.io.IOException;
@@ -47,7 +48,12 @@ public class ConfigureScan extends GUIController {
         setNavBarTitle(NAV_BAR_TITLE);
         setSummaryBarHeadWithFilePath(SUMMARY_BAR_HEADER_DEFAULT);
 
-        long totalFileCount = model.getProgress().getDone();
+        long totalFileCount = 0;
+        try {
+            totalFileCount = model.getProgress().getDone();
+        } catch (ScanException e) {
+            // TODO
+        }
         setSummaryBarSubtitle(String.format(SUMMARY_BAR_SUBTITLE_TEMPLATE, totalFileCount));
     }
 

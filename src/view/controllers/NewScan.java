@@ -3,6 +3,7 @@ package view.controllers;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -90,9 +91,12 @@ public class NewScan extends GUIController {
             directoryChooser.setInitialDirectory(this.chosenDirectory);
         }
         this.chosenDirectory = directoryChooser.showDialog(app.getStage());
-        if (this.chosenDirectory != null) {
-            setChosenDirectory(this.chosenDirectory);
-        }
+
+        app.runWithWaitCursor(() -> {
+            if (this.chosenDirectory != null) {
+                setChosenDirectory(this.chosenDirectory);
+            }
+        });
     }
 
     private void setChosenDirectory(File dir) {
