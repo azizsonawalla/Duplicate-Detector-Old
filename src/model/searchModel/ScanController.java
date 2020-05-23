@@ -119,13 +119,14 @@ public class ScanController {
      * Must be called before starting the search stage.
      * @throws ScanException if there is a problem starting the pre-search stage
      */
-    public void startPreSearch() throws ScanException {
+    public boolean startPreSearch() throws ScanException {
         if (getCurrentStage() != ScanStage.NOT_STARTED) {
             throw new ScanException("A scan has already started. Cannot start pre-search stage");
         }
         this.crawler = new AsyncDirectoryCrawler(this.rootDirectories, Config.SUPPORTED_FILE_TYPES);
         this.allFilesFuture = AppThreadPool.getInstance().submit(this.crawler);
         setCurrentStage(ScanStage.PRE_SEARCH_IN_PROGRESS);
+        return true;
     }
 
     /**
@@ -148,14 +149,12 @@ public class ScanController {
      * Stops the current stage of the scan
      * @throws ScanException if there's an error while stopping, or no stage is in progress
      */
-    public void stop() throws ScanException {
+    public boolean stop() throws ScanException {
         if (isPreSearchInProgress()) {
-            this.stopPreSearch();
-            return;
+            return this.stopPreSearch();
         }
         if (isSearchInProgress()) {
-            this.stopSearch();
-            return;
+            return this.stopSearch();
         }
         throw new ScanException("No stage is currently being executed");
     }
@@ -236,25 +235,27 @@ public class ScanController {
      * Stop the pre-search stage
      * @throws ScanException if pre-search stage is not currently in progress, or there is a problem stopping it
      */
-    private void stopPreSearch() throws ScanException {
+    private boolean stopPreSearch() throws ScanException {
         if (!isPreSearchInProgress()) {
             throw new ScanException("Pre-search stage is not currently in progress. Cannot stop it.");
         }
         this.crawler.cancel();
         setCurrentStage(ScanStage.STOPPED);
+        return true;
     }
 
     /**
      * Stop the search stage
      * @throws ScanException if search stage is not currently in progress, or there is a problem stopping it
      */
-    private void stopSearch() throws ScanException {
+    private boolean stopSearch() throws ScanException {
         if (!isSearchInProgress()) {
             throw new ScanException("Search stage is not currently in progress. Cannot stop it.");
         }
         try {
             this.duplicatesFuture.cancel(true);
             setCurrentStage(ScanStage.STOPPED);
+            return true;
         } catch (Exception e) {
             setCurrentStage(ScanStage.ERRORED);
             ScanException scanException = new ScanException("Error while trying to stop Search stage", e);

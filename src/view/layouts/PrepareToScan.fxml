@@ -14,13 +14,13 @@
         <RowConstraints minHeight="20.0" percentHeight="10.0" vgrow="SOMETIMES" />
     </rowConstraints>
     <children>
-        <Label fx:id="filePathLabel" styleClass="userInputPrev" text="[Placeholder]" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
-        <StackPane prefHeight="40" prefWidth="400" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+        <Label fx:id="filePathLabel" id="filePathLabel" styleClass="userInputPrev" text="[Placeholder]" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
+        <StackPane id="progressStackPane" prefHeight="40" prefWidth="400" GridPane.halignment="CENTER" GridPane.rowIndex="1">
             <children>
-                <ProgressBar fx:id="progressBar" prefHeight="40" prefWidth="400" GridPane.halignment="CENTER" />
-                <Label fx:id="completeLabel" styleClass="body" text="Complete" GridPane.halignment="CENTER" />
+                <ProgressBar fx:id="progressBar" id="progressBar" prefHeight="40" prefWidth="400" GridPane.halignment="CENTER" />
+                <Label fx:id="progressBarOverlayLabel" id="progressBarOverlayLabel" styleClass="body" text="Complete" GridPane.halignment="CENTER" />
             </children>
         </StackPane>
-        <Label fx:id="fileCountLabel" contentDisplay="CENTER" styleClass="body" text="[Placeholder]" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+        <Label fx:id="fileCountLabel" id="fileCountLabel" contentDisplay="CENTER" styleClass="body" text="[Placeholder]" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
     </children>
 </GridPane>

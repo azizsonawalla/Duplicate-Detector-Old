@@ -16,6 +16,8 @@ import view.textBindings.NewScanText;
 
 import java.io.File;
 
+import static view.util.FXMLUtils.getChildWithId;
+
 /**
  * UI Controller for the NewScan scene
  */
@@ -69,14 +71,15 @@ public class NewScan extends GUIController {
     @Override
     Node loadMainContent() throws Exception {
         GridPane root = FXMLLoader.load(getClass().getResource(Config.LAYOUTS_NEW_SCAN_FXML));
-        ObservableList<Node> rootChildren = root.getChildren();
-        AnchorPane filePathBox = (AnchorPane) rootChildren.get(0);
-        ObservableList<Node> filePathBoxChildren = filePathBox.getChildren();
-        this.filePathLabel = (Label) filePathBoxChildren.get(0);
-        this.browseButton = (Button) filePathBoxChildren.get(1);
+        AnchorPane filePathBox = (AnchorPane) getChildWithId(root, "filePathBox");
+        this.filePathLabel = (Label) getChildWithId(filePathBox, "filePathLabel");
+        this.browseButton = (Button) getChildWithId(filePathBox, "browseButton");
         return root;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void cleanupSelf() {
         super.cleanupSelf();

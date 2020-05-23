@@ -53,6 +53,11 @@ public class Config {
     public static final double STAGE_MIN_HEIGHT = 400;
     public static final String STAGE_TITLE = "Duplicate Detector";
 
+    public static final int PRE_SCAN_WAIT_POLL_INTERVAL_MS = 100;
+    public static final int PRE_SCAN_WAIT_TIMEOUT_MS = 2000;
+    public static final int PRE_SCAN_POLL_INTERVAL_MS = 100;
+    public static final long PRE_SCAN_TIMEOUT_MS = Long.MAX_VALUE;
+
     /* File Paths */
     public static final String PARENT_FRAME = "layouts/ParentFrame.fxml";                                               // TODO: create file objects from rel paths and then get abs path
     public static final String DARK_THEME_CSS = "style/darkTheme.css";

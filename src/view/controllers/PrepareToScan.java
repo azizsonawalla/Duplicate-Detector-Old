@@ -1,7 +1,6 @@
 package view.controllers;
 
 import config.Config;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -14,35 +13,53 @@ import util.Progress;
 import view.DuplicateDetectorGUIApp;
 import view.textBindings.PrepareToScanText;
 import view.util.TaskProgressTracker;
+import view.util.dialogues.AppConfirmationDialogue;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import static view.util.FXMLUtils.getChildWithId;
+
+/**
+ * UI Controller for the PrepareToScan scene
+ */
 public class PrepareToScan extends GUIController {
 
-    private Label filePathLabel, completeLabel, fileCountLabel;
+    private Label filePathLabel, progressBarOverlayLabel, fileCountLabel;
     private ProgressBar progressBar;
     private TaskProgressTracker tracker;
 
+    /**
+     * Create an instance of the PrepareToScan controller
+     * @param app instance of the JavaFX application associated with this controller
+     */
     PrepareToScan(DuplicateDetectorGUIApp app) {
         super(app);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         super.initialize(location, resources);
         startPreSearch();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     void configureControls() {
         disableNextButton();
-        completeLabel.setVisible(false);
-        progressBar.setProgress(-1);
+        progressBarOverlayLabel.setVisible(false);
+        progressBar.setProgress(ProgressBar.INDETERMINATE_PROGRESS);
         setCancelButtonOnAction(this::OnCancel);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     void initCopy() {
         setContentTitle(PrepareToScanText.MAIN_CONTENT_TITLE);
@@ -55,89 +72,134 @@ public class PrepareToScan extends GUIController {
         setFileCount(0);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     Node loadMainContent() throws Exception {
         GridPane root = FXMLLoader.load(getClass().getResource(Config.LAYOUTS_PREPARE_TO_SCAN_FXML));
 
-        ObservableList<Node> rootChildren = root.getChildren();
-        this.filePathLabel = (Label) rootChildren.get(0);
-        this.fileCountLabel = (Label) rootChildren.get(2);
+        this.filePathLabel = (Label) getChildWithId(root, "filePathLabel");
+        this.fileCountLabel = (Label) getChildWithId(root, "fileCountLabel");
 
-        StackPane stackPane = (StackPane) rootChildren.get(1);
-        ObservableList<Node> stackPaneChildren = stackPane.getChildren();
-        this.progressBar = (ProgressBar) stackPaneChildren.get(0);
-        this.completeLabel = (Label) stackPaneChildren.get(1);
+        StackPane stackPane = (StackPane) getChildWithId(root, "progressStackPane");
+        this.progressBar = (ProgressBar) getChildWithId(stackPane, "progressBar");
+        this.progressBarOverlayLabel = (Label) getChildWithId(stackPane, "progressBarOverlayLabel");
 
         return root;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void cleanupSelf() {
-        // TODO:
+        super.cleanupSelf();
+        filePathLabel = null;
+        progressBarOverlayLabel = null;
+        fileCountLabel = null;
+        progressBar = null;
+        tracker.stop();
+        tracker = null;
     }
 
+    /**
+     * Start the pre-search stage in the model and sync the progress with the UI
+     */
     private void startPreSearch() {
-        try {
-            model.startPreSearch();
-        } catch (Exception e) {
-            e.printStackTrace();
-            // TODO: error handling
-        }
+        app.tryWithFatalAppError(() -> model.startPreSearch(), PrepareToScanText.PRE_SCAN_START_ERROR_MSG);
         createAndStartTracker();
     }
 
+    /**
+     * Create tracker object for pre-search to update the UI
+     */
     private void createAndStartTracker() {
-        tracker = new TaskProgressTracker(100, 2000, 100, Long.MAX_VALUE, model::isPreSearchInProgress,
-                model::isPreSearchDone, this::getAndSetProgressStats, this::setComplete);                               // TODO: move to config
+        tracker = new TaskProgressTracker (
+                Config.PRE_SCAN_WAIT_POLL_INTERVAL_MS,
+                Config.PRE_SCAN_WAIT_TIMEOUT_MS,
+                Config.PRE_SCAN_POLL_INTERVAL_MS,
+                Config.PRE_SCAN_TIMEOUT_MS,
+                model::isPreSearchInProgress,
+                model::isPreSearchDone,
+                this::getAndSetProgressStats,
+                this::setComplete
+        );
         AppThreadPool.getInstance().submit(tracker);
     }
 
-    private void setFileCount(long i) {
-        fileCountLabel.setText(String.format(PrepareToScanText.FILE_COUNT_TEMPLATE, i));                                                  // TODO: javadoc
+    /**
+     * Set the value for the file count label
+     * @param fileCount new file count
+     */
+    private void setFileCount(long fileCount) {
+        fileCountLabel.setText(String.format(PrepareToScanText.FILE_COUNT_TEMPLATE, fileCount));
     }
 
+    /**
+     * Set the progress bar level
+     * @param p new progress bar value
+     */
     private void setProgressBarLevel(double p) {
-        progressBar.setProgress(p);                                                                                     // TODO: remove use of runLater // TODO: javadoc
+        progressBar.setProgress(p);
     }
 
-    private void setCompleteLabelVisible() {
-        completeLabel.setVisible(true);                                                                                 // TODO: javadoc
+    /**
+     * Make the progress bar overlay label visible to the user
+     */
+    private void setProgressBarOverlayLabelVisible() {
+        progressBarOverlayLabel.setVisible(true);
     }
 
+    /**
+     * Updates the UI to reflect a cancelled operation
+     */
     private void setUIToCancelledMode() {
         setProgressBarLevel(1.0);
         progressBar.getStyleClass().add("cancelled-progress-bar");
-        completeLabel.setText(PrepareToScanText.CANCELLED_TEXT_ON_BAR);
-        setCompleteLabelVisible();
+        progressBarOverlayLabel.setText(PrepareToScanText.CANCELLED_TEXT_ON_BAR);
+        setProgressBarOverlayLabelVisible();
     }
 
-    private void OnCancel(ActionEvent e) {                                                                              // TODO: show 'are you sure?' dialogue
+    /**
+     * Cancel the pre-search stage
+     * @param e user input action event to trigger cancel
+     */
+    private void OnCancel(ActionEvent e) {
+        AppConfirmationDialogue dialogue = new AppConfirmationDialogue(
+                PrepareToScanText.STOP_PRE_SCAN_CONF_TITLE,
+                PrepareToScanText.STOP_PRE_SCAN_CONF_HEADER,
+                PrepareToScanText.STOP_PRE_SCAN_CONF_MSG
+        );
+        if (!dialogue.getConfirmation()) {
+            return;
+        }
+
         setUIToCancelledMode();
         if (tracker != null) {
             tracker.stop();
         }
-        model.stop();                                                                                                   // TODO: catch exception/error handling
+        app.tryWithFatalAppError(() -> model.stop(), PrepareToScanText.FAILED_TO_STOP_PRE_SCAN_MSG);
         reset();
     }
 
+    /**
+     * Instantiate the controller for the next scene
+     */
     private void createAndSetNextController() {
         ConfigureScan c = new ConfigureScan(app);
         setNextController(c);
     }
 
     private void getAndSetProgressStats() {
-        try {
-            Progress progress = model.getProgress();
-            long count = progress.getDone();
-            setFileCount(count);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Progress progress = model.getProgress();
+        long count = progress.getDone();
+        setFileCount(count);
     }
 
     private void setComplete() {
         setProgressBarLevel(1.0);
-        setCompleteLabelVisible();
+        setProgressBarOverlayLabelVisible();
         createAndSetNextController();
         setSummaryBarSubtitle(PrepareToScanText.SUMMARY_BAR_SUBTITLE_COMPLETE);
         enableNextButton();
