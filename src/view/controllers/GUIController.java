@@ -20,7 +20,7 @@ import view.DuplicateDetectorGUIApp;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import static view.textBindings.GUIControllerText.*;
+import static view.textBindings.GUIControllerText.FAILED_TO_LOAD_MAIN_CONTENT_MSG;
 
 /**
  * An abstract controller for the GUI. Implements methods to help control UI elements common to most scenes

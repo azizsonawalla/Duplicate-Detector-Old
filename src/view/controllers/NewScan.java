@@ -1,7 +1,6 @@
 package view.controllers;
 
 import config.Config;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;

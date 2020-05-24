@@ -12,6 +12,7 @@ public class PrepareToScanText {
 
     public static final String PRE_SCAN_START_ERROR_MSG = "There was an error trying to start the Pre-scan analysis.";
     public static final String FAILED_TO_STOP_PRE_SCAN_MSG = "Failed to stop the Pre-Scan Analysis.";
+    public static final String GET_PROGRESS_ERROR_MESSAGE = "Failed to communicate with search model.";
 
     public static final String STOP_PRE_SCAN_CONF_TITLE = "Stop Pre-Scan Analysis";
     public static final String STOP_PRE_SCAN_CONF_HEADER = "Are you sure you want to stop this operation?";

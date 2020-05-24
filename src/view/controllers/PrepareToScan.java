@@ -11,13 +11,13 @@ import javafx.scene.layout.StackPane;
 import model.async.threadPool.AppThreadPool;
 import util.Progress;
 import view.DuplicateDetectorGUIApp;
-import view.textBindings.PrepareToScanText;
 import view.util.TaskProgressTracker;
 import view.util.dialogues.AppConfirmationDialogue;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import static view.textBindings.PrepareToScanText.*;
 import static view.util.FXMLUtils.getChildWithId;
 
 /**
@@ -25,6 +25,7 @@ import static view.util.FXMLUtils.getChildWithId;
  */
 public class PrepareToScan extends GUIController {
 
+    public static final double PROGRESS_COMPLETE = 1.0;
     private Label filePathLabel, progressBarOverlayLabel, fileCountLabel;
     private ProgressBar progressBar;
     private TaskProgressTracker tracker;
@@ -62,12 +63,12 @@ public class PrepareToScan extends GUIController {
      */
     @Override
     void initCopy() {
-        setContentTitle(PrepareToScanText.MAIN_CONTENT_TITLE);
-        setNextButtonText(PrepareToScanText.NEXT_BUTTON_TEXT);
-        setNavBarTitle(PrepareToScanText.NAV_BAR_TITLE);
-        setSummaryBarSubtitle(PrepareToScanText.SUMMARY_BAR_SUBTITLE_DEFAULT);
+        setContentTitle(MAIN_CONTENT_TITLE);
+        setNextButtonText(NEXT_BUTTON_TEXT);
+        setNavBarTitle(NAV_BAR_TITLE);
+        setSummaryBarSubtitle(SUMMARY_BAR_SUBTITLE_DEFAULT);
 
-        setSummaryBarHeadWithFilePath(PrepareToScanText.SUMMARY_BAR_HEADER_DEFAULT);
+        setSummaryBarHeadWithFilePath(SUMMARY_BAR_HEADER_DEFAULT);
         filePathLabel.setText(getPathToCurrentRootDir());
         setFileCount(0);
     }
@@ -107,7 +108,7 @@ public class PrepareToScan extends GUIController {
      * Start the pre-search stage in the model and sync the progress with the UI
      */
     private void startPreSearch() {
-        app.tryWithFatalAppError(() -> model.startPreSearch(), PrepareToScanText.PRE_SCAN_START_ERROR_MSG);
+        app.tryWithFatalAppError(() -> model.startPreSearch(), PRE_SCAN_START_ERROR_MSG);
         createAndStartTracker();
     }
 
@@ -133,7 +134,7 @@ public class PrepareToScan extends GUIController {
      * @param fileCount new file count
      */
     private void setFileCount(long fileCount) {
-        fileCountLabel.setText(String.format(PrepareToScanText.FILE_COUNT_TEMPLATE, fileCount));
+        fileCountLabel.setText(String.format(FILE_COUNT_TEMPLATE, fileCount));
     }
 
     /**
@@ -155,9 +156,9 @@ public class PrepareToScan extends GUIController {
      * Updates the UI to reflect a cancelled operation
      */
     private void setUIToCancelledMode() {
-        setProgressBarLevel(1.0);
+        setProgressBarLevel(PROGRESS_COMPLETE);
         progressBar.getStyleClass().add("cancelled-progress-bar");
-        progressBarOverlayLabel.setText(PrepareToScanText.CANCELLED_TEXT_ON_BAR);
+        progressBarOverlayLabel.setText(CANCELLED_TEXT_ON_BAR);
         setProgressBarOverlayLabelVisible();
     }
 
@@ -167,9 +168,9 @@ public class PrepareToScan extends GUIController {
      */
     private void OnCancel(ActionEvent e) {
         AppConfirmationDialogue dialogue = new AppConfirmationDialogue(
-                PrepareToScanText.STOP_PRE_SCAN_CONF_TITLE,
-                PrepareToScanText.STOP_PRE_SCAN_CONF_HEADER,
-                PrepareToScanText.STOP_PRE_SCAN_CONF_MSG
+                STOP_PRE_SCAN_CONF_TITLE,
+                STOP_PRE_SCAN_CONF_HEADER,
+                STOP_PRE_SCAN_CONF_MSG
         );
         if (!dialogue.getConfirmation()) {
             return;
@@ -179,7 +180,7 @@ public class PrepareToScan extends GUIController {
         if (tracker != null) {
             tracker.stop();
         }
-        app.tryWithFatalAppError(() -> model.stop(), PrepareToScanText.FAILED_TO_STOP_PRE_SCAN_MSG);
+        app.tryWithFatalAppError(() -> model.stop(), FAILED_TO_STOP_PRE_SCAN_MSG);
         reset();
     }
 
@@ -192,16 +193,16 @@ public class PrepareToScan extends GUIController {
     }
 
     private void getAndSetProgressStats() {
-        Progress progress = model.getProgress();
+        Progress progress = app.tryWithFatalAppError(() -> model.getProgress(), GET_PROGRESS_ERROR_MESSAGE);
         long count = progress.getDone();
         setFileCount(count);
     }
 
     private void setComplete() {
-        setProgressBarLevel(1.0);
+        setProgressBarLevel(PROGRESS_COMPLETE);
         setProgressBarOverlayLabelVisible();
         createAndSetNextController();
-        setSummaryBarSubtitle(PrepareToScanText.SUMMARY_BAR_SUBTITLE_COMPLETE);
+        setSummaryBarSubtitle(SUMMARY_BAR_SUBTITLE_COMPLETE);
         enableNextButton();
         disableCancelButton();
     }

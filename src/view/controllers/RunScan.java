@@ -1,7 +1,6 @@
 package view.controllers;
 
 import config.Config;
-import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -14,7 +13,6 @@ import javafx.scene.layout.StackPane;
 import model.async.threadPool.AppThreadPool;
 import util.Progress;
 import view.DuplicateDetectorGUIApp;
-import view.util.dialogues.AppConfirmationDialogue;
 import view.util.TaskProgressTracker;
 import view.util.dialogues.AppInformationDialogue;
 
