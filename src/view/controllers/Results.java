@@ -1,5 +1,6 @@
 package view.controllers;
 
+import config.Config;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -12,6 +13,7 @@ import view.DuplicateDetectorGUIApp;
 import view.controllers.helpers.ImagePreviewLoader;
 import view.controllers.helpers.RenderedResult;
 import view.controllers.helpers.ResultsRenderer;
+import view.textBindings.ResultsText;
 import view.util.dialogues.AppConfirmationDialogue;
 
 import java.io.File;
@@ -24,21 +26,9 @@ import static view.util.FXMLUtils.getChildWithId;
 
 public class Results extends GUIController {
 
-    /* UI copy */
-    private String NAV_BAR_TITLE = "Scan results";
-    private String NEXT_BUTTON_TEXT = "Next";
-    private String SUMMARY_BAR_HEADER_DEFAULT = "Results for";
-    private String SUMMARY_BAR_SUBTITLE_TEMPLATE = "Found %d duplicate sets";
-    private String LOAD_BUTTON_TEXT = "Load more results";
-    private String SELECTED_COUNT_TEMPLATE = "%d images selected";
-    private String CONFIRMATION_DIALOG_TITLE_TEMPLATE = "Confirm %s";
-    private String CONFIRMATION_DIALOG_HEADER_TEMPLATE = "Are you sure you want to %s %d file(s)?";
-    private String CONFIRMATION_DIALOG_MSG = "Click Ok to continue or Cancel to go back.";
-
-
     /* Action items for the Bulk Action menu */
     private enum Action {
-        DELETE("Delete");
+        DELETE(ResultsText.DELETE_ACTION_LABEL);
 
         String label;
 
@@ -74,7 +64,7 @@ public class Results extends GUIController {
     private List<List<File>> results;
 
     /* Other Constants */
-    private int RESULT_SETS_PER_LOAD = 10;
+    private static final int RESULT_SETS_PER_LOAD = 10;
 
     Results(DuplicateDetectorGUIApp app, List<List<File>> results) {
         super(app);
@@ -85,7 +75,6 @@ public class Results extends GUIController {
 
     @Override
     void configureControls() {
-        setNextButtonText("Export Results");
         disableNextButton();                                                                                            // TODO: enable when export feature is complete
         swapCancelButtonForExitButton();
         removeMainWindowLogo();
@@ -98,41 +87,35 @@ public class Results extends GUIController {
 
     @Override
     void initCopy() {
-        setNextButtonText(NEXT_BUTTON_TEXT);
-        setNavBarTitle(NAV_BAR_TITLE);
-        setSummaryBarHeadWithFilePath(SUMMARY_BAR_HEADER_DEFAULT);
-        loadMoreButton.setText(LOAD_BUTTON_TEXT);
+        setNextButtonText(ResultsText.NEXT_BUTTON_TEXT);
+        setNavBarTitle(ResultsText.NAV_BAR_TITLE);
+        setSummaryBarHeadWithFilePath(ResultsText.SUMMARY_BAR_HEADER_DEFAULT);
+        loadMoreButton.setText(ResultsText.LOAD_BUTTON_TEXT);
         updateSelectedCountLabel();
 
-        long duplicateCount = model.getProgress().getPositives();
-        setSummaryBarSubtitle(String.format(SUMMARY_BAR_SUBTITLE_TEMPLATE, duplicateCount));
+        long duplicateCount = app.tryWithFatalAppError(() -> model.getProgress().getPositives(), ResultsText.FAILED_TO_RETRIEVE_SEARCH_RESULTS);
+        setSummaryBarSubtitle(String.format(ResultsText.SUMMARY_BAR_SUBTITLE_TEMPLATE, duplicateCount));
 
         actionMenu.getItems().addAll(Action.getLabels());
     }
 
     @Override
-    Node loadMainWindow() {
-        try {
-            GridPane root = FXMLLoader.load(getClass().getResource("../layouts/Results.fxml"));                         // TODO: replace with static config reference
-            ObservableList<Node> rootChildren = root.getChildren();
+    Node loadMainWindow() throws Exception {
+        GridPane root = FXMLLoader.load(getClass().getResource(Config.LAYOUTS_RESULTS_FXML));
 
-            selectedCountLabel = (Label) getChildWithId(root, "selectedCount");
-            actionMenu = (ComboBox<String>) getChildWithId(root, "actionMenu");
-            actionApplyButton = (Button) getChildWithId(root, "actionApplyButton");
-            clearSelectionButton = (Button) getChildWithId(root, "clearSelectionButton");
+        selectedCountLabel = (Label) getChildWithId(root, "selectedCount");
+        actionMenu = (ComboBox<String>) getChildWithId(root, "actionMenu");
+        actionApplyButton = (Button) getChildWithId(root, "actionApplyButton");
+        clearSelectionButton = (Button) getChildWithId(root, "clearSelectionButton");
 
-            ScrollPane s = (ScrollPane) rootChildren.get(2);                                                            // TODO: replace all FXML child access from index to id
-            GridPane g = (GridPane) s.getContent();
-            loadMoreButton = (Button) g.getChildren().get(0);
-            g.getChildren().add(resultsPane);
+        ScrollPane s = (ScrollPane) getChildWithId(root, "resultsScrollWindow");
+        GridPane g = (GridPane) s.getContent();
+        loadMoreButton = (Button) getChildWithId(g, "loadMoreButton");
+        g.getChildren().add(resultsPane);
 
-            loadNextSetOfResults();
+        loadNextSetOfResults();
 
-            return root;
-        } catch (Exception e) {
-            e.printStackTrace();                                                                                        // TODO: error handling
-        }
-        return new Label("Error loading content");
+        return root;
     }
 
     private void loadNextSetOfResults() {
@@ -183,7 +166,7 @@ public class Results extends GUIController {
     }
 
     private void updateSelectedCountLabel() {
-        selectedCountLabel.setText(String.format(SELECTED_COUNT_TEMPLATE, selectedCount));
+        selectedCountLabel.setText(String.format(ResultsText.SELECTED_COUNT_TEMPLATE, selectedCount));
     }
 
     private void onCheckBoxToggle(ActionEvent event) {
@@ -247,9 +230,9 @@ public class Results extends GUIController {
 
     private boolean actionConfirmed(Action a) {
         AppConfirmationDialogue dialogue = new AppConfirmationDialogue (
-            String.format(CONFIRMATION_DIALOG_TITLE_TEMPLATE, a.label),
-            String.format(CONFIRMATION_DIALOG_HEADER_TEMPLATE, a.label.toLowerCase(), selectedCount),
-            CONFIRMATION_DIALOG_MSG
+            String.format(ResultsText.CONFIRMATION_DIALOG_TITLE_TEMPLATE, a.label),
+            String.format(ResultsText.CONFIRMATION_DIALOG_HEADER_TEMPLATE, a.label.toLowerCase(), selectedCount),
+            ResultsText.CONFIRMATION_DIALOG_MSG
         );
         return dialogue.getConfirmation();
     }

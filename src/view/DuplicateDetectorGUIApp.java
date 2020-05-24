@@ -107,6 +107,7 @@ public class DuplicateDetectorGUIApp extends Application {
         } catch (Exception e) {
             AppErrorDialogue.showError(errorMsg + " Please restart the application.");
             log.error("Error while performing task. User was shown error dialogue: " + errorMsg);
+            e.printStackTrace();
             Platform.exit();
         }
         return null;

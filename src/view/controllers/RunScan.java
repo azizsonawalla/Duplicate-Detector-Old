@@ -74,10 +74,11 @@ public class RunScan extends GUIController {
     }
 
     @Override
-    Node loadMainContent() throws Exception{
+    Node loadMainContent() throws Exception {
 
         GridPane root = FXMLLoader.load(getClass().getResource(Config.LAYOUTS_RUN_SCAN_FXML));
         this.filePathLabel = (Label) getChildWithId(root, "filePathLabel");
+
         StackPane progressStackPane = (StackPane) getChildWithId(root, "progressStackPane");
         StackPane statsStackPane1 = (StackPane) getChildWithId(root, "statsStackPane1");
         StackPane statsStackPane2 = (StackPane) getChildWithId(root, "statsStackPane2");

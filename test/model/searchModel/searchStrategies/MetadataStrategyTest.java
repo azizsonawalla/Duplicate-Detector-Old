@@ -4,6 +4,7 @@ import model.searchModel.ScanController;
 import org.junit.Test;
 import testFiles.TestFiles;
 import testUtils.SearchResultComparator;
+import util.ScanException;
 
 import java.io.File;
 import java.util.Arrays;
@@ -14,7 +15,7 @@ import static org.junit.Assert.assertTrue;
 public class MetadataStrategyTest {
 
     @Test
-    public void sampleTest() {
+    public void sampleTest() throws ScanException {
         MetadataStrategy mdf = new MetadataStrategy();
         ScanController controller = new ScanController(Arrays.asList(TestFiles.EXACT_DUPS_DIR), mdf);
         controller.startPreSearch();

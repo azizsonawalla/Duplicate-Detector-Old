@@ -20,7 +20,7 @@
             <children>
                 <Button id="startScanButton" fx:id="startScanButton" text="Start Scan" textAlignment="CENTER" GridPane.halignment="CENTER" />
                 <ProgressBar fx:id="progressBar" id="progressBar" prefHeight="40" prefWidth="400" progress="0.0" GridPane.halignment="CENTER" />
-                <Label fx:id="completeLabel" id="completeLabel"styleClass="body" text="Complete" GridPane.halignment="CENTER" />
+                <Label fx:id="completeLabel" id="completeLabel" styleClass="body" text="Complete" GridPane.halignment="CENTER" />
             </children>
         </StackPane>
         <StackPane id="statsStackPane1" prefHeight="40" prefWidth="350" maxWidth="350" GridPane.halignment="CENTER" GridPane.rowIndex="2">
