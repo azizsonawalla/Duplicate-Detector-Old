@@ -64,6 +64,7 @@ public class Config {
     public static final String LAYOUTS_CONFIGURE_SCAN_FXML = "../layouts/ConfigureScan.fxml";
     public static final String LAYOUTS_PREPARE_TO_SCAN_FXML = "../layouts/PrepareToScan.fxml";
     public static final String LAYOUTS_NEW_SCAN_FXML = "../layouts/NewScan.fxml";
+    public static final String LAYOUTS_RUN_SCAN_FXML = "../layouts/RunScan.fxml";
     
     /* Search Strategies */
     public static final SearchStrategyDescription quick = new SearchStrategyDescription(MetadataStrategy.class,

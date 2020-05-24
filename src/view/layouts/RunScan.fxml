@@ -15,30 +15,30 @@
         <RowConstraints minHeight="20.0" percentHeight="10.0" vgrow="SOMETIMES" />
     </rowConstraints>
     <children>
-        <Label fx:id="filePathLabel" styleClass="userInputPrev" text="[Placeholder]" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
-        <StackPane prefHeight="40" prefWidth="400" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+        <Label fx:id="filePathLabel" id="filePathLabel" styleClass="userInputPrev" text="[Placeholder]" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
+        <StackPane id="progressStackPane" prefHeight="40" prefWidth="400" GridPane.halignment="CENTER" GridPane.rowIndex="1">
             <children>
                 <Button id="startScanButton" fx:id="startScanButton" text="Start Scan" textAlignment="CENTER" GridPane.halignment="CENTER" />
-                <ProgressBar fx:id="progressBar" prefHeight="40" prefWidth="400" progress="0.0" GridPane.halignment="CENTER" />
-                <Label fx:id="completeLabel" styleClass="body" text="Complete" GridPane.halignment="CENTER" />
+                <ProgressBar fx:id="progressBar" id="progressBar" prefHeight="40" prefWidth="400" progress="0.0" GridPane.halignment="CENTER" />
+                <Label fx:id="completeLabel" id="completeLabel"styleClass="body" text="Complete" GridPane.halignment="CENTER" />
             </children>
         </StackPane>
-        <StackPane prefHeight="40" prefWidth="350" maxWidth="350" GridPane.halignment="CENTER" GridPane.rowIndex="2">
+        <StackPane id="statsStackPane1" prefHeight="40" prefWidth="350" maxWidth="350" GridPane.halignment="CENTER" GridPane.rowIndex="2">
             <children>
                 <Label contentDisplay="LEFT" alignment="CENTER_LEFT" prefWidth="350" styleClass="body" text="Files scanned:" textAlignment="LEFT" StackPane.alignment="CENTER_LEFT"/>
-                <Label fx:id="filesScanned" alignment="CENTER_RIGHT" contentDisplay="RIGHT" prefWidth="400" styleClass="body" text="-" textAlignment="RIGHT" StackPane.alignment="CENTER_RIGHT" />
+                <Label fx:id="filesScanned" id="filesScanned" alignment="CENTER_RIGHT" contentDisplay="RIGHT" prefWidth="400" styleClass="body" text="-" textAlignment="RIGHT" StackPane.alignment="CENTER_RIGHT" />
             </children>
         </StackPane>
-        <StackPane prefHeight="40" prefWidth="350" maxWidth="350" GridPane.halignment="CENTER" GridPane.rowIndex="3">
+        <StackPane id="statsStackPane2" prefHeight="40" prefWidth="350" maxWidth="350" GridPane.halignment="CENTER" GridPane.rowIndex="3">
             <children>
                 <Label contentDisplay="LEFT" alignment="CENTER_LEFT" prefWidth="350" styleClass="body" text="Suspected duplicates:" textAlignment="LEFT" StackPane.alignment="CENTER_LEFT"/>
-                <Label fx:id="suspectedDuplicates" alignment="CENTER_RIGHT" contentDisplay="RIGHT" prefWidth="400" styleClass="body" text="-" textAlignment="RIGHT" StackPane.alignment="CENTER_RIGHT" />
+                <Label fx:id="suspectedDuplicates" id="suspectedDuplicates" alignment="CENTER_RIGHT" contentDisplay="RIGHT" prefWidth="400" styleClass="body" text="-" textAlignment="RIGHT" StackPane.alignment="CENTER_RIGHT" />
             </children>
         </StackPane>
-        <StackPane prefHeight="40" prefWidth="350" maxWidth="350" GridPane.halignment="CENTER" GridPane.rowIndex="4">
+        <StackPane id="statsStackPane3" prefHeight="40" prefWidth="350" maxWidth="350" GridPane.halignment="CENTER" GridPane.rowIndex="4">
             <children>
                 <Label contentDisplay="LEFT" alignment="CENTER_LEFT" prefWidth="350" styleClass="body" text="Time Remaining:" textAlignment="LEFT" StackPane.alignment="CENTER_LEFT"/>
-                <Label fx:id="eta" alignment="CENTER_RIGHT" contentDisplay="RIGHT" prefWidth="400" styleClass="body" text="-" textAlignment="RIGHT" StackPane.alignment="CENTER_RIGHT" />
+                <Label fx:id="eta" id="eta" alignment="CENTER_RIGHT" contentDisplay="RIGHT" prefWidth="400" styleClass="body" text="-" textAlignment="RIGHT" StackPane.alignment="CENTER_RIGHT" />
             </children>
         </StackPane>
     </children>

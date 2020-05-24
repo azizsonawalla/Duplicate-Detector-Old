@@ -18,9 +18,11 @@ import view.util.dialogues.AppInformationDialogue;
 
 import java.io.IOException;
 
+import static view.textBindings.RunScanText.*;
+import static view.util.FXMLUtils.getChildWithId;
 import static view.util.FormatConverter.milliSecondsToTime;
 
-public class RunScan extends GUIController {                                                                            // TODO: create a parent for this and PrepareToScan
+public class RunScan extends GUIController {
 
     /* UI copy */
     private String NAV_BAR_TITLE = "Run scan";
@@ -76,7 +78,7 @@ public class RunScan extends GUIController {                                    
 
         setNextButtonText(NEXT_BUTTON_TEXT_WITH_RESULTS);
         setNavBarTitle(NAV_BAR_TITLE);
-        long totalFilesToBeScanned = model.getProgress().getDone();
+        long totalFilesToBeScanned = app.tryWithFatalAppError(() -> model.getProgress().getDone(), GET_DONE_ERROR_MSG);
         setSummaryBarSubtitle(String.format(SUMMARY_BAR_SUBTITLE_TEMPLATE, totalFilesToBeScanned));
 
         setSummaryBarHeadWithFilePath(SUMMARY_BAR_HEADER_DEFAULT);
@@ -84,36 +86,26 @@ public class RunScan extends GUIController {                                    
     }
 
     @Override
-    Node loadMainContent() {
-        try {
-            GridPane root = FXMLLoader.load(getClass().getResource("../layouts/RunScan.fxml"));                         // TODO: replace with static config reference
+    Node loadMainContent() throws Exception{
 
-            ObservableList<Node> rootChildren = root.getChildren();
-            this.filePathLabel = (Label) rootChildren.get(0);
+        GridPane root = FXMLLoader.load(getClass().getResource(Config.LAYOUTS_RUN_SCAN_FXML));
+        this.filePathLabel = (Label) getChildWithId(root, "filePathLabel");
+        StackPane progressStackPane = (StackPane) getChildWithId(root, "progressStackPane");
+        StackPane statsStackPane1 = (StackPane) getChildWithId(root, "statsStackPane1");
+        StackPane statsStackPane2 = (StackPane) getChildWithId(root, "statsStackPane2");
+        StackPane statsStackPane3 = (StackPane) getChildWithId(root, "statsStackPane3");
 
-            StackPane stackPane1 = (StackPane) rootChildren.get(1);
-            ObservableList<Node> stackPaneChildren1 = stackPane1.getChildren();
-            this.startScanButton = (Button) stackPaneChildren1.get(0);
-            this.progressBar = (ProgressBar) stackPaneChildren1.get(1);
-            this.completeLabel = (Label) stackPaneChildren1.get(2);
+        this.startScanButton = (Button) getChildWithId(progressStackPane, "startScanButton");
+        this.progressBar = (ProgressBar) getChildWithId(progressStackPane, "progressBar");
+        this.completeLabel = (Label) getChildWithId(progressStackPane, "completeLabel");
 
-            StackPane stackPane2 = (StackPane) rootChildren.get(2);
-            ObservableList<Node> stackPaneChildren2 = stackPane2.getChildren();
-            this.filesScanned = (Label) stackPaneChildren2.get(1);
+        this.filesScanned = (Label) getChildWithId(statsStackPane1, "filesScanned");
 
-            StackPane stackPane3 = (StackPane) rootChildren.get(3);
-            ObservableList<Node> stackPaneChildren3 = stackPane3.getChildren();
-            this.suspectedDuplicates = (Label) stackPaneChildren3.get(1);
+        this.suspectedDuplicates = (Label) getChildWithId(statsStackPane2, "suspectedDuplicates");
 
-            StackPane stackPane4 = (StackPane) rootChildren.get(4);
-            ObservableList<Node> stackPaneChildren4 = stackPane4.getChildren();
-            this.etaLabel = (Label) stackPaneChildren4.get(1);
+        this.etaLabel = (Label) getChildWithId(statsStackPane3, "eta");
 
-            return root;
-        } catch (IOException e) {
-            e.printStackTrace();                                                                                        // TODO: error handling
-        }
-        return new Label("Error loading content");
+        return root;
     }
 
     @Override
