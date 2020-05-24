@@ -1,7 +1,6 @@
 package view.controllers;
 
 import config.Config;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -14,9 +13,11 @@ import model.async.threadPool.AppThreadPool;
 import util.Progress;
 import view.DuplicateDetectorGUIApp;
 import view.util.TaskProgressTracker;
+import view.util.dialogues.AppConfirmationDialogue;
 import view.util.dialogues.AppInformationDialogue;
 
-import java.io.IOException;
+import java.io.File;
+import java.util.List;
 
 import static view.textBindings.RunScanText.*;
 import static view.util.FXMLUtils.getChildWithId;
@@ -24,21 +25,8 @@ import static view.util.FormatConverter.milliSecondsToTime;
 
 public class RunScan extends GUIController {
 
-    /* UI copy */
-    private String NAV_BAR_TITLE = "Run scan";
-    private String MAIN_CONTENT_TITLE_BEFORE_START = "Ready to Scan";
-    private String NEXT_BUTTON_TEXT_WITH_RESULTS = "View Results";
-    private String NEXT_BUTTON_TEXT_NO_RESULTS = "New Scan";
-    private String SUMMARY_BAR_SUBTITLE_TEMPLATE = "%d files will be scanned";
-    private String SUMMARY_BAR_SUBTITLE_COMPLETE = "Scan complete. Click next to view results.";
-    private String SUMMARY_BAR_SUBTITLE_NO_RESULTS = "Scan complete. No duplicates found.";
-    private String SUMMARY_BAR_HEADER_DEFAULT = "Scanning";
-    private String STATS_DEFAULT = "Not started";
-    private String FILE_COUNT_TEMPLATE = "%d (%6.2f%%)";
-    private String CANCELLED_TEXT_ON_BAR = "Cancelling scan...";
-
     /* UI constants */
-    private double PROGRESS_BAR_MIN_VALUE = 0.09;
+    private static final double PROGRESS_BAR_MIN_VALUE = 0.09;
 
     /* UI controls */
     private Label filePathLabel, completeLabel, filesScanned, suspectedDuplicates, etaLabel;
@@ -164,17 +152,27 @@ public class RunScan extends GUIController {
         setCompleteLabelVisible();
     }
 
-    private void OnCancel(ActionEvent e) {                                                                              // TODO: show 'are you sure?' dialogue
+    private void OnCancel(ActionEvent e) {
+        AppConfirmationDialogue dialogue = new AppConfirmationDialogue(
+                RUNSCAN_STOP_SCAN_TITLE,
+                RUNSCAN_STOP_SCAN_HEADER,
+                RUNSCAN_STOP_SCAN_MSG
+        );
+        if (!dialogue.getConfirmation()) {
+            return;
+        }
+
         setUIToCancelledMode();
         if (tracker != null) {
             tracker.stop();
         }
-        model.stop();                                                                                                   // TODO: catch exception/error handling
+        app.tryWithFatalAppError(() -> model.stop(), FAILED_TO_STOP_THE_CURRENT_SCAN);
         reset();
     }                                                                                                                   // TODO: call this on back button press too
 
     private void createAndSetNextController() {
-        Results r = new Results(app, model.getResults());
+        List<List<File>> results = app.tryWithFatalAppError(() -> model.getResults(), FAILED_TO_PROCESS_SCAN_RESULTS);
+        Results r = new Results(app, results);
         setNextController(r);
     }
 
@@ -185,7 +183,8 @@ public class RunScan extends GUIController {
         createAndSetNextController();
         enableNextButton();
 
-        if (model.getResults().size() == 0) {
+        List<List<File>> results = app.tryWithFatalAppError(() -> model.getResults(), FAILED_TO_PROCESS_SCAN_RESULTS);
+        if (results.size() == 0) {
             setUIToNoResultsMode();
         }
     }
@@ -198,9 +197,9 @@ public class RunScan extends GUIController {
         enableCancelButton();
         setSummaryBarSubtitle(SUMMARY_BAR_SUBTITLE_NO_RESULTS);
         AppInformationDialogue dialogue = new AppInformationDialogue(
-                "No Duplicates Found",
-                "No duplicates were found during the scan!",
-                "You may choose to perform a new scan or exit the application."
+                NO_DUPLICATES_FOUND_TITLE,
+                NO_DUPLICATES_FOUND_HEADER,
+                NO_DUPLICATES_FOUND_MSG
         );
         dialogue.getConfirmation();
     }
