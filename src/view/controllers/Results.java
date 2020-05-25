@@ -100,7 +100,7 @@ public class Results extends GUIController {
     }
 
     @Override
-    Node loadMainWindow() throws Exception {
+    protected Node loadMainWindow() throws Exception {
         GridPane root = FXMLLoader.load(getClass().getResource(Config.LAYOUTS_RESULTS_FXML));
 
         selectedCountLabel = (Label) getChildWithId(root, "selectedCount");

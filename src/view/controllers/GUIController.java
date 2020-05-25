@@ -122,42 +122,74 @@ public abstract class GUIController implements Initializable {
         mainContentTitle.setText(title);
     }
 
+    /**
+     * Hide the Settings button
+     */
     void hideSettingsButton() {
         settingsButton.setVisible(false);
     }
 
+    /**
+     * Hide the Back button
+     */
     void hideBackButton() {
         backButton.setVisible(false);
     }
 
+    /**
+     * Hide the Cancel button
+     */
     void hideCancelButton() {
         cancelButton.setVisible(false);
     }
 
+    /**
+     * Enable the Cancel button
+     */
     void enableCancelButton() {
         cancelButton.setDisable(false);
     }
 
+    /**
+     * Disable the Cancel button
+     */
     void disableCancelButton() {
         cancelButton.setDisable(true);
     }
 
+    /**
+     * Enable the Next button
+     */
     void enableNextButton() {
         nextButton.setDisable(false);
     }
 
+    /**
+     * Disable the Next button
+     */
     void disableNextButton() {
         nextButton.setDisable(true);
     }
 
+    /**
+     * Hide the Next button
+     */
     void hideNextButton() {
         nextButton.setVisible(false);
     }
 
+    /**
+     * Set the text for the Next button
+     * @param text new text for Next button
+     */
     void setNextButtonText(String text) {
         nextButton.setText(text);
     }
 
+    /**
+     * Set the controller for the scene to switch to when the Next button is pressed
+     * @param nextController controller for next scene
+     */
     void setNextController(GUIController nextController) {
         this.nextController = nextController;
         setNextButtonOnAction();
@@ -171,14 +203,25 @@ public abstract class GUIController implements Initializable {
         this.prevController = prev;
     }
 
+    /**
+     * Set the EventHandler to be called when the Cancel button is pressed
+     * @param e EventHandler for Cancel button
+     */
     void setCancelButtonOnAction(EventHandler<ActionEvent> e) {
         cancelButton.setOnAction(e);
     }
 
+    /**
+     * Set the text for the Cancel button
+     * @param text new text for Cancel button
+     */
     void setCancelButtonText(String text) {
         cancelButton.setText(text);
     }
 
+    /**
+     * Reconfigures the Cancel button to be an Exit button
+     */
     void swapCancelButtonForExitButton() {
         setCancelButtonText("Exit");
         setCancelButtonOnAction(event -> Platform.exit());
@@ -195,22 +238,25 @@ public abstract class GUIController implements Initializable {
         root.getChildren().add(root.getChildren().size(), content);
     }
 
+    /**
+     * Removes the main window logo
+     */
     void removeMainWindowLogo() {
         mainContent.getChildren().remove(0);
         int rowIdx = GridPane.getRowIndex(mainContentLogo);
         mainContent.getRowConstraints().get(rowIdx).setPercentHeight(0);
     }
 
-    void makeMainContentFillWidth() {
-        GridPane.setColumnIndex(mainContent, 0);
-        int cols = mainWindow.getColumnConstraints().size();
-        GridPane.setColumnSpan(mainContent, cols);
-    }
-
+    /**
+     * Go to the next scene. Next scene controller must be set before calling.
+     */
     void goToNextScene() {
         app.switchScene(this.nextController);
     }
 
+    /**
+     * Go to the previous scene. Previous scene controller must be set before calling
+     */
     void goToPrevScene() {
         app.switchScene(prevController);
     }
@@ -223,28 +269,47 @@ public abstract class GUIController implements Initializable {
         goToFirstScene();
     }
 
+    /**
+     * Sets the EventHandlers for when the Back button is pressed
+     */
+    protected void setBackButtonOnAction() {
+        if (this.prevController != null) {
+            backButton.setOnAction(event -> goToPrevScene());
+        } else {
+            backButton.setOnAction(event -> goToFirstScene());
+        }
+    }
+
+    /**
+     * Load the main content for this scene
+     * @return Node holding main content
+     */
+    protected Node loadMainContent() throws Exception {
+        return null;                                                                                                    // sub-classes are expected to override this
+    }
+
+    /**
+     * Load the main window for this scene
+     * @return Node holding main window
+     */
+    protected Node loadMainWindow() throws Exception {
+        return null;                                                                                                    // sub-classes are expected to override this
+    }
+
+    protected void cleanupSelf() {
+        // TODO
+    }
+
     private void goToFirstScene() {
         app.switchScene(new NewScan(app));
     }
 
-    /**
-     * Inserts the given node in the main content pane of the parent frame
-     * @param content content to be inserted
-     */
     private void setMainContent(Node content) {
         mainContent.add(content,0, 3);
     }
 
     private void setNextButtonOnAction() {
         nextButton.setOnAction(event -> goToNextScene());
-    }
-
-    private void setBackButtonOnAction() {
-        if (this.prevController != null) {
-            backButton.setOnAction(event -> goToPrevScene());
-        } else {
-            backButton.setOnAction(event -> goToFirstScene());
-        }
     }
 
     private void loadFonts() {
@@ -259,26 +324,4 @@ public abstract class GUIController implements Initializable {
     abstract void initCopy();
 
     abstract void configureControls();
-
-
-    /**
-     * Load the main content for this scene
-     * @return Node holding main content
-     */
-    Node loadMainContent() throws Exception {
-        return null;                                                                                                    // sub-classes are expected to override this
-    }
-
-
-    /**
-     * Load the main window for this scene
-     * @return Node holding main window
-     */
-    Node loadMainWindow() throws Exception {
-        return null;                                                                                                    // sub-classes are expected to override this
-    }
-
-    void cleanupSelf() {
-        // TODO
-    }
 }

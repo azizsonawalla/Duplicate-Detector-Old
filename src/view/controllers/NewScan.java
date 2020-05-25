@@ -68,7 +68,7 @@ public class NewScan extends GUIController {
      * {@inheritDoc}
      */
     @Override
-    Node loadMainContent() throws Exception {
+    protected Node loadMainContent() throws Exception {
         GridPane root = FXMLLoader.load(getClass().getResource(Config.LAYOUTS_NEW_SCAN_FXML));
         AnchorPane filePathBox = (AnchorPane) getChildWithId(root, "filePathBox");
         this.filePathLabel = (Label) getChildWithId(filePathBox, "filePathLabel");

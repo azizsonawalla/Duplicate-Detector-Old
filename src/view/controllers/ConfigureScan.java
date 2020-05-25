@@ -62,7 +62,7 @@ public class ConfigureScan extends GUIController {
      * {@inheritDoc}
      */
     @Override
-    Node loadMainContent() throws Exception {
+    protected Node loadMainContent() throws Exception {
         GridPane root = FXMLLoader.load(getClass().getResource(Config.LAYOUTS_CONFIGURE_SCAN_FXML));
         quickScan = (GridPane) FXMLUtils.getChildWithId(root, "QuickScanButton");
         fullScan = (GridPane) FXMLUtils.getChildWithId(root, "FullScanButton");

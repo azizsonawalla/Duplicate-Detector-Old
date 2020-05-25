@@ -77,7 +77,7 @@ public class PrepareToScan extends GUIController {
      * {@inheritDoc}
      */
     @Override
-    Node loadMainContent() throws Exception {
+    protected Node loadMainContent() throws Exception {
         GridPane root = FXMLLoader.load(getClass().getResource(Config.LAYOUTS_PREPARE_TO_SCAN_FXML));
 
         this.filePathLabel = (Label) getChildWithId(root, "filePathLabel");
