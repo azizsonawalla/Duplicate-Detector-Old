@@ -12,12 +12,12 @@ import java.util.List;
 
 import static org.junit.Assert.assertTrue;
 
-public class MetadataStrategyTest {
+public class ContentsHashStrategyTest {
 
     @Test
     public void sampleTest() throws ScanException {
-        MetadataHashStrategy mdf = new MetadataHashStrategy();
-        ScanController controller = new ScanController(Arrays.asList(TestFiles.EXACT_DUPS_DIR), mdf);
+        ContentsHashStrategy fhStrategy = new ContentsHashStrategy();
+        ScanController controller = new ScanController(Arrays.asList(TestFiles.EXACT_DUPS_DIR), fhStrategy);
         controller.startPreSearch();
         while(!controller.isPreSearchDone());                                                                           // TODO: add timeout
 

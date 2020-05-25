@@ -30,8 +30,9 @@ public abstract class HashingStrategy implements ISearchStrategy {
      * Create a hashcode for the given file
      * @param file file to hash
      * @return a unique hashcode as a String
+     * @throws Exception if file cannot be hashed
      */
-    abstract String hash(File file);
+    abstract String hash(File file) throws Exception;
 
     /**
      * {@inheritDoc}
@@ -156,9 +157,8 @@ public abstract class HashingStrategy implements ISearchStrategy {
             if (Thread.interrupted()) {
                 return;
             }
-
-            String key = hash(this.file);
             try {
+                String key = hash(this.file);
                 this.results.lock();
                 insertFileIntoResults(key, this.file, this.results);
             } catch (Exception e) {

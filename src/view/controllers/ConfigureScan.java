@@ -5,7 +5,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
-import model.searchModel.searchStrategies.MetadataStrategy;
+import model.searchModel.searchStrategies.ContentsHashStrategy;
+import model.searchModel.searchStrategies.MetadataHashStrategy;
 import view.DuplicateDetectorGUIApp;
 import view.util.FXMLUtils;
 import view.util.dialogues.AppErrorDialogue;
@@ -85,10 +86,12 @@ public class ConfigureScan extends GUIController {
      * Identifies search strategy based on user input, updates model accordingly, and switches to the next scene
      * @param e user input event
      */
-    private void setStrategyAndGoToNextScene(MouseEvent e) {                                                            // TODO: add remaining strategies when created
+    private void setStrategyAndGoToNextScene(MouseEvent e) {
         Object source = e.getSource();
         if (source.equals(quickScan)) {
-            model.setStrategy(new MetadataStrategy());
+            model.setStrategy(new MetadataHashStrategy());
+        } else if (source.equals(fullScan)) {
+            model.setStrategy(new ContentsHashStrategy());
         } else {
             log.error("Couldn't identify scan strategy from user input.");
             AppErrorDialogue.showError(UNKNOWN_STRATEGY_MSG);

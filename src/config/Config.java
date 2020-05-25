@@ -1,7 +1,8 @@
 package config;
 
+import model.searchModel.searchStrategies.ContentsHashStrategy;
 import model.searchModel.searchStrategies.ISearchStrategy;
-import model.searchModel.searchStrategies.MetadataStrategy;
+import model.searchModel.searchStrategies.MetadataHashStrategy;
 import util.Logger;
 
 import java.util.Arrays;
@@ -68,6 +69,8 @@ public class Config {
     public static final String LAYOUTS_RESULTS_FXML = "../layouts/Results.fxml";
     
     /* Search Strategies */
-    public static final SearchStrategyDescription quick = new SearchStrategyDescription(MetadataStrategy.class,
+    public static final SearchStrategyDescription quick = new SearchStrategyDescription(MetadataHashStrategy.class,
             "Quick Scan", "Finds photos with the same name and size.");
+    public static final SearchStrategyDescription full = new SearchStrategyDescription(ContentsHashStrategy.class,
+            "Full Scan", "Finds photos with the same contents.");
 }

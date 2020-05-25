@@ -57,9 +57,11 @@ public class RunScan extends GUIController {
 
     @Override
     void initCopy() {
-        if (model.getStrategy().getClass().equals(Config.quick.getStrategy())){
+        Class strategyClass = model.getStrategy().getClass();
+        if (strategyClass.equals(Config.quick.getStrategy())){
             setContentTitle(Config.quick.getUiName());
-            // TODO: check for other scan types when implemented
+        } else if (strategyClass.equals(Config.full.getStrategy())) {
+            setContentTitle(Config.full.getUiName());
         } else {
             setContentTitle(MAIN_CONTENT_TITLE_BEFORE_START);
         }

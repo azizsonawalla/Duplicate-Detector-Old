@@ -7,7 +7,7 @@ import java.io.File;
  *
  * Definition of duplicate file: files with the same name and size
  */
-public class MetadataStrategy extends HashingStrategy {
+public class MetadataHashStrategy extends HashingStrategy {
 
     /**
      * Creates a hashcode for the file using its name and size

@@ -32,7 +32,7 @@
            </children>
        </GridPane>
 
-       <GridPane id="FullScanButton" disable="true" styleClass="strategyButton" maxHeight="80" maxWidth="700" prefWidth="700" GridPane.rowIndex="2" GridPane.valignment="TOP" GridPane.halignment="CENTER">
+       <GridPane id="FullScanButton" styleClass="strategyButton" maxHeight="80" maxWidth="700" prefWidth="700" GridPane.rowIndex="2" GridPane.valignment="TOP" GridPane.halignment="CENTER">
            <columnConstraints>
                <ColumnConstraints hgrow="SOMETIMES" percentWidth="95.0" />
                <ColumnConstraints hgrow="SOMETIMES" percentWidth="5.0" />
