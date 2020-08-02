@@ -26,10 +26,12 @@ How it works:
 
 :arrow_upper_left: Export scan results as a csv, xml
 
-## Usage
+## How to use Duplicate Detector
 
 ### Pick a folder
 
 ![](/docs/assets/choose-folder-screen.jpg)
 
 ### Start pre-scan analysis
+
+![](/docs/assets/pre-scan%20analysis.jpg)
