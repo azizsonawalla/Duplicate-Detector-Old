@@ -20,7 +20,7 @@ How it works:
 
 ## Upcoming features
 
-:brain: Machine-learning based 'Advanced' scan to detect 'similar' images (i.e. different resolutions, slightly colour corrected, etc.)
+:brain: Machine-learning based 'Advanced' scan to detect similar images (i.e. different resolutions, slightly colour corrected, etc.)
 
 :bookmark_tabs: Caching results of previously-seen images for speedier scans
 
