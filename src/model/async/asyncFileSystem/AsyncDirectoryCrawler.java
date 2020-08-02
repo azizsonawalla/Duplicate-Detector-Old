@@ -20,6 +20,9 @@ import static util.FileSystemUtil.getFileExtension;
  */
 public class AsyncDirectoryCrawler implements Callable<List<File>> {
 
+    /**
+     * The current stage of the directory crawl
+     */
     private enum CrawlStage {
         NOT_STARTED, IN_PROGRESS, DONE, CANCELLED
     }

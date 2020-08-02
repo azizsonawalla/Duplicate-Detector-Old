@@ -6,7 +6,7 @@ import java.security.InvalidParameterException;
 import java.util.concurrent.Callable;
 
 /**
- * A callable file list loader. Implements Callable interface to be able to run this in a background thread.
+ * A callable file list loader. Implements the Callable interface to be able to run this in a background thread.
  */
 class CallableFileList implements Callable<File[]> {
     private File file;

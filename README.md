@@ -28,6 +28,8 @@ How it works:
 
 :arrow_upper_left: Export scan results as a csv, xml
 
+:apple: MacOS support
+
 ## How to use Duplicate Detector
 
 ### Pick a folder

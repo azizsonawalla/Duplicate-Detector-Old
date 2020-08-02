@@ -13,32 +13,6 @@ import java.util.List;
  */
 public class Config {
 
-    public static final class SearchStrategyDescription {
-
-        private final Class<? extends ISearchStrategy> strategy;
-        private final String uiName;
-        private final String desc;
-
-        SearchStrategyDescription(Class<? extends ISearchStrategy> strategy, String uiName, String desc) {
-            this.strategy = strategy;
-            this.uiName = uiName;
-            this.desc = desc; 
-        }
-
-        public Class<? extends ISearchStrategy> getStrategy() {
-            return strategy;
-        }
-
-        public String getUiName() {
-            return uiName;
-        }
-
-        public String getDesc() {
-            return desc;
-        }
-
-    }
-
     /* General */
     public static final Logger.Level LOG_LEVEL = Logger.Level.DEBUG;
 
@@ -58,6 +32,35 @@ public class Config {
     public static final int PRE_SCAN_WAIT_TIMEOUT_MS = 2000;
     public static final int PRE_SCAN_POLL_INTERVAL_MS = 100;
     public static final long PRE_SCAN_TIMEOUT_MS = Long.MAX_VALUE;
+
+    /**
+     * Details of a search strategy to show on the UI
+     */
+    public static final class SearchStrategyDescription {
+
+        private final Class<? extends ISearchStrategy> strategy;
+        private final String uiName;
+        private final String desc;
+
+        SearchStrategyDescription(Class<? extends ISearchStrategy> strategy, String uiName, String desc) {
+            this.strategy = strategy;
+            this.uiName = uiName;
+            this.desc = desc;
+        }
+
+        public Class<? extends ISearchStrategy> getStrategy() {
+            return strategy;
+        }
+
+        public String getUiName() {
+            return uiName;
+        }
+
+        public String getDesc() {
+            return desc;
+        }
+
+    }
 
     /* File Paths */
     public static final String PARENT_FRAME = "layouts/ParentFrame.fxml";                                               // TODO: create file objects from rel paths and then get abs path
