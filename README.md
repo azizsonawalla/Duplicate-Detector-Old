@@ -1,5 +1,5 @@
-# Duplicate Detector
+# Duplicate Image Detector
 
-Detect and delete duplicate images in your collection
-
-*This project is still under development. Check back later for more information.*
+1. Run the intelligent image scan :mag:
+2. Find nasty duplicate images taking up gigabytes :framed_picture: :framed_picture:
+3. Bulk delete and enjoy free hard drive space :floppy_disk:
