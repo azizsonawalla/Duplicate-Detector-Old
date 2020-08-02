@@ -2,7 +2,7 @@
 
 How it works:
 
-:mag: Run the intelligent image scan
+:mag: Run the intelligent image scan~
 
 :framed_picture: Find nasty duplicate images taking up gigabytes
 
@@ -27,3 +27,9 @@ How it works:
 :arrow_upper_left: Export scan results as a csv, xml
 
 ## Usage
+
+### Pick a folder
+
+[](/docs/assets/choose-folder-screen.jpg)
+
+### Start pre-scan analysis
