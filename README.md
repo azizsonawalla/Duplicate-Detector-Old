@@ -30,6 +30,6 @@ How it works:
 
 ### Pick a folder
 
-[](/docs/assets/choose-folder-screen.jpg)
+![](/docs/assets/choose-folder-screen.jpg)
 
 ### Start pre-scan analysis
