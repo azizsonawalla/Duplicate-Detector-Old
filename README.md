@@ -8,6 +8,8 @@ How it works:
 
 :floppy_disk: Bulk delete and enjoy free hard drive space 
 
+![](/docs/assets/bulk-action.jpg)
+
 ## Major Features
 
 :dash: Super-fast disk scans with multi-threading support
@@ -35,3 +37,15 @@ How it works:
 ### Start pre-scan analysis
 
 ![](/docs/assets/pre-scan%20analysis.jpg)
+
+### Choose a scan type
+
+![](/docs/assets/choose-scan-type.jpg)
+
+### Wait for scan to finish
+
+![](/docs/assets/scan-in-progress.jpg)
+
+### View results and perform bulk actions
+
+![](/docs/assets/bulk-action.jpg)
