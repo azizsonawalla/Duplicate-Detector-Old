@@ -13,9 +13,13 @@ import model.searchModel.ScanController;
 import util.Logger;
 import view.controllers.GUIController;
 import view.controllers.NewScan;
+import view.util.FXMLUtils;
 import view.util.dialogues.AppErrorDialogue;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.concurrent.Callable;
 
 
@@ -139,12 +143,12 @@ public class DuplicateDetectorGUIApp extends Application {
         return loadScene(c, Config.PARENT_FRAME, Config.DARK_THEME_CSS, Config.SCENE_WIDTH, Config.SCENE_HEIGHT );
     }
 
-    private Scene loadScene(GUIController c, String fxml, String css, double width, double height) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));                                               // TODO: store loader in-memory to speed-up scene switching
+    private Scene loadScene(GUIController c, File fxml, File css, double width, double height) throws IOException {
+        FXMLLoader loader = FXMLUtils.fxmlLoaderFromFile(fxml);                                                         // TODO: store loader in-memory to speed-up scene switching
         loader.setController(c);
         Parent root = loader.load();
         Scene scene = new Scene(root, width, height);
-        scene.getStylesheets().add(getClass().getResource(css).toExternalForm());
+        scene.getStylesheets().add(css.toURI().toString());
         return scene;
     }
 

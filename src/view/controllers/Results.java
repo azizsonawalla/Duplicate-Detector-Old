@@ -14,6 +14,7 @@ import view.controllers.helpers.ImagePreviewLoader;
 import view.controllers.helpers.RenderedResult;
 import view.controllers.helpers.ResultsRenderer;
 import view.textBindings.ResultsText;
+import view.util.FXMLUtils;
 import view.util.dialogues.AppConfirmationDialogue;
 
 import java.io.File;
@@ -101,7 +102,7 @@ public class Results extends GUIController {
 
     @Override
     protected Node loadMainWindow() throws Exception {
-        GridPane root = FXMLLoader.load(getClass().getResource(Config.LAYOUTS_RESULTS_FXML));
+        GridPane root = FXMLUtils.fxmlLoaderFromFile(Config.LAYOUTS_RESULTS_FXML).load();
 
         selectedCountLabel = (Label) getChildWithId(root, "selectedCount");
         actionMenu = (ComboBox<String>) getChildWithId(root, "actionMenu");

@@ -5,6 +5,7 @@ import model.searchModel.searchStrategies.ISearchStrategy;
 import model.searchModel.searchStrategies.MetadataHashStrategy;
 import util.Logger;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
@@ -63,13 +64,13 @@ public class Config {
     }
 
     /* File Paths */
-    public static final String PARENT_FRAME = "layouts/ParentFrame.fxml";                                               // TODO: create file objects from rel paths and then get abs path
-    public static final String DARK_THEME_CSS = "style/darkTheme.css";
-    public static final String LAYOUTS_CONFIGURE_SCAN_FXML = "../layouts/ConfigureScan.fxml";
-    public static final String LAYOUTS_PREPARE_TO_SCAN_FXML = "../layouts/PrepareToScan.fxml";
-    public static final String LAYOUTS_NEW_SCAN_FXML = "../layouts/NewScan.fxml";
-    public static final String LAYOUTS_RUN_SCAN_FXML = "../layouts/RunScan.fxml";
-    public static final String LAYOUTS_RESULTS_FXML = "../layouts/Results.fxml";
+    public static final File PARENT_FRAME = new File("src/view/layouts/ParentFrame.fxml");
+    public static final File DARK_THEME_CSS = new File("src/view/style/darkTheme.css");
+    public static final File LAYOUTS_CONFIGURE_SCAN_FXML = new File("src/view/layouts/ConfigureScan.fxml");
+    public static final File LAYOUTS_PREPARE_TO_SCAN_FXML = new File("src/view/layouts/PrepareToScan.fxml");
+    public static final File LAYOUTS_NEW_SCAN_FXML = new File("src/view/layouts/NewScan.fxml");
+    public static final File LAYOUTS_RUN_SCAN_FXML = new File("src/view/layouts/RunScan.fxml");
+    public static final File LAYOUTS_RESULTS_FXML = new File("src/view/layouts/Results.fxml");
     
     /* Search Strategies */
     public static final SearchStrategyDescription quick = new SearchStrategyDescription(MetadataHashStrategy.class,

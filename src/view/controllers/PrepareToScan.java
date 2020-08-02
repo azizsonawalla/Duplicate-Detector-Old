@@ -11,6 +11,7 @@ import javafx.scene.layout.StackPane;
 import model.async.threadPool.AppThreadPool;
 import util.Progress;
 import view.DuplicateDetectorGUIApp;
+import view.util.FXMLUtils;
 import view.util.TaskProgressTracker;
 import view.util.dialogues.AppConfirmationDialogue;
 
@@ -78,7 +79,7 @@ public class PrepareToScan extends GUIController {
      */
     @Override
     protected Node loadMainContent() throws Exception {
-        GridPane root = FXMLLoader.load(getClass().getResource(Config.LAYOUTS_PREPARE_TO_SCAN_FXML));
+        GridPane root = FXMLUtils.fxmlLoaderFromFile(Config.LAYOUTS_PREPARE_TO_SCAN_FXML).load();
 
         this.filePathLabel = (Label) getChildWithId(root, "filePathLabel");
         this.fileCountLabel = (Label) getChildWithId(root, "fileCountLabel");

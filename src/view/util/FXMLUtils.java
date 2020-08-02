@@ -1,10 +1,13 @@
 package view.util;
 
 import javafx.collections.ObservableList;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.io.File;
+import java.net.MalformedURLException;
 import java.util.List;
 
 public class FXMLUtils {
@@ -59,5 +62,9 @@ public class FXMLUtils {
         if (styleClass != null && styleClass.size() > 0) {
             node.getStyleClass().addAll(styleClass);
         }
+    }
+
+    public static FXMLLoader fxmlLoaderFromFile(File file) throws MalformedURLException {
+        return new FXMLLoader(file.toURI().toURL());
     }
 }

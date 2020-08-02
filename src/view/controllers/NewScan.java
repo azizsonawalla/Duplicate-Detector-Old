@@ -12,6 +12,7 @@ import javafx.stage.DirectoryChooser;
 import model.searchModel.ScanController;
 import view.DuplicateDetectorGUIApp;
 import view.textBindings.NewScanText;
+import view.util.FXMLUtils;
 
 import java.io.File;
 
@@ -69,7 +70,7 @@ public class NewScan extends GUIController {
      */
     @Override
     protected Node loadMainContent() throws Exception {
-        GridPane root = FXMLLoader.load(getClass().getResource(Config.LAYOUTS_NEW_SCAN_FXML));
+        GridPane root = FXMLUtils.fxmlLoaderFromFile(Config.LAYOUTS_NEW_SCAN_FXML).load();
         AnchorPane filePathBox = (AnchorPane) getChildWithId(root, "filePathBox");
         this.filePathLabel = (Label) getChildWithId(filePathBox, "filePathLabel");
         this.browseButton = (Button) getChildWithId(filePathBox, "browseButton");
